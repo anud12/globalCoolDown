@@ -1,0 +1,37 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card" *ngFor="let pawn of pawnList">
+      <div class="card-header">
+        <h5>{{pawn.name}}</h5>
+      </div>
+      <div class="list-group list-group-flush">
+        <div class="list-group-item">
+          <div class="d-flex w-100 justify-content-between">
+            <span class="mb-1">Id</span>
+            <span>{{pawn.id}}</span>
+          </div>
+          <div class="d-flex w-100 justify-content-between">
+            <span class="mb-1">Value</span>
+            <span>{{pawn.value}}</span>
+          </div>
+          <div class="d-flex w-100 justify-content-between">
+            <span class="mb-1">Version</span>
+            <span>{{pawn.version}}</span>
+          </div>
+          <div class="d-flex w-100 justify-content-between">
+            <span class="mb-1">Point</span>
+            <span>[{{pawn.point.x}},{{pawn.point.y}}]</span>
+          </div>
+          <div class="d-flex w-100 justify-content-between">
+            <span class="mb-1">Speed</span>
+            <span>{{pawn.speed}}</span>
+          </div>
+        </div>
+        <div class="list-group-item">
+          <button class="btn btn-primary">Action</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
