@@ -1,17 +1,17 @@
-package ro.anud.GlobalCooldown.action;
+package ro.anud.GlobalCooldown.effects;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.anud.GlobalCooldown.entity.ActionOnPawnEntity;
+import ro.anud.GlobalCooldown.entity.EffectOnPawnEntity;
 import ro.anud.GlobalCooldown.entity.Pawn;
 import ro.anud.GlobalCooldown.mapper.IncrementValueOnPawnMapper;
 
 @Getter
 @ToString
-public class IncrementValueOnPawn implements ActionOnPawn {
+public class IncrementValueOnPawn implements EffectOnPawn {
 	public static final String NAME = "INCREMENT_VALUE";
 	private static final Logger LOGGER = LoggerFactory.getLogger(IncrementValueOnPawn.class);
 
@@ -44,7 +44,7 @@ public class IncrementValueOnPawn implements ActionOnPawn {
 	}
 
 	@Override
-	public ActionOnPawnEntity toEntity() {
+	public EffectOnPawnEntity toEntity() {
 		return IncrementValueOnPawnMapper.toEntity(this);
 	}
 }

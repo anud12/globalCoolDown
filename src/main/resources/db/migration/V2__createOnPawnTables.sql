@@ -1,6 +1,6 @@
-CREATE SEQUENCE seq_action_on_pawn;
+CREATE SEQUENCE seq_effect_on_pawn;
 
-CREATE TABLE action_on_pawn (
+CREATE TABLE effect_on_pawn (
   id      BIGINT PRIMARY KEY,
   type    VARCHAR(25) NOT NULL,
   pawn_id BIGINT      NOT NULL REFERENCES pawn (id)

@@ -7,20 +7,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ro.anud.GlobalCooldown.model.ActionOnPawnModel;
-import ro.anud.GlobalCooldown.service.ActionOnPawnService;
+import ro.anud.GlobalCooldown.model.EffectOnPawnModel;
+import ro.anud.GlobalCooldown.service.EffectOnPawnService;
 
 @RestController
 @AllArgsConstructor
-public class ActionController {
+public class EffectController {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(ActionController.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(EffectController.class);
 
-	private ActionOnPawnService actionOnPawnService;
+	private EffectOnPawnService effectOnPawnService;
 	@PostMapping("/addAction")
-	public ResponseEntity addAction (@RequestBody final ActionOnPawnModel actionOnPawn) {
+	public ResponseEntity addAction (@RequestBody final EffectOnPawnModel actionOnPawn) {
 		LOGGER.info("adding actionOnPawn " + actionOnPawn);
-		actionOnPawnService.save(actionOnPawn);
+		effectOnPawnService.save(actionOnPawn);
 		return ResponseEntity.ok(null);
 	}
 }

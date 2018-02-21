@@ -2,9 +2,9 @@ package ro.anud.GlobalCooldown.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import ro.anud.GlobalCooldown.action.IncrementValueOnPawn;
-import ro.anud.GlobalCooldown.action.MoveOnPawn;
-import ro.anud.GlobalCooldown.entity.ActionOnPawnEntity;
+import ro.anud.GlobalCooldown.effects.IncrementValueOnPawn;
+import ro.anud.GlobalCooldown.effects.MoveOnPawn;
+import ro.anud.GlobalCooldown.entity.EffectOnPawnEntity;
 
 @JsonTypeInfo(
 		use = JsonTypeInfo.Id.NAME,
@@ -14,6 +14,6 @@ import ro.anud.GlobalCooldown.entity.ActionOnPawnEntity;
 		@JsonSubTypes.Type(value = IncrementValueOnPawnModel.class, name = IncrementValueOnPawn.NAME),
 		@JsonSubTypes.Type(value = MoveOnPawnModel.class, name = MoveOnPawn.NAME),
 })
-public interface ActionOnPawnModel {
-	ActionOnPawnEntity toEntity();
+public interface EffectOnPawnModel {
+	EffectOnPawnEntity toEntity();
 }

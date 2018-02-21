@@ -1,7 +1,7 @@
 package ro.anud.GlobalCooldown.entity;
 
 import lombok.*;
-import ro.anud.GlobalCooldown.action.ActionOnPawn;
+import ro.anud.GlobalCooldown.effects.EffectOnPawn;
 import ro.anud.GlobalCooldown.mapper.MoveOnPawnMapper;
 
 import javax.persistence.Entity;
@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
-public class MoveOnPawnEntity extends ActionOnPawnEntity {
+public class MoveOnPawnEntity extends EffectOnPawnEntity {
 
 	private Long x;
 	private Long y;
@@ -33,7 +33,7 @@ public class MoveOnPawnEntity extends ActionOnPawnEntity {
 	}
 
 	@Override
-	public ActionOnPawn toAction() {
+	public EffectOnPawn toAction() {
 		return MoveOnPawnMapper.toModel(this);
 	}
 }

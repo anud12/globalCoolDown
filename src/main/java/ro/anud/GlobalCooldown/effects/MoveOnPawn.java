@@ -1,11 +1,11 @@
-package ro.anud.GlobalCooldown.action;
+package ro.anud.GlobalCooldown.effects;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.anud.GlobalCooldown.entity.ActionOnPawnEntity;
+import ro.anud.GlobalCooldown.entity.EffectOnPawnEntity;
 import ro.anud.GlobalCooldown.entity.Pawn;
 import ro.anud.GlobalCooldown.geometry.Point;
 import ro.anud.GlobalCooldown.geometry.Vector;
@@ -13,7 +13,7 @@ import ro.anud.GlobalCooldown.mapper.MoveOnPawnMapper;
 
 @Getter
 @ToString(callSuper = true)
-public class MoveOnPawn implements ActionOnPawn {
+public class MoveOnPawn implements EffectOnPawn {
 	public static final String NAME = "MOVE_ACTION";
 	private static final Logger LOGGER = LoggerFactory.getLogger(MoveOnPawn.class);
 
@@ -47,7 +47,7 @@ public class MoveOnPawn implements ActionOnPawn {
 	}
 
 	@Override
-	public ActionOnPawnEntity toEntity() {
+	public EffectOnPawnEntity toEntity() {
 		return MoveOnPawnMapper.toEntity(this);
 	}
 

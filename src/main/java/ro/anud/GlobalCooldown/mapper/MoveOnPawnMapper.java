@@ -1,6 +1,6 @@
 package ro.anud.GlobalCooldown.mapper;
 
-import ro.anud.GlobalCooldown.action.MoveOnPawn;
+import ro.anud.GlobalCooldown.effects.MoveOnPawn;
 import ro.anud.GlobalCooldown.entity.MoveOnPawnEntity;
 import ro.anud.GlobalCooldown.entity.Pawn;
 import ro.anud.GlobalCooldown.geometry.Point;

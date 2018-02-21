@@ -1,7 +1,7 @@
 package ro.anud.GlobalCooldown.entity;
 
 import lombok.*;
-import ro.anud.GlobalCooldown.action.ActionOnPawn;
+import ro.anud.GlobalCooldown.effects.EffectOnPawn;
 import ro.anud.GlobalCooldown.mapper.IncrementValueOnPawnMapper;
 
 import javax.persistence.*;
@@ -13,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
-public class IncrementValueOnPawnEntity extends ActionOnPawnEntity {
+public class IncrementValueOnPawnEntity extends EffectOnPawnEntity {
 	private int duration;
 
 	@Builder
@@ -28,7 +28,7 @@ public class IncrementValueOnPawnEntity extends ActionOnPawnEntity {
 	}
 
 	@Override
-	public ActionOnPawn toAction() {
+	public EffectOnPawn toAction() {
 		return IncrementValueOnPawnMapper.toAction(this);
 	}
 }

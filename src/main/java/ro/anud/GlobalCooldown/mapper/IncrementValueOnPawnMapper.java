@@ -1,6 +1,6 @@
 package ro.anud.GlobalCooldown.mapper;
 
-import ro.anud.GlobalCooldown.action.IncrementValueOnPawn;
+import ro.anud.GlobalCooldown.effects.IncrementValueOnPawn;
 import ro.anud.GlobalCooldown.entity.IncrementValueOnPawnEntity;
 import ro.anud.GlobalCooldown.entity.Pawn;
 import ro.anud.GlobalCooldown.model.IncrementValueOnPawnModel;
