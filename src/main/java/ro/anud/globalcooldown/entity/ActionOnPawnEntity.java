@@ -3,11 +3,12 @@ package ro.anud.globalcooldown.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Data
-public class ActionOnPawnEntity {
+public class ActionOnPawnEntity implements Serializable {
 
 	@Id()
 	private Long id;

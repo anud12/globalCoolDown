@@ -29,8 +29,7 @@ public class LoopJob {
 	public void loop() {
 		LOGGER.info("start loop");
 		List<EffectOnPawn> effectOnPawnList = effectOnPawnService.getAll();
-		List<Pawn> pawnList = effectOnPawnList
-				.stream()
+		List<Pawn> pawnList = effectOnPawnList.stream()
 				.sorted(Comparator.comparing(EffectOnPawn::getPriority))
 				.map(EffectOnPawn::execute)
 				.distinct()
