@@ -1,9 +1,15 @@
-CREATE SEQUENCE seq_effect_on_pawn;
+CREATE SEQUENCE seq_action_on_pawn;
+CREATE TABLE action_on_pawn (
+  id BIGINT PRIMARY KEY,
+  name VARCHAR(20) NOT NULL
+);
 
+CREATE SEQUENCE seq_effect_on_pawn;
 CREATE TABLE effect_on_pawn (
   id      BIGINT PRIMARY KEY,
   type    VARCHAR(25) NOT NULL,
-  pawn_id BIGINT      NOT NULL REFERENCES pawn (id)
+  pawn_id BIGINT      NOT NULL REFERENCES pawn (id),
+  action_id BIGINT REFERENCES action_on_pawn(id) NOT NULL
 );
 
 CREATE TABLE increment_value_on_pawn (
@@ -11,9 +17,8 @@ CREATE TABLE increment_value_on_pawn (
   duration INT NOT NULL
 );
 
-CREATE SEQUENCE seq_move_action;
 CREATE TABLE move_on_pawn (
   id BIGINT PRIMARY KEY,
   x  BIGINT NOT NULL,
   y  BIGINT NOT NULL
-)
+);

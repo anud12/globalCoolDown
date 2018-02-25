@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
 import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
 import ro.anud.globalcooldown.entity.Pawn;
 import ro.anud.globalcooldown.mapper.IncrementValueOnPawnMapper;

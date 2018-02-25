@@ -4,7 +4,8 @@ import lombok.*;
 import ro.anud.globalcooldown.effects.EffectOnPawn;
 import ro.anud.globalcooldown.mapper.IncrementValueOnPawnMapper;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "increment_value_on_pawn")
@@ -18,13 +19,15 @@ public class IncrementValueOnPawnEntity extends EffectOnPawnEntity {
 
 	@Builder
 	private IncrementValueOnPawnEntity(final Long id,
-									  final Pawn pawn,
-									  final String type,
-									  final int duration) {
+									   final Pawn pawn,
+									   final String type,
+									   final int duration,
+									   final ActionOnPawnEntity actionOnPawnEntity) {
 		this.id = id;
 		this.pawn = pawn;
 		this.type = type;
 		this.duration = duration;
+		this.action = actionOnPawnEntity;
 	}
 
 	@Override

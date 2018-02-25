@@ -5,8 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ro.anud.globalcooldown.effects.EffectOnPawn;
+import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
 import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
-import ro.anud.globalcooldown.model.EffectOnPawnModel;
 import ro.anud.globalcooldown.repository.EffectOnPawnRepository;
 
 import javax.annotation.PostConstruct;
@@ -38,6 +38,10 @@ public class EffectOnPawnService {
 		return effectOnPawnRepository.save(effectOnPawnList.stream()
 				.filter(action -> !action.isArrived())
 				.map(EffectOnPawn::toEntity)
+				.peek(effectOnPawnEntity -> {
+					ActionOnPawnEntity actionOnPawnEntity = effectOnPawnRepository.findOne(effectOnPawnEntity.getId()).getAction();
+					effectOnPawnEntity.setAction(actionOnPawnEntity);
+				})
 				.collect(Collectors.toList())
 		).stream()
 				.map(EffectOnPawnEntity::toAction)
@@ -48,8 +52,5 @@ public class EffectOnPawnService {
 	public void save(EffectOnPawn effectOnPawn) {
 		LOGGER.info("saving " + effectOnPawn);
 		effectOnPawnRepository.save(effectOnPawn.toEntity());
-	}
-	public void save (EffectOnPawnModel effectOnPawnModel) {
-		effectOnPawnRepository.save(effectOnPawnModel.toEntity());
 	}
 }

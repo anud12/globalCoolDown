@@ -2,9 +2,7 @@ package ro.anud.globalcooldown.mapper;
 
 import ro.anud.globalcooldown.effects.MoveOnPawn;
 import ro.anud.globalcooldown.entity.MoveOnPawnEntity;
-import ro.anud.globalcooldown.entity.Pawn;
 import ro.anud.globalcooldown.geometry.Point;
-import ro.anud.globalcooldown.model.MoveOnPawnModel;
 
 public class MoveOnPawnMapper {
 	private MoveOnPawnMapper() {
@@ -30,7 +28,7 @@ public class MoveOnPawnMapper {
 				.build();
 	}
 
-	public static MoveOnPawnEntity toEntity(MoveOnPawnModel moveOnPawn) {
+	/*public static MoveOnPawnEntity toEntity(MoveOnPawnModel moveOnPawn) {
 		return MoveOnPawnEntity.builder()
 				.pawn(Pawn.builder()
 						.id(moveOnPawn.getPawnId())
@@ -39,5 +37,5 @@ public class MoveOnPawnMapper {
 				.y(moveOnPawn.getY())
 				.type(MoveOnPawn.NAME)
 				.build();
-	}
+	}*/
 }
