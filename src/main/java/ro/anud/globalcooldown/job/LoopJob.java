@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ro.anud.globalcooldown.effects.EffectOnPawn;
 import ro.anud.globalcooldown.entity.Pawn;
+import ro.anud.globalcooldown.service.ActionService;
 import ro.anud.globalcooldown.service.EffectOnPawnService;
 import ro.anud.globalcooldown.service.PawnService;
 
@@ -23,11 +24,12 @@ public class LoopJob {
 	private PawnService pawnService;
 	private EffectOnPawnService effectOnPawnService;
 	private SimpMessagingTemplate simpMessagingTemplate;
+	private ActionService actionService;
 
 
 	@Scheduled(fixedRate = 2500)
 	public void loop() {
-		LOGGER.info("start loop");
+//		LOGGER.info("start loop");
 		List<EffectOnPawn> effectOnPawnList = effectOnPawnService.getAll();
 		List<Pawn> pawnList = effectOnPawnList.stream()
 				.sorted(Comparator.comparing(EffectOnPawn::getPriority))
@@ -37,6 +39,7 @@ public class LoopJob {
 				.collect(Collectors.toList());
 
 		effectOnPawnService.updateAll(effectOnPawnList);
+		actionService.updateAll();
 
 		simpMessagingTemplate.convertAndSend("/app/world", pawnService.saveAll(pawnList));
 	}

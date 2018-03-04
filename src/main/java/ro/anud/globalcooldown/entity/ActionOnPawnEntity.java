@@ -23,7 +23,7 @@ public class ActionOnPawnEntity implements Serializable {
 	private Long id;
 	private String name;
 
-	@OneToMany(cascade = CascadeType.PERSIST)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "action_id")
 	private List<EffectOnPawnEntity> effectOnPawnEntityList;
 }
