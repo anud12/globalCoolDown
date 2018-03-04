@@ -4,18 +4,21 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Getter
 @Setter
 @ToString
 public class Vector {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Vector.class);
+
 	private Double x;
 	private Double y;
 
 	public static Vector normalized(Point point) {
 		long x = point.getX();
 		long y = point.getY();
-
 		double length = Math.sqrt(x * x + y * y);
 		return Vector.builder()
 				.x(x / length)

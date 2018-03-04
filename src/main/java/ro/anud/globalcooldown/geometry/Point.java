@@ -30,7 +30,7 @@ public class Point {
 	}
 
 	public Point streamSubstract(Point point) {
-		x = x - point.getY();
+		x = x - point.getX();
 		y = y - point.getY();
 		return this;
 	}

@@ -60,7 +60,8 @@ public class MoveOnPawn implements EffectOnPawn {
 	}
 
 	private Point calculateNewPosition() {
-		Vector normalized = Vector.normalized(destination.duplicate().streamSubstract(pawn.getPoint()));
+		Vector normalized = Vector.normalized(destination.duplicate()
+				.streamSubstract(pawn.getPoint()));
 		return pawn.getPoint()
 				.duplicate()
 				.streamTranspose(normalized, pawn.getSpeed());
