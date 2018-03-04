@@ -27,15 +27,4 @@ public class MoveOnPawnMapper {
 				.y(moveOnPawn.getDestination().getY())
 				.build();
 	}
-
-	/*public static MoveOnPawnEntity toEntity(MoveOnPawnModel moveOnPawn) {
-		return MoveOnPawnEntity.builder()
-				.pawn(Pawn.builder()
-						.id(moveOnPawn.getPawnId())
-						.build())
-				.x(moveOnPawn.getX())
-				.y(moveOnPawn.getY())
-				.type(MoveOnPawn.NAME)
-				.build();
-	}*/
 }

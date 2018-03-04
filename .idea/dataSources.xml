@@ -10,5 +10,11 @@
         <property name="ApplicationName" value="DataGrip" />
       </driver-properties>
     </data-source>
+    <data-source source="LOCAL" name="test" uuid="5b03365b-30a0-40aa-8ace-3afdd52871db">
+      <driver-ref>h2.unified</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.h2.Driver</jdbc-driver>
+      <jdbc-url>jdbc:h2:~/h2/test;AUTO_SERVER=TRUE</jdbc-url>
+    </data-source>
   </component>
 </project>

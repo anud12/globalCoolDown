@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ro.anud.globalcooldown.model.ActionOnPawnModel;
+import ro.anud.globalcooldown.action.ActionOnPawn;
 import ro.anud.globalcooldown.service.ActionService;
 
 @RestController
@@ -16,7 +16,7 @@ public class ActionController {
 	private ActionService actionService;
 
 	@PostMapping
-	public void add(@RequestBody final ActionOnPawnModel actionOnPawnModel) {
-		actionService.save(actionOnPawnModel);
+	public void add(@RequestBody final ActionOnPawn actionOnPawn) {
+		actionService.save(actionOnPawn);
 	}
 }

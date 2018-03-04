@@ -9,7 +9,7 @@ CREATE TABLE effect_on_pawn (
   id      BIGINT PRIMARY KEY,
   type    VARCHAR(25) NOT NULL,
   pawn_id BIGINT      NOT NULL REFERENCES pawn (id),
-  action_id BIGINT REFERENCES action_on_pawn(id) NOT NULL
+  action_id BIGINT REFERENCES action_on_pawn(id)
 );
 
 CREATE TABLE increment_value_on_pawn (
