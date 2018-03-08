@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ro.anud.globalcooldown.effects.EffectOnPawn;
 import ro.anud.globalcooldown.entity.Pawn;
+import ro.anud.globalcooldown.mapper.PawnMapper;
 import ro.anud.globalcooldown.service.ActionService;
 import ro.anud.globalcooldown.service.EffectOnPawnService;
 import ro.anud.globalcooldown.service.PawnService;
@@ -20,27 +21,30 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class LoopJob {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(LoopJob.class);
-	private PawnService pawnService;
-	private EffectOnPawnService effectOnPawnService;
-	private SimpMessagingTemplate simpMessagingTemplate;
-	private ActionService actionService;
+    private static Logger LOGGER = LoggerFactory.getLogger(LoopJob.class);
+    private PawnService pawnService;
+    private EffectOnPawnService effectOnPawnService;
+    private SimpMessagingTemplate simpMessagingTemplate;
+    private ActionService actionService;
 
 
-	@Scheduled(fixedRate = 2500)
-	public void loop() {
-//		LOGGER.info("start loop");
-		List<EffectOnPawn> effectOnPawnList = effectOnPawnService.getAll();
-		List<Pawn> pawnList = effectOnPawnList.stream()
-				.sorted(Comparator.comparing(EffectOnPawn::getPriority))
-				.map(EffectOnPawn::execute)
-				.distinct()
-				.peek(pawn -> pawn.setVersion(pawn.getVersion() + 1))
-				.collect(Collectors.toList());
+    @Scheduled(fixedRate = 2500)
+    public void loop() {
+        LOGGER.info("start loop");
+        List<EffectOnPawn> effectOnPawnList = effectOnPawnService.getAll();
+        List<Pawn> pawnList = effectOnPawnList.stream()
+                                              .sorted(Comparator.comparing(EffectOnPawn::getPriority))
+                                              .map(EffectOnPawn::execute)
+                                              .distinct()
+                                              .peek(pawn -> pawn.setVersion(pawn.getVersion() + 1))
+                                              .collect(Collectors.toList());
 
-		effectOnPawnService.updateAll(effectOnPawnList);
-		actionService.updateAll();
+        effectOnPawnService.updateAll(effectOnPawnList);
+        actionService.updateAll();
 
-		simpMessagingTemplate.convertAndSend("/app/world", pawnService.saveAll(pawnList));
-	}
+        simpMessagingTemplate.convertAndSend("/app/world", pawnService.saveAll(pawnList)
+                                                                      .stream()
+                                                                      .map(PawnMapper::toPawnOutputModel)
+                                                                      .collect(Collectors.toList()));
+    }
 }

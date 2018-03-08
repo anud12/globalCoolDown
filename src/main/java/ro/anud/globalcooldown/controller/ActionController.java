@@ -2,8 +2,8 @@ package ro.anud.globalcooldown.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ro.anud.globalcooldown.action.ActionOnPawn;
-import ro.anud.globalcooldown.model.ActionModel;
+import ro.anud.globalcooldown.model.action.ActionOnPawnInputModel;
+import ro.anud.globalcooldown.model.action.ActionOnPawnOutputModel;
 import ro.anud.globalcooldown.service.ActionService;
 
 @RestController
@@ -14,8 +14,8 @@ public class ActionController {
 	private ActionService actionService;
 
 	@PostMapping
-	public ActionModel add(@RequestBody final ActionOnPawn actionOnPawn) {
-		return actionService.save(actionOnPawn);
+	public ActionOnPawnOutputModel add(@RequestBody final ActionOnPawnInputModel actionOnPawnInputModel) {
+		return actionService.save(actionOnPawnInputModel);
 	}
 
 	@DeleteMapping()

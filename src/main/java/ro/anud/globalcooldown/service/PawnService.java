@@ -11,13 +11,17 @@ import java.util.List;
 @AllArgsConstructor
 public class PawnService {
 
-	private PawnRepository pawnRepository;
+    private PawnRepository pawnRepository;
 
-	public List<Pawn> getAll() {
-		return pawnRepository.findAllByOrderByIdAsc();
-	}
+    public List<Pawn> getAll() {
+        return pawnRepository.findAllByOrderByIdAsc();
+    }
 
-	public List<Pawn> saveAll(List<Pawn> pawnSet) {
-		return pawnRepository.save(pawnSet);
-	}
+    public List<Pawn> saveAll(List<Pawn> pawnSet) {
+        return pawnRepository.save(pawnSet);
+    }
+
+    public Pawn getById(Long id) {
+		return pawnRepository.findOne(id);
+    }
 }

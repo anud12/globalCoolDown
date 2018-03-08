@@ -1,4 +1,4 @@
-package ro.anud.globalcooldown.action;
+package ro.anud.globalcooldown.model.action;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 @Getter
 @Setter
 @NoArgsConstructor
-public class IncrementValueOnPawnAction implements ActionOnPawn {
+public class IncrementValueOnPawnActionInputModel implements ActionOnPawnInputModel {
 
 	public static final String NAME = "INCREMENT_VALUE";
 	protected Long pawnId;

@@ -32,10 +32,13 @@ export class PawnListComponent implements OnInit {
       this.pawnMap.forEach(value => {
         this.pawnList.push(value);
       })
-      console.log(tempList);
+      console.log(this.pawnList);
     });
 
     this.stompService.publish("/app/pawn", "hi",)
   }
 
+  getFromCharacterCode(characterCode: number) {
+    return String.fromCharCode(characterCode)
+  }
 }
