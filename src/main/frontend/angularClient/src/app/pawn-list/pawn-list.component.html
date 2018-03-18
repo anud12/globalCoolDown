@@ -1,3 +1,5 @@
+<app-map-canvas></app-map-canvas>
+
 <div class="row">
   <div class="col-12">
     <div class="card" *ngFor="let pawn of pawnList">
@@ -37,10 +39,5 @@
       </div>
     </div>
   </div>
-  <app-canvas [data]="[{value: 14},{value: 10},{value: 2},{value: 6},{value: 2}]"
-              [width]="500"
-              [height]="250"
-              [colors]="['red', 'red', 'blue']"
-              [title]="'myTitle'"></app-canvas>
 </div>
 

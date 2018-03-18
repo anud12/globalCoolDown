@@ -28,9 +28,8 @@ public class LoopJob {
     private ActionService actionService;
 
 
-    @Scheduled(fixedRate = 2500)
+    @Scheduled(fixedRate = 125)
     public void loop() {
-        LOGGER.info("start loop");
         List<EffectOnPawn> effectOnPawnList = effectOnPawnService.getAll();
         List<Pawn> pawnList = effectOnPawnList.stream()
                                               .sorted(Comparator.comparing(EffectOnPawn::getPriority))

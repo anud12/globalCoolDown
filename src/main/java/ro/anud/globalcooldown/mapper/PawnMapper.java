@@ -14,7 +14,7 @@ public class PawnMapper {
                               .speed(pawn.getSpeed())
                               .version(pawn.getVersion())
                               .value(pawn.getValue())
-                              .characterCode(40L)
+                              .characterCode(35L)
                               .build();
     }
 }

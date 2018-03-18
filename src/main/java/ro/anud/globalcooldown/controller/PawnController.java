@@ -6,10 +6,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ro.anud.globalcooldown.mapper.PawnMapper;
+import ro.anud.globalcooldown.model.pawn.PawnOutputModel;
 import ro.anud.globalcooldown.service.PawnService;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -24,12 +27,20 @@ public class PawnController {
 
     @MessageMapping("/pawn")
     @SendTo("/world")
-    public void getAll(final String message) {
+    public List<PawnOutputModel> getAll(final String message) {
         System.out.println(message);
         simpMessagingTemplate.convertAndSend("/app/world", pawnService.getAll().stream()
                                                                       .map(PawnMapper::toPawnOutputModel)
                                                                       .collect(Collectors.toList()));
+        return pawnService.getAll().stream().map(PawnMapper::toPawnOutputModel)
+				.collect(Collectors.toList());
     }
 
+    @SubscribeMapping("/world")
+	public List<PawnOutputModel> pawnSubscription() {
+    	System.out.println("onSubscribe");
+    	return pawnService.getAll().stream().map(PawnMapper::toPawnOutputModel)
+				.collect(Collectors.toList());
+	}
 
 }

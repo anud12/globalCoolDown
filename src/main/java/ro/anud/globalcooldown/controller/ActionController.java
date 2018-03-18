@@ -9,6 +9,7 @@ import ro.anud.globalcooldown.service.ActionService;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/action")
+@CrossOrigin
 public class ActionController {
 
 	private ActionService actionService;

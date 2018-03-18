@@ -9,6 +9,7 @@ import {StandardLayoutModule} from "./standard-layout/standard-layout.module";
 import {StompConfig, StompService} from "@stomp/ng2-stompjs";
 import { PawnListComponent } from './pawn-list/pawn-list.component';
 import { CanvasComponent } from './canvas/canvas.component';
+import { MapCanvasComponent } from './map-canvas/map-canvas.component';
 
 const stompConfig: StompConfig = {
   // Which server?

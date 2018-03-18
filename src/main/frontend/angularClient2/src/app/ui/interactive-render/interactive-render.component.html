@@ -1,0 +1,7 @@
+<div [style.width]="width" (window:resize)="onResize()">
+  <canvas #canvas (mousedown)="onMouseDown($event)"
+          (mouseup)="onMouseUp ($event)"
+          (mousemove)="onMouseMove($event)"
+          (mouseleave)="onMouseLeave($event)"
+  (contextmenu)="onRightClick($event)"></canvas>
+</div>
