@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface ActionOnPawnRepository extends JpaRepository<ActionOnPawnEntity, Long> {
 
-    Optional<ActionOnPawnEntity> findFirstByNameOrderBySaveDateTimeDesc(String name);
+    Optional<ActionOnPawnEntity> findFirstByPawnIdAndNameOrderBySaveDateTimeDesc(Long pawnId, String name);
 
     List<ActionOnPawnEntity> findAllByParentIn(List<ActionOnPawnEntity> actionOnPawnEntities);
 }

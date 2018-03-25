@@ -26,6 +26,7 @@ public class IncrementValueOnPawnActionInputModel implements ActionOnPawnInputMo
 		ActionOnPawnEntity actionOnPawnEntity = ActionOnPawnEntity.builder()
 				.name(IncrementValueOnPawn.NAME)
 				.effectOnPawnEntityList(effectOnPawnEntityArrayList)
+				.pawnId(pawnId)
 				.build();
 
 		effectOnPawnEntityArrayList.add(IncrementValueOnPawnEntity

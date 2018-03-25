@@ -26,6 +26,7 @@ public class MoveOnPawnActionInputModel implements ActionOnPawnInputModel {
         ActionOnPawnEntity actionOnPawnEntity = ActionOnPawnEntity.builder()
                 .name(MoveOnPawnActionInputModel.NAME)
                 .effectOnPawnEntityList(effectOnPawnEntityArrayList)
+                .pawnId(pawnId)
                 .build();
 
         effectOnPawnEntityArrayList.add(MoveOnPawnEntity.builder()

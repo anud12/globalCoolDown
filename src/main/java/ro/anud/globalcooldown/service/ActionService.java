@@ -21,7 +21,7 @@ public class ActionService {
     public void queue(ActionOnPawnInputModel model) {
         ActionOnPawnEntity entity = model.toEntity();
         entity.setSaveDateTime(LocalDateTime.now().toString());
-        actionOnPawnRepository.findFirstByNameOrderBySaveDateTimeDesc(entity.getName())
+        actionOnPawnRepository.findFirstByPawnIdAndNameOrderBySaveDateTimeDesc(entity.getPawnId(), entity.getName())
                 .ifPresent(actionOnPawnEntity -> {
                     entity.setParent(actionOnPawnEntity);
                     LOGGER.debug("QUEUED " + actionOnPawnEntity.getId());
