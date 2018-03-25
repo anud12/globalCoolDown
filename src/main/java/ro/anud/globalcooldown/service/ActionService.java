@@ -4,36 +4,51 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import ro.anud.globalcooldown.model.action.ActionOnPawnInputModel;
 import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
-import ro.anud.globalcooldown.mapper.ActionOnPawnMapper;
-import ro.anud.globalcooldown.model.action.ActionOnPawnOutputModel;
+import ro.anud.globalcooldown.model.action.ActionOnPawnInputModel;
 import ro.anud.globalcooldown.repository.ActionOnPawnRepository;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class ActionService {
-	private static Logger LOGGER = LoggerFactory.getLogger(ActionService.class);
-	private ActionOnPawnRepository actionOnPawnRepository;
+    private static Logger LOGGER = LoggerFactory.getLogger(ActionService.class);
+    private ActionOnPawnRepository actionOnPawnRepository;
 
-	public ActionOnPawnOutputModel save(ActionOnPawnInputModel model) {
-		ActionOnPawnEntity entity = model.toEntity();
-		ActionOnPawnEntity savedEntity = actionOnPawnRepository.save(entity);
-		return ActionOnPawnMapper.toActionModel(savedEntity);
-	}
+    public void queue(ActionOnPawnInputModel model) {
+        ActionOnPawnEntity entity = model.toEntity();
+        entity.setSaveDateTime(LocalDateTime.now().toString());
+        actionOnPawnRepository.findFirstByNameOrderBySaveDateTimeDesc(entity.getName())
+                .ifPresent(actionOnPawnEntity -> {
+                    entity.setParent(actionOnPawnEntity);
+                    LOGGER.debug("QUEUED " + actionOnPawnEntity.getId());
+                });
+        ActionOnPawnEntity savedEntity = actionOnPawnRepository.save(entity);
+        LOGGER.debug("SAVED " + savedEntity.getId());
+    }
 
-	public void updateAll() {
+    public void updateAll() {
+        List<ActionOnPawnEntity> actionOnPawnEntityList = actionOnPawnRepository.findAll()
+                .stream()
+                .filter(actionOnPawnEntity -> actionOnPawnEntity.getEffectOnPawnEntityList()
+                        .isEmpty())
+                .peek(actionOnPawnEntity -> LOGGER.debug(
+                        "DELETING " + actionOnPawnEntity.getId()))
+                .collect(Collectors.toList());
 
-		actionOnPawnRepository.delete(actionOnPawnRepository.findAll()
-				.stream()
-				.filter(actionOnPawnEntity -> actionOnPawnEntity.getEffectOnPawnEntityList().isEmpty())
-				.collect(Collectors.toList())
-		);
-	}
+        List<ActionOnPawnEntity> parentActions = actionOnPawnRepository.findAllByParentIn(actionOnPawnEntityList)
+                .stream()
+                .peek(actionOnPawnEntity -> actionOnPawnEntity.setParent(null))
+                .collect(Collectors.toList());
+        actionOnPawnRepository.save(parentActions);
 
-	public void deleteById(Long id) {
-		actionOnPawnRepository.delete(id);
-	}
+        actionOnPawnRepository.delete(actionOnPawnEntityList);
+    }
+
+    public void deleteById(Long id) {
+        actionOnPawnRepository.delete(id);
+    }
 }

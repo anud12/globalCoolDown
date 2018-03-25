@@ -23,7 +23,7 @@ public abstract class EffectOnPawnEntity {
 	protected Pawn pawn;
 	protected String type;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	protected ActionOnPawnEntity action;
 
 	public abstract EffectOnPawn toAction();

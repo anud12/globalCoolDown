@@ -28,22 +28,24 @@ public class LoopJob {
     private ActionService actionService;
 
 
-    @Scheduled(fixedRate = 125)
+    @Scheduled(fixedRate = 250)
     public void loop() {
+
         List<EffectOnPawn> effectOnPawnList = effectOnPawnService.getAll();
         List<Pawn> pawnList = effectOnPawnList.stream()
-                                              .sorted(Comparator.comparing(EffectOnPawn::getPriority))
-                                              .map(EffectOnPawn::execute)
-                                              .distinct()
-                                              .peek(pawn -> pawn.setVersion(pawn.getVersion() + 1))
-                                              .collect(Collectors.toList());
+                .filter(EffectOnPawn::isExecutable)
+                .sorted(Comparator.comparing(EffectOnPawn::getPriority))
+                .map(EffectOnPawn::execute)
+                .distinct()
+                .peek(pawn -> pawn.setVersion(pawn.getVersion() + 1))
+                .collect(Collectors.toList());
 
         effectOnPawnService.updateAll(effectOnPawnList);
         actionService.updateAll();
 
         simpMessagingTemplate.convertAndSend("/app/world", pawnService.saveAll(pawnList)
-                                                                      .stream()
-                                                                      .map(PawnMapper::toPawnOutputModel)
-                                                                      .collect(Collectors.toList()));
+                .stream()
+                .map(PawnMapper::toPawnOutputModel)
+                .collect(Collectors.toList()));
     }
 }

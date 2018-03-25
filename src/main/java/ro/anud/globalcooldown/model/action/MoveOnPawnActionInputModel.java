@@ -24,18 +24,18 @@ public class MoveOnPawnActionInputModel implements ActionOnPawnInputModel {
     public ActionOnPawnEntity toEntity() {
         ArrayList<EffectOnPawnEntity> effectOnPawnEntityArrayList = new ArrayList<>();
         ActionOnPawnEntity actionOnPawnEntity = ActionOnPawnEntity.builder()
-                                                                  .name(MoveOnPawnActionInputModel.NAME)
-                                                                  .effectOnPawnEntityList(effectOnPawnEntityArrayList)
-                                                                  .build();
+                .name(MoveOnPawnActionInputModel.NAME)
+                .effectOnPawnEntityList(effectOnPawnEntityArrayList)
+                .build();
 
         effectOnPawnEntityArrayList.add(MoveOnPawnEntity.builder()
-                                                        .pawn(Pawn.builder()
-                                                                  .id(this.getPawnId())
-                                                                  .build())
-                                                        .x(this.getX())
-                                                        .y(this.getY())
-                                                        .type(MoveOnPawn.NAME)
-                                                        .build()
+                                                .pawn(Pawn.builder()
+                                                              .id(this.getPawnId())
+                                                              .build())
+                                                .x(this.getX())
+                                                .y(this.getY())
+                                                .type(MoveOnPawn.NAME)
+                                                .build()
         );
         return actionOnPawnEntity;
     }

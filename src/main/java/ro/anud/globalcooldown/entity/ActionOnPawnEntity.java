@@ -1,9 +1,6 @@
 package ro.anud.globalcooldown.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -26,4 +23,18 @@ public class ActionOnPawnEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "action_id")
 	private List<EffectOnPawnEntity> effectOnPawnEntityList;
+
+	private String saveDateTime;
+
+	@OneToOne
+	private ActionOnPawnEntity parent;
+
+	@Override
+	public String toString() {
+		return "ActionOnPawnEntity{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", parent=" + parent +
+				'}';
+	}
 }
