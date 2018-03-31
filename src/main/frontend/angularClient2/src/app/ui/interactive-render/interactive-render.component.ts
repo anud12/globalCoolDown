@@ -19,6 +19,7 @@ export class InteractiveRenderComponent implements OnInit {
   public height: number = 0;
   public pawnDecoratorSize = 14;
   public pawnDecoratorPadding = 2;
+  public cursor = "";
   private selectBox: SelectBoxModel = new SelectBoxModel(false, new PointModel(0, 0), new PointModel(0, 0));
 
   constructor(private pawnService: PawnService,
@@ -89,6 +90,7 @@ export class InteractiveRenderComponent implements OnInit {
   onMouseDown($event: MouseEvent) {
     if ($event.button === 0) {
       this.selectBox.isSelected = true;
+      this.cursor = "crosshair";
       this.selectBox.start = {
         x: $event.clientX,
         y: $event.clientY
@@ -100,6 +102,7 @@ export class InteractiveRenderComponent implements OnInit {
   onMouseUp($event: MouseEvent) {
     if ($event.button === 0) {
       this.selectBox.isSelected = false;
+      this.cursor = "";
       this.draw();
 
       this.onSelect();

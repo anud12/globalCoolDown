@@ -9,6 +9,7 @@ import ro.anud.globalcooldown.model.action.ActionOnPawnInputModel;
 import ro.anud.globalcooldown.repository.ActionOnPawnRepository;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,7 @@ public class ActionService {
 
     public void queue(ActionOnPawnInputModel model) {
         ActionOnPawnEntity entity = model.toEntity();
-        entity.setSaveDateTime(LocalDateTime.now().toString());
+        entity.setSaveDateTime(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         actionOnPawnRepository.findFirstByPawnIdAndNameOrderBySaveDateTimeDesc(entity.getPawnId(), entity.getName())
                 .ifPresent(actionOnPawnEntity -> {
                     entity.setParent(actionOnPawnEntity);

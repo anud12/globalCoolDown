@@ -13,7 +13,7 @@ public class ActionController {
 
     private ActionService actionService;
 
-    @PostMapping
+    @PostMapping()
     public void add(@RequestBody final ActionOnPawnInputModel actionOnPawnInputModel) {
         actionService.queue(actionOnPawnInputModel);
     }

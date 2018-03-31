@@ -44,7 +44,7 @@ public class MoveOnPawn implements EffectOnPawn {
 
     @Override
     public Pawn execute() {
-        LOGGER.info("for " + pawn.toString());
+        LOGGER.debug("for " + pawn.toString());
         arrived = pawn.getPoint().distance(destination) < pawn.getSpeed();
         if (arrived) {
             return pawn.streamSetPoint(destination);

@@ -1,9 +1,9 @@
 CREATE SEQUENCE seq_action_on_pawn;
 CREATE TABLE action_on_pawn (
   id             BIGINT PRIMARY KEY,
-  name           VARCHAR(20) NOT NULL,
-  save_date_time TIMESTAMP   NOT NULL,
-  pawn_id        BIGINT      NOT NULL REFERENCES pawn (id),
+  name           VARCHAR(20)                 NOT NULL,
+  save_date_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  pawn_id        BIGINT                      NOT NULL REFERENCES pawn (id),
   parent_id      BIGINT REFERENCES action_on_pawn (id)
 );
 

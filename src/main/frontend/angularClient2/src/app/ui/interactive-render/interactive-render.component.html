@@ -1,7 +1,8 @@
 <div [style.width]="width" (window:resize)="onResize()">
   <canvas #canvas (mousedown)="onMouseDown($event)"
+          [ngStyle]="{'cursor': cursor}"
           (mouseup)="onMouseUp ($event)"
           (mousemove)="onMouseMove($event)"
           (mouseleave)="onMouseLeave($event)"
-  (contextmenu)="onRightClick($event)"></canvas>
+          (contextmenu)="onRightClick($event)"></canvas>
 </div>

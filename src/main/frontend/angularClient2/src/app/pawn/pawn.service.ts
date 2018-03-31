@@ -12,9 +12,9 @@ import {PointModel} from "../model/point.model";
 
 @Injectable()
 export class PawnService {
-
+  private ip: string = "localhost";
   private stompConfig: StompConfig = {
-    url: 'ws://192.168.0.143:8080/socket',
+    url: `ws://${this.ip}:8080/socket`,
     headers: {
       login: 'guest',
       passcode: 'guest'
@@ -29,7 +29,7 @@ export class PawnService {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   };
 
-  private locationUrl: string = "http://localhost:8080/action";
+  private locationUrl: string = `http://${this.ip}:8080/action`;
   private pawnList: Map<number, PawnModel>;
   private selectedPawnList: Map<number, PawnModel>;
   private stompService: StompService;
