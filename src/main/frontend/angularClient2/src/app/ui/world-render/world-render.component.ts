@@ -9,10 +9,14 @@ import {UiService} from "../ui.service";
 })
 export class WorldRenderComponent {
 
+  private strokeColor: string;
+  private backgroundColor: string;
 
   constructor(private pawnService: PawnService,
               private uiService: UiService,
               @Inject('Window') private window: Window) {
+    this.strokeColor = "white";
+    this.backgroundColor = "#424242"
   }
 
   @ViewChild('canvas') canvasRef: ElementRef;
@@ -32,12 +36,12 @@ export class WorldRenderComponent {
     if (this.canvas.getContext) {
       const context = this.canvas.getContext('2d');
       //fill in the background
-      context.fillStyle = "#eeeeee";
+      context.fillStyle = this.backgroundColor;
       context.fillRect(0, 0, this.width, this.height);
 
       this.pawnService.getListById().forEach(value => {
         context.font = "20px monospace";
-        context.fillStyle = `black`;
+        context.fillStyle = this.strokeColor;
         context.fillText(
           String.fromCharCode(value.characterCode) as any,
           value.point.x * this.uiService.coordinateScale,

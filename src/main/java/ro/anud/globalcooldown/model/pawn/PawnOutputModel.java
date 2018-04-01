@@ -9,6 +9,7 @@ import ro.anud.globalcooldown.geometry.Point;
 public class PawnOutputModel {
     private Long id;
     private Integer value;
+    private String name;
     private Long version;
     private Point point;
     private Long speed;

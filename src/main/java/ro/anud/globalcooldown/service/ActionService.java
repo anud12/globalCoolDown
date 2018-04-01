@@ -10,6 +10,7 @@ import ro.anud.globalcooldown.repository.ActionOnPawnRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,19 @@ public class ActionService {
                     entity.setParent(actionOnPawnEntity);
                     LOGGER.debug("QUEUED " + actionOnPawnEntity.getId());
                 });
+        ActionOnPawnEntity savedEntity = actionOnPawnRepository.save(entity);
+        LOGGER.debug("SAVED " + savedEntity.getId());
+    }
+
+    public void override(ActionOnPawnInputModel actionOnPawnInputModel) {
+        ActionOnPawnEntity entity = actionOnPawnInputModel.toEntity();
+        actionOnPawnRepository.findFirstByPawnIdAndNameOrderBySaveDateTimeDesc(entity.getPawnId(), entity.getName())
+                .ifPresent(actionOnPawnEntity -> {
+                    LOGGER.debug("DELETED " + actionOnPawnEntity.getId());
+                    deleteWithParents(actionOnPawnEntity);
+                });
+
+        entity.setSaveDateTime(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         ActionOnPawnEntity savedEntity = actionOnPawnRepository.save(entity);
         LOGGER.debug("SAVED " + savedEntity.getId());
     }
@@ -52,4 +66,17 @@ public class ActionService {
     public void deleteById(Long id) {
         actionOnPawnRepository.delete(id);
     }
+
+    private void deleteWithParents(ActionOnPawnEntity actionOnPawnEntity) {
+        List<ActionOnPawnEntity> actionOnPawnEntityList = new ArrayList<>();
+        actionOnPawnEntityList.add(actionOnPawnEntity);
+        while (actionOnPawnEntity.getParent() != null) {
+            ActionOnPawnEntity parent = actionOnPawnEntity.getParent();
+            actionOnPawnEntity.setParent(null);
+            actionOnPawnEntityList.add(parent);
+            actionOnPawnEntity = parent;
+        }
+        actionOnPawnRepository.delete(actionOnPawnEntityList);
+    }
+
 }

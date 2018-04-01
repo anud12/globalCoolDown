@@ -12,7 +12,7 @@ import {PointModel} from "../model/point.model";
 
 @Injectable()
 export class PawnService {
-  private ip: string = "localhost";
+  private ip: string = "192.168.1.31";
   private stompConfig: StompConfig = {
     url: `ws://${this.ip}:8080/socket`,
     headers: {
@@ -29,17 +29,20 @@ export class PawnService {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   };
 
-  private locationUrl: string = `http://${this.ip}:8080/action`;
+  private queueActionUrl: string = `http://${this.ip}:8080/action/queue`;
+  private overrideActionUrl: string = `http://${this.ip}:8080/action/override`;
   private pawnList: Map<number, PawnModel>;
   private selectedPawnList: Map<number, PawnModel>;
   private stompService: StompService;
-  private subject: Subject<Message>;
+  private pawnListSubject: Subject<Message>;
+  private selectedPawnListSubject: Subject<Message>;
 
   constructor(private httpClient: HttpClient) {
     this.stompService = new StompService(this.stompConfig);
     this.pawnList = new Map();
     this.selectedPawnList = new Map();
-    this.subject = new Subject();
+    this.pawnListSubject = new Subject();
+    this.selectedPawnListSubject = new Subject();
 
     this.stompService.subscribe("/app/world")
       .subscribe(message => {
@@ -50,12 +53,16 @@ export class PawnService {
             this.selectedPawnList.set(element.id, element);
           }
         });
-        this.subject.next();
+        this.pawnListSubject.next();
       });
   }
 
   getPawnStompSubscription(): Observable<Message> {
-    return this.subject.asObservable();
+    return this.pawnListSubject.asObservable();
+  }
+
+  getPawnSelectSubscription(): Observable<Message> {
+    return this.selectedPawnListSubject.asObservable();
   }
 
   getListById(): Map<number, PawnModel> {
@@ -75,20 +82,36 @@ export class PawnService {
         value.point.y < dimension.end.y) {
         this.selectedPawnList.set(value.id, value);
       }
-    })
+    });
+    this.selectedPawnListSubject.next()
   }
 
   getSelectedList(): Map<number, PawnModel> {
     return this.selectedPawnList
   }
 
-  moveRequest(pawnList: Map<number, PawnModel>, point: PointModel) {
+  queueMove(point: PointModel) {
     this.selectedPawnList.forEach(value => {
       let action = new PawnMoveActionModel(value.id, point.x, point.y);
-      this.httpClient.post(this.locationUrl,
+      this.httpClient.post(this.queueActionUrl,
         action,
         this.httpOptions).subscribe(() => {
       })
     })
+  }
+
+  setMove(point: PointModel) {
+    this.selectedPawnList.forEach(value => {
+      let action = new PawnMoveActionModel(value.id, point.x, point.y);
+      this.httpClient.post(this.overrideActionUrl,
+        action,
+        this.httpOptions).subscribe(() => {
+      })
+    })
+  }
+
+  deselect(pawn: PawnModel) {
+    this.selectedPawnList.delete(pawn.id);
+    this.selectedPawnListSubject.next();
   }
 }

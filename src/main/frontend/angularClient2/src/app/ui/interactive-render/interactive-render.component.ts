@@ -13,19 +13,21 @@ import {PointModel} from "../../model/point.model";
 export class InteractiveRenderComponent implements OnInit {
 
   @ViewChild('canvas') canvasRef: ElementRef;
-  private canvas: HTMLCanvasElement;
-  private strokeColor: string;
   public width: number = 0;
   public height: number = 0;
   public pawnDecoratorSize = 14;
   public pawnDecoratorPadding = 2;
   public cursor = "";
+
+  private canvas: HTMLCanvasElement;
+  private strokeColor: string;
+  private keyboardEvent: KeyboardEvent;
   private selectBox: SelectBoxModel = new SelectBoxModel(false, new PointModel(0, 0), new PointModel(0, 0));
 
   constructor(private pawnService: PawnService,
               private uiService: UiService,
               @Inject('Window') private window: Window) {
-    this.strokeColor = "gray";
+    this.strokeColor = "green";
   }
 
   ngOnInit() {
@@ -37,7 +39,7 @@ export class InteractiveRenderComponent implements OnInit {
     });
     this.canvas = this.canvasRef.nativeElement;
     this.onResize();
-    this.canvas.addEventListener('contextmenu', function(event){
+    this.canvas.addEventListener('contextmenu', function (event) {
       event.preventDefault();
     }, false);
   }
@@ -90,8 +92,11 @@ export class InteractiveRenderComponent implements OnInit {
   onMouseDown($event: MouseEvent) {
     if ($event.button === 0) {
       this.selectBox.isSelected = true;
-      this.cursor = "crosshair";
       this.selectBox.start = {
+        x: $event.clientX,
+        y: $event.clientY
+      };
+      this.selectBox.end = {
         x: $event.clientX,
         y: $event.clientY
       };
@@ -102,7 +107,6 @@ export class InteractiveRenderComponent implements OnInit {
   onMouseUp($event: MouseEvent) {
     if ($event.button === 0) {
       this.selectBox.isSelected = false;
-      this.cursor = "";
       this.draw();
 
       this.onSelect();
@@ -132,10 +136,26 @@ export class InteractiveRenderComponent implements OnInit {
     this.draw();
   }
 
+  onKeyPress($event: KeyboardEvent) {
+    if ($event.shiftKey) {
+      this.cursor = "copy"
+    } else {
+      this.cursor = ""
+    }
+    this.keyboardEvent = $event;
+  }
+
   onRightClick($event: MouseEvent) {
     $event.preventDefault();
+    $event.stopPropagation();
     $event.stopImmediatePropagation();
-    this.pawnService.moveRequest(this.pawnService.getSelectedList(),
-      new PointModel($event.clientX / this.uiService.coordinateScale, $event.clientY / this.uiService.coordinateScale));
+    if (this.keyboardEvent != undefined && this.keyboardEvent.shiftKey) {
+      this.pawnService.queueMove(new PointModel($event.clientX / this.uiService.coordinateScale,
+        $event.clientY / this.uiService.coordinateScale));
+    } else {
+      this.pawnService.setMove(new PointModel($event.clientX / this.uiService.coordinateScale,
+        $event.clientY / this.uiService.coordinateScale));
+    }
+    return false;
   }
 }

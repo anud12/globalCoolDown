@@ -13,9 +13,14 @@ public class ActionController {
 
     private ActionService actionService;
 
-    @PostMapping()
-    public void add(@RequestBody final ActionOnPawnInputModel actionOnPawnInputModel) {
+    @PostMapping("/queue")
+    public void queue(@RequestBody final ActionOnPawnInputModel actionOnPawnInputModel) {
         actionService.queue(actionOnPawnInputModel);
+    }
+
+    @PostMapping("/override")
+    public void override(@RequestBody final ActionOnPawnInputModel actionOnPawnInputModel) {
+        actionService.override(actionOnPawnInputModel);
     }
 
     @DeleteMapping()
