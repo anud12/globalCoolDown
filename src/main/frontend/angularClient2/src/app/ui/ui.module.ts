@@ -6,6 +6,7 @@ import {UiComponent} from './ui.component';
 import {InteractiveRenderComponent} from './interactive-render/interactive-render.component';
 import {UiService} from "./ui.service";
 import { SelectListComponent } from './select-list/select-list.component';
+import { UserInfoComponent } from './user-info/user-info.component';
 
 @NgModule({
   imports: [
@@ -13,7 +14,7 @@ import { SelectListComponent } from './select-list/select-list.component';
     PawnModule
   ],
   providers: [UiService],
-  declarations: [WorldRenderComponent, UiComponent, InteractiveRenderComponent, SelectListComponent]
+  declarations: [WorldRenderComponent, UiComponent, InteractiveRenderComponent, SelectListComponent, UserInfoComponent]
 })
 export class UiModule {
 }

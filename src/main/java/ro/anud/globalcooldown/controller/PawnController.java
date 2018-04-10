@@ -7,7 +7,10 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
+import org.springframework.messaging.simp.stomp.StompClientSupport;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ro.anud.globalcooldown.entity.Pawn;
 import ro.anud.globalcooldown.mapper.PawnMapper;
 import ro.anud.globalcooldown.model.pawn.PawnOutputModel;
 import ro.anud.globalcooldown.service.PawnService;
@@ -25,22 +28,27 @@ public class PawnController {
     private PawnService pawnService;
     private SimpMessagingTemplate simpMessagingTemplate;
 
+    @GetMapping("/getAll")
+    public List<Pawn> getAllPawn() {
+        return pawnService.getAll();
+    }
+
     @MessageMapping("/pawn")
     @SendTo("/world")
     public List<PawnOutputModel> getAll(final String message) {
         System.out.println(message);
         simpMessagingTemplate.convertAndSend("/app/world", pawnService.getAll().stream()
-                                                                      .map(PawnMapper::toPawnOutputModel)
-                                                                      .collect(Collectors.toList()));
+                .map(PawnMapper::toPawnOutputModel)
+                .collect(Collectors.toList()));
         return pawnService.getAll().stream().map(PawnMapper::toPawnOutputModel)
-				.collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     @SubscribeMapping("/world")
-	public List<PawnOutputModel> pawnSubscription() {
-    	System.out.println("onSubscribe");
-    	return pawnService.getAll().stream().map(PawnMapper::toPawnOutputModel)
-				.collect(Collectors.toList());
-	}
+    public List<PawnOutputModel> pawnSubscription() {
+        System.out.println("onSubscribe");
+        return pawnService.getAll().stream().map(PawnMapper::toPawnOutputModel)
+                .collect(Collectors.toList());
+    }
 
 }

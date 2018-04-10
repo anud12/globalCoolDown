@@ -8,11 +8,13 @@ import {PawnModel} from "./model/pawn.model";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {PawnMoveActionModel} from "./model/pawn-move-action.model";
 import {PointModel} from "../model/point.model";
+import {AuthenticationService} from "../authentication/authentication.service";
 
 
 @Injectable()
 export class PawnService {
-  private ip: string = "192.168.1.31";
+  // private ip: string = "192.168.81.102";
+  private ip: string = "localhost";
   private stompConfig: StompConfig = {
     url: `ws://${this.ip}:8080/socket`,
     headers: {

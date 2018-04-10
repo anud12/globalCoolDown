@@ -23,6 +23,8 @@ public class Pawn {
 	private Long speed;
 	private Long x;
 	private Long y;
+	private Long characterCode;
+	private Long userId;
 
 	public Pawn() {
 
