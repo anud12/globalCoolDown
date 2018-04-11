@@ -46,7 +46,7 @@ export class WorldRenderComponent implements OnInit {
             context.fillRect(0, 0, this.width, this.height);
 
             this.pawnService.getListById().forEach(value => {
-                context.font = "20px monospace";
+                context.font = "25px gnu-unifont";
                 if (this.authenticationService.getModel().id === value.userId) {
                     context.fillStyle = this.ownColor;
                 } else {

@@ -9,6 +9,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {PawnMoveActionModel} from "./model/pawn-move-action.model";
 import {PointModel} from "../model/point.model";
 import {AuthenticationService} from "../authentication/authentication.service";
+import {Subscription} from "rxjs/Subscription";
 
 
 @Injectable()
@@ -38,15 +39,29 @@ export class PawnService {
   private stompService: StompService;
   private pawnListSubject: Subject<Message>;
   private selectedPawnListSubject: Subject<Message>;
+  private subscription: Subscription;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient,
+              private authenticationService: AuthenticationService) {
     this.stompService = new StompService(this.stompConfig);
     this.pawnList = new Map();
     this.selectedPawnList = new Map();
     this.pawnListSubject = new Subject();
     this.selectedPawnListSubject = new Subject();
+    this.subscribe();
+    this.authenticationService.onLogin().subscribe((authenticationModel) => {
+      if (this.subscription !== undefined) {
+        this.unsubscribe();
+      }
+      this.subscribe();
+    });
+    this.authenticationService.onLogout().subscribe(() => {
+      this.unsubscribe();
+    })
+  }
 
-    this.stompService.subscribe("/app/world")
+  subscribe() {
+    this.subscription = this.stompService.subscribe("/app/world")
       .subscribe(message => {
         const pawnList: Array<PawnModel> = JSON.parse(message.body);
         pawnList.forEach(element => {
@@ -57,6 +72,11 @@ export class PawnService {
         });
         this.pawnListSubject.next();
       });
+  }
+
+  unsubscribe() {
+    this.subscription.unsubscribe();
+    this.subscription = undefined;
   }
 
   getPawnStompSubscription(): Observable<Message> {

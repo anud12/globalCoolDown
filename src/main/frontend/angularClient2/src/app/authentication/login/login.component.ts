@@ -21,7 +21,7 @@ export class LoginComponent {
   onSubmit($event) {
     $event.preventDefault();
     $event.stopImmediatePropagation();
-    this.authenticationService.signinUser(new LoginModel(this.username))
+    this.authenticationService.signInUser(new LoginModel(this.username))
       .subscribe(result => {
           if (result === true) {
             this.error = undefined;
