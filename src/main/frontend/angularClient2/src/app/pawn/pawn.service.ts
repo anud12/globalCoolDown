@@ -15,7 +15,7 @@ import {Subscription} from "rxjs/Subscription";
 @Injectable()
 export class PawnService {
   // private ip: string = "192.168.81.102";
-  private ip: string = "localhost";
+  private ip: string = "192.168.0.143";
   private stompConfig: StompConfig = {
     url: `ws://${this.ip}:8080/socket`,
     headers: {

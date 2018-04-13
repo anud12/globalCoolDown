@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="globalcooldown@localhost" uuid="954ab031-3e77-4fd7-aa97-6c9abd0a61eb">
+    <data-source source="LOCAL" name="globalcooldown@localhost" uuid="7478ddb7-d8dd-4172-a874-993997250aec">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
@@ -9,12 +9,6 @@
       <driver-properties>
         <property name="ApplicationName" value="DataGrip" />
       </driver-properties>
-    </data-source>
-    <data-source source="LOCAL" name="test" uuid="5b03365b-30a0-40aa-8ace-3afdd52871db">
-      <driver-ref>h2.unified</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.h2.Driver</jdbc-driver>
-      <jdbc-url>jdbc:h2:~/h2/test;AUTO_SERVER=TRUE</jdbc-url>
     </data-source>
   </component>
 </project>

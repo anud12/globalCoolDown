@@ -1,20 +1,12 @@
-import {
-    HttpErrorResponse,
-    HttpEvent,
-    HttpHandler,
-    HttpInterceptor,
-    HttpRequest,
-    HttpResponse
-} from '@angular/common/http';
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {forwardRef, Inject, Injectable} from '@angular/core';
-import {Router} from "@angular/router";
+import {Router} from '@angular/router';
 import 'rxjs/add/operator/do';
-import {AuthenticationService} from "./authentication.service";
+import {AuthenticationService} from './authentication.service';
 
 @Injectable()
 export class AuthenticationInterceptor implements HttpInterceptor {
-
     constructor(private router: Router,
                 @Inject(forwardRef(() => AuthenticationService)) private authenticationService: AuthenticationService) {
     }

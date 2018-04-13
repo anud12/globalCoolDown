@@ -15,7 +15,7 @@ export class AuthenticationService {
     private jwtHelper: JwtHelper;
     token: string;
     private authenticationModel: AuthenticationModel;
-    private url: string = "localhost";
+    private url: string = "192.168.0.143";
     private authenticationEndpoint = `http://${this.url}:8080/auth`;
     private loginSubject:Subject<AuthenticationModel>;
     private logoutSubject:Subject<any>;
