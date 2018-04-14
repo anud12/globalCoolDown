@@ -1,9 +1,9 @@
 import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
-import {PawnService} from "../../pawn/pawn.service";
-import {UiService} from "../ui.service";
-import {SelectBoxModel} from "../model/select-box.model";
-import {DimensionModel} from "../../model/dimension.model";
-import {PointModel} from "../../model/point.model";
+import {PawnService} from '../../pawn/pawn.service';
+import {UiService} from '../ui.service';
+import {SelectBoxModel} from '../model/select-box.model';
+import {DimensionModel} from '../../model/dimension.model';
+import {PointModel} from '../../model/point.model';
 
 @Component({
     selector: 'app-interactive-render',
@@ -15,9 +15,12 @@ export class InteractiveRenderComponent implements OnInit {
     @ViewChild('canvas') canvasRef: ElementRef;
     public width: number = 0;
     public height: number = 0;
-    public pawnDecoratorSize = 14;
-    public pawnDecoratorPadding = 2;
-    public cursor = "";
+    public fontSizeDifference = 6;
+    public pawnDecoratorXOffset = 3;
+    public pawnDecoratorYOffset = 1;
+    public pawnDecoratorRadius = 5;
+
+    public cursor = '';
 
     private canvas: HTMLCanvasElement;
     private strokeColor: string;
@@ -27,7 +30,7 @@ export class InteractiveRenderComponent implements OnInit {
     constructor(private pawnService: PawnService,
                 private uiService: UiService,
                 @Inject('Window') private window: Window) {
-        this.strokeColor = "green";
+        this.strokeColor = 'green';
     }
 
     ngOnInit() {
@@ -49,16 +52,17 @@ export class InteractiveRenderComponent implements OnInit {
             //fill in the background
             context.clearRect(0, 0, this.width, this.height);
 
-            context.strokeStyle = this.strokeColor;
+
             context.lineWidth = 2;
 
             this.drawSelectBox(context);
-            this.drawSelectDecorators(context)
+            this.drawSelectDecorators(context);
         }
     }
 
-    drawSelectBox(context: CanvasRenderingContext2D) {
+    private drawSelectBox(context: CanvasRenderingContext2D) {
         if (this.selectBox.isSelected) {
+            context.strokeStyle = this.strokeColor;
             context.beginPath();
             context.rect(this.selectBox.start.x,
                 this.selectBox.start.y,
@@ -68,16 +72,18 @@ export class InteractiveRenderComponent implements OnInit {
         }
     }
 
-    drawSelectDecorators(context: CanvasRenderingContext2D) {
+    private drawSelectDecorators(context: CanvasRenderingContext2D) {
         this.pawnService.getSelectedList().forEach(value => {
+            const pawnDecoratorSize = this.uiService.fontSize - this.fontSizeDifference;
+            context.strokeStyle = this.strokeColor;
             context.beginPath();
             context.rect(
-                (value.point.x ) * this.uiService.coordinateScale - this.pawnDecoratorPadding,
-                (value.point.y ) * this.uiService.coordinateScale - this.pawnDecoratorSize - this.pawnDecoratorPadding,
-                this.pawnDecoratorSize + this.pawnDecoratorPadding * 2,
-                this.pawnDecoratorSize + this.pawnDecoratorPadding * 2);
+                (value.point.x ) * this.uiService.coordinateScale - this.pawnDecoratorRadius + this.pawnDecoratorXOffset,
+                (value.point.y ) * this.uiService.coordinateScale - this.pawnDecoratorRadius - this.pawnDecoratorYOffset - pawnDecoratorSize,
+                pawnDecoratorSize + this.pawnDecoratorRadius * 2,
+                pawnDecoratorSize + this.pawnDecoratorRadius * 2 - this.pawnDecoratorYOffset);
             context.stroke();
-        })
+        });
     }
 
     onSelect() {
@@ -137,9 +143,9 @@ export class InteractiveRenderComponent implements OnInit {
 
     onKeyPress($event: KeyboardEvent) {
         if ($event.shiftKey) {
-            this.cursor = "copy"
+            this.cursor = 'copy';
         } else {
-            this.cursor = ""
+            this.cursor = '';
         }
         this.keyboardEvent = $event;
     }

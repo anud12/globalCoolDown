@@ -3,12 +3,11 @@ package ro.anud.globalcooldown.job;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ro.anud.globalcooldown.effects.EffectOnPawn;
 import ro.anud.globalcooldown.entity.Pawn;
-import ro.anud.globalcooldown.mapper.PawnMapper;
+import ro.anud.globalcooldown.publisher.PawnPublisher;
 import ro.anud.globalcooldown.service.ActionService;
 import ro.anud.globalcooldown.service.EffectOnPawnService;
 import ro.anud.globalcooldown.service.PawnService;
@@ -24,7 +23,7 @@ public class LoopJob {
     private static Logger LOGGER = LoggerFactory.getLogger(LoopJob.class);
     private PawnService pawnService;
     private EffectOnPawnService effectOnPawnService;
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private PawnPublisher pawnPublisher;
     private ActionService actionService;
 
 
@@ -42,10 +41,6 @@ public class LoopJob {
 
         effectOnPawnService.updateAll(effectOnPawnList);
         actionService.updateAll();
-
-        simpMessagingTemplate.convertAndSend("/app/world", pawnService.saveAll(pawnList)
-                .stream()
-                .map(PawnMapper::toPawnOutputModel)
-                .collect(Collectors.toList()));
+        pawnPublisher.publish(pawnService.saveAll(pawnList));
     }
 }

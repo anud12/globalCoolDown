@@ -8,10 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.anud.globalcooldown.action.ActionOnPawn;
 import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
+import ro.anud.globalcooldown.entity.MoveOnPawnEntity;
 import ro.anud.globalcooldown.entity.Pawn;
 import ro.anud.globalcooldown.geometry.Point;
 import ro.anud.globalcooldown.geometry.Vector;
-import ro.anud.globalcooldown.mapper.MoveOnPawnMapper;
 
 import java.util.Objects;
 
@@ -49,7 +49,22 @@ public class MoveOnPawn implements EffectOnPawn {
         if (arrived) {
             return pawn.streamSetPoint(destination);
         }
-        return pawn.streamSetPoint(calculateNewPosition());
+        Vector normalized = Vector.normalized(destination.duplicate()
+                                                      .streamSubstract(pawn.getPoint()));
+        return pawn.streamSetPoint(pawn.getPoint()
+                                           .duplicate()
+                                           .streamTranspose(normalized, pawn.getSpeed()));
+    }
+
+    @Override
+    public EffectOnPawnEntity toEntity() {
+        return MoveOnPawnEntity.builder()
+                .id(this.getId())
+                .pawn(this.getPawn())
+                .type(MoveOnPawn.NAME)
+                .x(this.getDestination().getX())
+                .y(this.getDestination().getY())
+                .build();
     }
 
     @Override
@@ -62,10 +77,6 @@ public class MoveOnPawn implements EffectOnPawn {
         return MOVEMENT;
     }
 
-    @Override
-    public EffectOnPawnEntity toEntity() {
-        return MoveOnPawnMapper.toEntity(this);
-    }
 
     @Override
     public boolean isExecutable() {
@@ -77,11 +88,5 @@ public class MoveOnPawn implements EffectOnPawn {
         return id;
     }
 
-    private Point calculateNewPosition() {
-        Vector normalized = Vector.normalized(destination.duplicate()
-                                                      .streamSubstract(pawn.getPoint()));
-        return pawn.getPoint()
-                .duplicate()
-                .streamTranspose(normalized, pawn.getSpeed());
-    }
+
 }

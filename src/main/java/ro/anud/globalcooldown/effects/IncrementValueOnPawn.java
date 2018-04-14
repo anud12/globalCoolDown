@@ -7,9 +7,10 @@ import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.anud.globalcooldown.action.ActionOnPawn;
+import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
 import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
+import ro.anud.globalcooldown.entity.IncrementValueOnPawnEntity;
 import ro.anud.globalcooldown.entity.Pawn;
-import ro.anud.globalcooldown.mapper.IncrementValueOnPawnMapper;
 
 import java.util.Objects;
 
@@ -52,6 +53,19 @@ public class IncrementValueOnPawn implements EffectOnPawn {
     }
 
     @Override
+    public EffectOnPawnEntity toEntity() {
+        return IncrementValueOnPawnEntity.builder()
+                .id(this.getId())
+                .type(IncrementValueOnPawn.NAME)
+                .duration(this.getDuration())
+                .pawn(this.getPawn())
+                .actionOnPawnEntity(ActionOnPawnEntity.builder()
+                                            .id(this.getActionOnPawn().getId())
+                                            .build())
+                .build();
+    }
+
+    @Override
     public boolean isArrived() {
         return completed;
     }
@@ -59,11 +73,6 @@ public class IncrementValueOnPawn implements EffectOnPawn {
     @Override
     public EffectOnPawnPriority getPriority() {
         return ADDITION;
-    }
-
-    @Override
-    public EffectOnPawnEntity toEntity() {
-        return IncrementValueOnPawnMapper.toEntity(this);
     }
 
     @Override
@@ -75,4 +84,6 @@ public class IncrementValueOnPawn implements EffectOnPawn {
     public Long getId() {
         return id;
     }
+
+
 }

@@ -1,7 +1,7 @@
 import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
-import {PawnService} from "../../pawn/pawn.service";
-import {UiService} from "../ui.service";
-import {AuthenticationService} from "../../authentication/authentication.service";
+import {PawnService} from '../../pawn/pawn.service';
+import {UiService} from '../ui.service';
+import {AuthenticationService} from '../../authentication/authentication.service';
 
 @Component({
     selector: 'app-world-render',
@@ -19,10 +19,10 @@ export class WorldRenderComponent implements OnInit {
                 private uiService: UiService,
                 @Inject('Window') private window: Window,
                 private authenticationService: AuthenticationService) {
-        this.strokeColor = "white";
-        this.ownColor = "green";
-        this.neutralColor = "teal";
-        this.backgroundColor = "#424242"
+        this.strokeColor = 'white';
+        this.ownColor = 'green';
+        this.neutralColor = 'teal';
+        this.backgroundColor = '#424242';
     }
 
     @ViewChild('canvas') canvasRef: ElementRef;
@@ -46,7 +46,7 @@ export class WorldRenderComponent implements OnInit {
             context.fillRect(0, 0, this.width, this.height);
 
             this.pawnService.getListById().forEach(value => {
-                context.font = "25px gnu-unifont";
+                context.font = `${this.uiService.fontSize}px gnu-unifont`;
                 if (this.authenticationService.getModel().id === value.userId) {
                     context.fillStyle = this.ownColor;
                 } else {
