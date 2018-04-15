@@ -6,7 +6,7 @@ import ro.anud.globalcooldown.entity.Pawn;
 public interface EffectOnPawn {
     Pawn execute();
 
-    boolean isArrived();
+    boolean isRemovable();
 
     boolean isExecutable();
 
@@ -15,4 +15,10 @@ public interface EffectOnPawn {
     Long getId();
 
     EffectOnPawnEntity toEntity();
+
+    void incrementAge();
+
+    void resetAge();
+
+    Integer getAge();
 }

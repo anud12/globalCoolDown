@@ -14,7 +14,7 @@ export class UiService {
 
     constructor(private pawnService: PawnService) {
         this.coordinateScale = 1 / 100;
-        this.fontSize = 10;
+        this.fontSize = 16;
         this.observer = new Subject();
         this.pawnService.getPawnStompSubscription().subscribe(() => {
             this.draw();

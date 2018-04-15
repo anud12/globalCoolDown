@@ -35,13 +35,13 @@ public class EffectOnPawnService {
     @Transactional
     public List<EffectOnPawn> updateAll(List<EffectOnPawn> effectOnPawnList) {
         effectOnPawnRepository.deleteInBatch(effectOnPawnList.stream()
-                                                     .filter(EffectOnPawn::isArrived)
+                                                     .filter(EffectOnPawn::isRemovable)
                                                      .peek(effectOnPawn -> LOGGER.debug(
                                                              "DELETING " + effectOnPawn.getId()))
                                                      .map(EffectOnPawn::toEntity)
                                                      .collect(Collectors.toList()));
         return effectOnPawnRepository.save(effectOnPawnList.stream()
-                                                   .filter(action -> !action.isArrived())
+                                                   .filter(action -> !action.isRemovable())
                                                    .map(EffectOnPawn::toEntity)
                                                    .peek(effectOnPawnEntity -> {
                                                        ActionOnPawnEntity actionOnPawnEntity = effectOnPawnRepository.findOne(

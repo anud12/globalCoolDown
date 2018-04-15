@@ -8,6 +8,7 @@ import ro.anud.globalcooldown.mapper.ActionOnPawnMapper;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Objects;
 
 @Entity
 @Table(name = "move_on_pawn")
@@ -26,12 +27,15 @@ public class MoveOnPawnEntity extends EffectOnPawnEntity {
                              final Pawn pawn,
                              final String type,
                              final Long x,
-                             final Long y) {
+                             final Long y,
+                             final Integer age) {
         this.id = id;
         this.pawn = pawn;
         this.type = type;
         this.x = x;
         this.y = y;
+        this.age = Objects.requireNonNull(age, "age must not be null");
+
     }
 
     @Override
@@ -43,6 +47,7 @@ public class MoveOnPawnEntity extends EffectOnPawnEntity {
                 )
                 .pawn(this.getPawn())
                 .actionOnPawn(ActionOnPawnMapper.toAction(this.getAction()))
+                .age(age)
                 .build();
     }
 }

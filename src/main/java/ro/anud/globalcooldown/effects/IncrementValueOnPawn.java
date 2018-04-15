@@ -26,15 +26,24 @@ public class IncrementValueOnPawn implements EffectOnPawn {
     private Long id;
     protected Pawn pawn;
     private int duration;
+    private int rate;
     private boolean completed;
     private ActionOnPawn actionOnPawn;
+    private Integer age;
 
     @Builder
-    private IncrementValueOnPawn(Long id, Pawn pawn, int duration, ActionOnPawn actionOnPawn) {
+    private IncrementValueOnPawn(Long id,
+                                 Pawn pawn,
+                                 int duration,
+                                 Integer rate,
+                                 ActionOnPawn actionOnPawn,
+                                 Integer age) {
         this.id = Objects.requireNonNull(id, "id must not be null");
         this.pawn = Objects.requireNonNull(pawn, "pawn must not be null");
         this.duration = Objects.requireNonNull(duration, "duration must not be null");
+        this.rate = Objects.requireNonNull(rate, "rate must not be null");
         this.actionOnPawn = Objects.requireNonNull(actionOnPawn, "actionOnPawn must not be null");
+        this.age = Objects.requireNonNull(age, "age must not be null");
         this.completed = false;
     }
 
@@ -44,12 +53,13 @@ public class IncrementValueOnPawn implements EffectOnPawn {
                 "EXECUTING " +
                         "id=" + id +
                         ", group=" + actionOnPawn.getId() +
-                        ", depth=" + actionOnPawn.getDepth());
+                        ", depth=" + actionOnPawn.getDepth() +
+                        ", for " + pawn);
         duration--;
         if (duration <= 0) {
             completed = true;
         }
-        return pawn.streamSetValue(pawn.getValue() + 1);
+        return pawn.streamSetValue(pawn.getValue() + this.rate);
     }
 
     @Override
@@ -59,6 +69,8 @@ public class IncrementValueOnPawn implements EffectOnPawn {
                 .type(IncrementValueOnPawn.NAME)
                 .duration(this.getDuration())
                 .pawn(this.getPawn())
+                .rate(this.getRate())
+                .age(this.getAge())
                 .actionOnPawnEntity(ActionOnPawnEntity.builder()
                                             .id(this.getActionOnPawn().getId())
                                             .build())
@@ -66,7 +78,17 @@ public class IncrementValueOnPawn implements EffectOnPawn {
     }
 
     @Override
-    public boolean isArrived() {
+    public void incrementAge() {
+        this.age += 1;
+    }
+
+    @Override
+    public void resetAge() {
+        this.age = 0;
+    }
+
+    @Override
+    public boolean isRemovable() {
         return completed;
     }
 

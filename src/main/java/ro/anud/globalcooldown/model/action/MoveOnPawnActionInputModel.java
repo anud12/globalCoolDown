@@ -36,6 +36,7 @@ public class MoveOnPawnActionInputModel implements ActionOnPawnInputModel {
                                                 .x(this.getX())
                                                 .y(this.getY())
                                                 .type(MoveOnPawn.NAME)
+                                                .age(0)
                                                 .build()
         );
         return actionOnPawnEntity;

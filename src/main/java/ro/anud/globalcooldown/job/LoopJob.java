@@ -27,13 +27,19 @@ public class LoopJob {
     private ActionService actionService;
 
 
-    @Scheduled(fixedRate = 150)
+    @Scheduled(fixedRate = 25)
     public void loop() {
 
         List<EffectOnPawn> effectOnPawnList = effectOnPawnService.getAll();
         List<Pawn> pawnList = effectOnPawnList.stream()
+                .peek(EffectOnPawn::incrementAge)
                 .filter(EffectOnPawn::isExecutable)
-                .sorted(Comparator.comparing(EffectOnPawn::getPriority))
+                .collect(Collectors.toList())
+                .stream()
+                .sorted(Comparator.comparing(EffectOnPawn::getPriority)
+                                .thenComparing(Comparator.comparing(EffectOnPawn::getAge)
+                                                       .reversed()))
+                .peek(EffectOnPawn::resetAge)
                 .map(EffectOnPawn::execute)
                 .distinct()
                 .peek(pawn -> pawn.setVersion(pawn.getVersion() + 1))

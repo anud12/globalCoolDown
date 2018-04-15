@@ -7,6 +7,7 @@ import ro.anud.globalcooldown.mapper.ActionOnPawnMapper;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Objects;
 
 @Entity
 @Table(name = "increment_value_on_pawn")
@@ -17,18 +18,23 @@ import javax.persistence.Table;
 @ToString(callSuper = true)
 public class IncrementValueOnPawnEntity extends EffectOnPawnEntity {
     private int duration;
+    private int rate;
 
     @Builder
     private IncrementValueOnPawnEntity(final Long id,
                                        final Pawn pawn,
                                        final String type,
                                        final int duration,
-                                       final ActionOnPawnEntity actionOnPawnEntity) {
+                                       final Integer rate,
+                                       final ActionOnPawnEntity actionOnPawnEntity,
+                                       final Integer age) {
         this.id = id;
         this.pawn = pawn;
         this.type = type;
         this.duration = duration;
+        this.rate = rate;
         this.action = actionOnPawnEntity;
+        this.age = Objects.requireNonNull(age, "age must not be null");
     }
 
     @Override
@@ -36,8 +42,10 @@ public class IncrementValueOnPawnEntity extends EffectOnPawnEntity {
         return IncrementValueOnPawn.builder()
                 .id(this.getId())
                 .duration(this.getDuration())
+                .rate(this.rate)
                 .pawn(this.getPawn())
                 .actionOnPawn(ActionOnPawnMapper.toAction(this.getAction()))
+                .age(age)
                 .build();
     }
 }

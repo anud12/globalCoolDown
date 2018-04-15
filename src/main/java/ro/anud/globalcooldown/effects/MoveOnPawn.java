@@ -29,16 +29,19 @@ public class MoveOnPawn implements EffectOnPawn {
     private boolean arrived;
     private Point destination;
     private ActionOnPawn actionOnPawn;
+    private Integer age;
 
     @Builder
     public MoveOnPawn(Long id,
                       Pawn pawn,
                       Point destination,
-                      ActionOnPawn actionOnPawn) {
+                      ActionOnPawn actionOnPawn,
+                      Integer age) {
         this.id = Objects.requireNonNull(id, "id must not be null");
         this.pawn = Objects.requireNonNull(pawn, "pawn must not be null");
         this.destination = Objects.requireNonNull(destination, "destination must not be null");
         this.actionOnPawn = Objects.requireNonNull(actionOnPawn, "actionOnPawn must not be null");
+        this.age = Objects.requireNonNull(age, "age must not be null");
         arrived = false;
     }
 
@@ -64,11 +67,24 @@ public class MoveOnPawn implements EffectOnPawn {
                 .type(MoveOnPawn.NAME)
                 .x(this.getDestination().getX())
                 .y(this.getDestination().getY())
+                .age(this.age)
                 .build();
     }
 
     @Override
-    public boolean isArrived() {
+    public void incrementAge() {
+        this.age += 1;
+        LOGGER.debug("increment age :" + this.age);
+    }
+
+    @Override
+    public void resetAge() {
+        LOGGER.debug("reset age");
+        this.age = 0;
+    }
+
+    @Override
+    public boolean isRemovable() {
         return arrived;
     }
 
