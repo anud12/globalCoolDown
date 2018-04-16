@@ -38,8 +38,9 @@ public class IncrementValueOnPawnActionInputModel implements ActionOnPawnInputMo
                                                               .id(this.getPawnId())
                                                               .build())
                                                 .rate(this.rate)
-                                                .actionOnPawnEntity(actionOnPawnEntity)
+                                                .action(actionOnPawnEntity)
                                                 .age(0)
+                                                .conditions(new ArrayList<>())
                                                 .build()
         );
         return actionOnPawnEntity;

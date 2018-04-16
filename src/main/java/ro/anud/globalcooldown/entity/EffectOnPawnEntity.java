@@ -2,9 +2,11 @@ package ro.anud.globalcooldown.entity;
 
 import lombok.Data;
 import lombok.ToString;
+import ro.anud.globalcooldown.condition.ConditionOnPawnEntity;
 import ro.anud.globalcooldown.effects.EffectOnPawn;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "effect_on_pawn")
@@ -27,6 +29,11 @@ public abstract class EffectOnPawnEntity {
     protected ActionOnPawnEntity action;
 
     protected Integer age;
+
+    @OneToMany(fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL)
+    @JoinColumn(name = "effect_on_pawn_id")
+    protected List<ConditionOnPawnEntity> conditions;
 
     public abstract EffectOnPawn toAction();
 }

@@ -1,11 +1,12 @@
 CREATE SEQUENCE seq_action_on_pawn;
 CREATE TABLE action_on_pawn (
   id             BIGINT PRIMARY KEY,
-  name           VARCHAR(20) NOT NULL,
+  name           VARCHAR(25) NOT NULL,
   save_date_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
   pawn_id        BIGINT      NOT NULL REFERENCES pawn (id),
   parent_id      BIGINT REFERENCES action_on_pawn (id)
 );
+
 
 CREATE SEQUENCE seq_effect_on_pawn;
 CREATE TABLE effect_on_pawn (
@@ -26,4 +27,14 @@ CREATE TABLE move_on_pawn (
   id BIGINT PRIMARY KEY REFERENCES effect_on_pawn (id),
   x  BIGINT NOT NULL,
   y  BIGINT NOT NULL
+);
+
+
+CREATE SEQUENCE seq_condition_on_pawn;
+CREATE TABLE condition_on_pawn (
+  id         BIGINT PRIMARY KEY,
+  attribute  VARCHAR(25),
+  comparator VARCHAR(25),
+  value      BIGINT NOT NULL,
+  effect_on_pawn_id  BIGINT REFERENCES effect_on_pawn (id)
 );

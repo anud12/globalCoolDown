@@ -7,12 +7,14 @@ import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.anud.globalcooldown.action.ActionOnPawn;
+import ro.anud.globalcooldown.condition.ConditionOnPawnEntity;
 import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
 import ro.anud.globalcooldown.entity.MoveOnPawnEntity;
 import ro.anud.globalcooldown.entity.Pawn;
 import ro.anud.globalcooldown.geometry.Point;
 import ro.anud.globalcooldown.geometry.Vector;
 
+import java.util.List;
 import java.util.Objects;
 
 import static ro.anud.globalcooldown.effects.EffectOnPawnPriority.MOVEMENT;
@@ -30,18 +32,21 @@ public class MoveOnPawn implements EffectOnPawn {
     private Point destination;
     private ActionOnPawn actionOnPawn;
     private Integer age;
+    private List<ConditionOnPawnEntity> conditions;
 
     @Builder
     public MoveOnPawn(Long id,
                       Pawn pawn,
                       Point destination,
                       ActionOnPawn actionOnPawn,
-                      Integer age) {
+                      Integer age,
+                      List<ConditionOnPawnEntity> conditions) {
         this.id = Objects.requireNonNull(id, "id must not be null");
         this.pawn = Objects.requireNonNull(pawn, "pawn must not be null");
         this.destination = Objects.requireNonNull(destination, "destination must not be null");
         this.actionOnPawn = Objects.requireNonNull(actionOnPawn, "actionOnPawn must not be null");
         this.age = Objects.requireNonNull(age, "age must not be null");
+        this.conditions = Objects.requireNonNull(conditions, "conditions must not be null");
         arrived = false;
     }
 
@@ -68,6 +73,7 @@ public class MoveOnPawn implements EffectOnPawn {
                 .x(this.getDestination().getX())
                 .y(this.getDestination().getY())
                 .age(this.age)
+                .conditions(conditions)
                 .build();
     }
 
@@ -96,6 +102,11 @@ public class MoveOnPawn implements EffectOnPawn {
 
     @Override
     public boolean isExecutable() {
+        for (ConditionOnPawnEntity condition : conditions) {
+            if (!condition.test(pawn)) {
+                return false;
+            }
+        }
         return actionOnPawn.getDepth() == 0;
     }
 

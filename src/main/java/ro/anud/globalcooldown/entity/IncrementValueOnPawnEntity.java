@@ -1,12 +1,14 @@
 package ro.anud.globalcooldown.entity;
 
 import lombok.*;
+import ro.anud.globalcooldown.condition.ConditionOnPawnEntity;
 import ro.anud.globalcooldown.effects.EffectOnPawn;
 import ro.anud.globalcooldown.effects.IncrementValueOnPawn;
 import ro.anud.globalcooldown.mapper.ActionOnPawnMapper;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -26,15 +28,17 @@ public class IncrementValueOnPawnEntity extends EffectOnPawnEntity {
                                        final String type,
                                        final int duration,
                                        final Integer rate,
-                                       final ActionOnPawnEntity actionOnPawnEntity,
-                                       final Integer age) {
+                                       final ActionOnPawnEntity action,
+                                       final Integer age,
+                                       final List<ConditionOnPawnEntity> conditions) {
         this.id = id;
-        this.pawn = pawn;
-        this.type = type;
-        this.duration = duration;
-        this.rate = rate;
-        this.action = actionOnPawnEntity;
+        this.pawn = Objects.requireNonNull(pawn, "pawn must not be null");
+        this.type = Objects.requireNonNull(type, "type must not be null");
+        this.duration = Objects.requireNonNull(duration, "duration must not be null");
+        this.rate = Objects.requireNonNull(rate, "rate must not be null");
+        this.action = Objects.requireNonNull(action, "action must not be null");
         this.age = Objects.requireNonNull(age, "age must not be null");
+        this.conditions = Objects.requireNonNull(conditions, "conditions must not be null");
     }
 
     @Override
@@ -46,6 +50,7 @@ public class IncrementValueOnPawnEntity extends EffectOnPawnEntity {
                 .pawn(this.getPawn())
                 .actionOnPawn(ActionOnPawnMapper.toAction(this.getAction()))
                 .age(age)
+                .conditions(this.getConditions())
                 .build();
     }
 }

@@ -27,7 +27,7 @@ public class LoopJob {
     private ActionService actionService;
 
 
-    @Scheduled(fixedRate = 25)
+    @Scheduled(fixedRate = 200)
     public void loop() {
 
         List<EffectOnPawn> effectOnPawnList = effectOnPawnService.getAll();

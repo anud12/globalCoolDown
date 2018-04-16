@@ -7,11 +7,13 @@ import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.anud.globalcooldown.action.ActionOnPawn;
+import ro.anud.globalcooldown.condition.ConditionOnPawnEntity;
 import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
 import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
 import ro.anud.globalcooldown.entity.IncrementValueOnPawnEntity;
 import ro.anud.globalcooldown.entity.Pawn;
 
+import java.util.List;
 import java.util.Objects;
 
 import static ro.anud.globalcooldown.effects.EffectOnPawnPriority.ADDITION;
@@ -30,6 +32,7 @@ public class IncrementValueOnPawn implements EffectOnPawn {
     private boolean completed;
     private ActionOnPawn actionOnPawn;
     private Integer age;
+    private List<ConditionOnPawnEntity> conditions;
 
     @Builder
     private IncrementValueOnPawn(Long id,
@@ -37,13 +40,15 @@ public class IncrementValueOnPawn implements EffectOnPawn {
                                  int duration,
                                  Integer rate,
                                  ActionOnPawn actionOnPawn,
-                                 Integer age) {
+                                 Integer age,
+                                 List<ConditionOnPawnEntity> conditions) {
         this.id = Objects.requireNonNull(id, "id must not be null");
         this.pawn = Objects.requireNonNull(pawn, "pawn must not be null");
         this.duration = Objects.requireNonNull(duration, "duration must not be null");
         this.rate = Objects.requireNonNull(rate, "rate must not be null");
         this.actionOnPawn = Objects.requireNonNull(actionOnPawn, "actionOnPawn must not be null");
         this.age = Objects.requireNonNull(age, "age must not be null");
+        this.conditions = Objects.requireNonNull(conditions, "conditions must not be null");
         this.completed = false;
     }
 
@@ -71,9 +76,10 @@ public class IncrementValueOnPawn implements EffectOnPawn {
                 .pawn(this.getPawn())
                 .rate(this.getRate())
                 .age(this.getAge())
-                .actionOnPawnEntity(ActionOnPawnEntity.builder()
+                .action(ActionOnPawnEntity.builder()
                                             .id(this.getActionOnPawn().getId())
                                             .build())
+                .conditions(conditions)
                 .build();
     }
 

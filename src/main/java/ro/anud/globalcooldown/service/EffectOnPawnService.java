@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ro.anud.globalcooldown.effects.EffectOnPawn;
 import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
 import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
+import ro.anud.globalcooldown.repository.ConditionOnPawnRepository;
 import ro.anud.globalcooldown.repository.EffectOnPawnRepository;
 
 import javax.annotation.PostConstruct;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class EffectOnPawnService {
     private static Logger LOGGER = LoggerFactory.getLogger(EffectOnPawnService.class);
     private EffectOnPawnRepository effectOnPawnRepository;
+    private ConditionOnPawnRepository conditionOnPawnRepository;
 
     @PostConstruct
     public void onInit() {
@@ -34,12 +36,18 @@ public class EffectOnPawnService {
 
     @Transactional
     public List<EffectOnPawn> updateAll(List<EffectOnPawn> effectOnPawnList) {
-        effectOnPawnRepository.deleteInBatch(effectOnPawnList.stream()
-                                                     .filter(EffectOnPawn::isRemovable)
-                                                     .peek(effectOnPawn -> LOGGER.debug(
-                                                             "DELETING " + effectOnPawn.getId()))
-                                                     .map(EffectOnPawn::toEntity)
-                                                     .collect(Collectors.toList()));
+        List<EffectOnPawnEntity> toBeDeletedList = effectOnPawnList.stream()
+                .filter(EffectOnPawn::isRemovable)
+                .peek(effectOnPawn -> LOGGER.debug(
+                        "DELETING " + effectOnPawn.getId()))
+                .map(EffectOnPawn::toEntity)
+                .collect(Collectors.toList());
+        conditionOnPawnRepository.deleteInBatch(toBeDeletedList.stream()
+                                                        .flatMap(
+                                                                effectOnPawnEntity -> effectOnPawnEntity.getConditions()
+                                                                        .stream())
+                                                        .collect(Collectors.toList()));
+        effectOnPawnRepository.deleteInBatch(toBeDeletedList);
         return effectOnPawnRepository.save(effectOnPawnList.stream()
                                                    .filter(action -> !action.isRemovable())
                                                    .map(EffectOnPawn::toEntity)
