@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
+import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
 import ro.anud.globalcooldown.model.action.ActionOnPawnInputModel;
 import ro.anud.globalcooldown.repository.ActionOnPawnRepository;
 
@@ -46,9 +47,20 @@ public class ActionService {
     }
 
     public void updateAll() {
+        /*List<ActionOnPawnEntity> actionOnPawnEntityList = actionOnPawnRepository.findAll()
+                .stream()
+                .filter(actionOnPawnEntity -> actionOnPawnEntity.getEffectOnPawnEntityList()
+                        .isEmpty())
+                .peek(actionOnPawnEntity -> LOGGER.debug(
+                        "DELETING " + actionOnPawnEntity.getId()))
+                .collect(Collectors.toList());*/
+
         List<ActionOnPawnEntity> actionOnPawnEntityList = actionOnPawnRepository.findAll()
                 .stream()
                 .filter(actionOnPawnEntity -> actionOnPawnEntity.getEffectOnPawnEntityList()
+                        .stream()
+                        .filter(effectOnPawnEntity -> !effectOnPawnEntity.getIsSideEffect())
+                        .collect(Collectors.toList())
                         .isEmpty())
                 .peek(actionOnPawnEntity -> LOGGER.debug(
                         "DELETING " + actionOnPawnEntity.getId()))

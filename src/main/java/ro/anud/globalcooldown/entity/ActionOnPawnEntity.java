@@ -4,10 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ro.anud.globalcooldown.condition.ConditionOnPawnEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -25,9 +26,16 @@ public class ActionOnPawnEntity implements Serializable {
 
     private long pawnId;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
     @JoinColumn(name = "action_id")
-    private List<EffectOnPawnEntity> effectOnPawnEntityList;
+    private Set<EffectOnPawnEntity> effectOnPawnEntityList;
+
+    @OneToMany(fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL)
+    @JoinColumn(name = "action_id")
+    private Set<ConditionOnPawnEntity> conditions;
+
 
     private String saveDateTime;
 

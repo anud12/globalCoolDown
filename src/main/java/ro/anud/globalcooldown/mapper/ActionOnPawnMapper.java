@@ -17,6 +17,7 @@ public class ActionOnPawnMapper {
                 .id(actionOnPawnEntity.getId())
                 .depth(extractDepth(actionOnPawnEntity))
                 .type(actionOnPawnEntity.getName())
+                .conditionOnPawnEntitySet(actionOnPawnEntity.getConditions())
                 .build();
     }
 

@@ -42,11 +42,6 @@ public class EffectOnPawnService {
                         "DELETING " + effectOnPawn.getId()))
                 .map(EffectOnPawn::toEntity)
                 .collect(Collectors.toList());
-        conditionOnPawnRepository.deleteInBatch(toBeDeletedList.stream()
-                                                        .flatMap(
-                                                                effectOnPawnEntity -> effectOnPawnEntity.getConditions()
-                                                                        .stream())
-                                                        .collect(Collectors.toList()));
         effectOnPawnRepository.deleteInBatch(toBeDeletedList);
         return effectOnPawnRepository.save(effectOnPawnList.stream()
                                                    .filter(action -> !action.isRemovable())

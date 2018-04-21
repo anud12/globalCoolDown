@@ -10,11 +10,12 @@ CREATE TABLE action_on_pawn (
 
 CREATE SEQUENCE seq_effect_on_pawn;
 CREATE TABLE effect_on_pawn (
-  id        BIGINT PRIMARY KEY,
-  type      VARCHAR(25) NOT NULL,
-  pawn_id   BIGINT      NOT NULL REFERENCES pawn (id),
-  age       INT         NOT NULL,
-  action_id BIGINT REFERENCES action_on_pawn (id)
+  id             BIGINT PRIMARY KEY,
+  type           VARCHAR(25) NOT NULL,
+  pawn_id        BIGINT      NOT NULL REFERENCES pawn (id),
+  age            INT         NOT NULL,
+  action_id      BIGINT REFERENCES action_on_pawn (id),
+  is_side_effect BOOLEAN     NOT NULL
 );
 
 CREATE TABLE increment_value_on_pawn (
@@ -36,5 +37,5 @@ CREATE TABLE condition_on_pawn (
   attribute  VARCHAR(25),
   comparator VARCHAR(25),
   value      BIGINT NOT NULL,
-  effect_on_pawn_id  BIGINT REFERENCES effect_on_pawn (id)
+  action_id  BIGINT REFERENCES action_on_pawn (id)
 );

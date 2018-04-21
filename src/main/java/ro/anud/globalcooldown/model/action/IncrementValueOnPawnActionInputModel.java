@@ -9,7 +9,8 @@ import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
 import ro.anud.globalcooldown.entity.IncrementValueOnPawnEntity;
 import ro.anud.globalcooldown.entity.Pawn;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -23,7 +24,7 @@ public class IncrementValueOnPawnActionInputModel implements ActionOnPawnInputMo
 
     @Override
     public ActionOnPawnEntity toEntity() {
-        ArrayList<EffectOnPawnEntity> effectOnPawnEntityArrayList = new ArrayList<>();
+        Set<EffectOnPawnEntity> effectOnPawnEntityArrayList = new HashSet<>();
         ActionOnPawnEntity actionOnPawnEntity = ActionOnPawnEntity.builder()
                 .name(IncrementValueOnPawn.NAME)
                 .effectOnPawnEntityList(effectOnPawnEntityArrayList)
@@ -32,15 +33,15 @@ public class IncrementValueOnPawnActionInputModel implements ActionOnPawnInputMo
 
         effectOnPawnEntityArrayList.add(IncrementValueOnPawnEntity
                                                 .builder()
-                                                .type(IncrementValueOnPawn.NAME)
-                                                .duration(this.getDuration())
+                                                .action(actionOnPawnEntity)
                                                 .pawn(Pawn.builder()
                                                               .id(this.getPawnId())
                                                               .build())
+                                                .type(IncrementValueOnPawn.NAME)
+                                                .duration(this.getDuration())
                                                 .rate(this.rate)
-                                                .action(actionOnPawnEntity)
                                                 .age(0)
-                                                .conditions(new ArrayList<>())
+                                                .isSideEffect(false)
                                                 .build()
         );
         return actionOnPawnEntity;

@@ -6,14 +6,13 @@ import lombok.Setter;
 import ro.anud.globalcooldown.condition.ConditionOnPawnEntity;
 import ro.anud.globalcooldown.condition.NumberAttributeComparatorUtil;
 import ro.anud.globalcooldown.condition.PawnLongAttributeExtractor;
+import ro.anud.globalcooldown.effects.IncrementValueOnPawn;
 import ro.anud.globalcooldown.effects.MoveOnPawn;
-import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
-import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
-import ro.anud.globalcooldown.entity.MoveOnPawnEntity;
-import ro.anud.globalcooldown.entity.Pawn;
+import ro.anud.globalcooldown.entity.*;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,30 +25,42 @@ public class MoveOnPawnActionInputModel implements ActionOnPawnInputModel {
 
     @Override
     public ActionOnPawnEntity toEntity() {
-        ArrayList<EffectOnPawnEntity> effectOnPawnEntityArrayList = new ArrayList<>();
+        Pawn pawn = Pawn.builder()
+                .id(this.getPawnId())
+                .build();
+
+        Set<EffectOnPawnEntity> effectOnPawnEntityArrayList = new HashSet<>();
         ActionOnPawnEntity actionOnPawnEntity = ActionOnPawnEntity.builder()
                 .name(MoveOnPawnActionInputModel.NAME)
                 .effectOnPawnEntityList(effectOnPawnEntityArrayList)
                 .pawnId(pawnId)
+                .conditions(Collections.singleton(ConditionOnPawnEntity.builder()
+                                                          .attribute(
+                                                                  PawnLongAttributeExtractor.VALUE)
+                                                          .comparator(
+                                                                  NumberAttributeComparatorUtil.GREATER_THAN)
+                                                          .value(0L)
+                                                          .build()))
                 .build();
 
         effectOnPawnEntityArrayList.add(MoveOnPawnEntity.builder()
-                                                .pawn(Pawn.builder()
-                                                              .id(this.getPawnId())
-                                                              .build())
-                                                .x(this.getX())
-                                                .y(this.getY())
+                                                .action(actionOnPawnEntity)
+                                                .pawn(pawn)
                                                 .type(MoveOnPawn.NAME)
                                                 .age(0)
-                                                .conditions(Collections.singletonList(ConditionOnPawnEntity.builder()
-                                                                                              .attribute(
-                                                                                                      PawnLongAttributeExtractor.VALUE)
-                                                                                              .comparator(
-                                                                                                      NumberAttributeComparatorUtil.GREATER_THAN)
-                                                                                              .value(10L)
-                                                                                              .build()))
-                                                .build()
-        );
+                                                .isSideEffect(false)
+                                                .x(this.getX())
+                                                .y(this.getY())
+                                                .build());
+        effectOnPawnEntityArrayList.add(IncrementValueOnPawnEntity.builder()
+                                                .action(actionOnPawnEntity)
+                                                .pawn(pawn)
+                                                .type(IncrementValueOnPawn.NAME)
+                                                .age(0)
+                                                .isSideEffect(true)
+                                                .duration(Integer.MAX_VALUE)
+                                                .rate(-1)
+                                                .build());
         return actionOnPawnEntity;
     }
 }

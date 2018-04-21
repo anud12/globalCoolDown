@@ -57,6 +57,7 @@ export class InteractiveRenderComponent implements OnInit {
 
             this.drawSelectBox(context);
             this.drawSelectDecorators(context);
+            this.drawInformation(context);
         }
     }
 
@@ -83,6 +84,18 @@ export class InteractiveRenderComponent implements OnInit {
                 pawnDecoratorSize + this.pawnDecoratorRadius * 2,
                 pawnDecoratorSize + this.pawnDecoratorRadius * 2 - this.pawnDecoratorYOffset);
             context.stroke();
+        });
+    }
+
+    private drawInformation(context: CanvasRenderingContext2D) {
+        this.pawnService.getSelectedList().forEach(value => {
+            context.font = `${this.uiService.fontSize }px gnu-unifont`;
+            context.fillStyle = this.strokeColor;
+            context.fillText(
+                'V:' + value.value as any,
+                value.point.x * this.uiService.coordinateScale,
+                value.point.y * this.uiService.coordinateScale + this.uiService.fontSize
+            );
         });
     }
 
@@ -163,4 +176,6 @@ export class InteractiveRenderComponent implements OnInit {
         }
         return false;
     }
+
+
 }

@@ -8,13 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.anud.globalcooldown.action.ActionOnPawn;
 import ro.anud.globalcooldown.condition.ConditionOnPawnEntity;
+import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
 import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
 import ro.anud.globalcooldown.entity.MoveOnPawnEntity;
 import ro.anud.globalcooldown.entity.Pawn;
 import ro.anud.globalcooldown.geometry.Point;
 import ro.anud.globalcooldown.geometry.Vector;
 
-import java.util.List;
 import java.util.Objects;
 
 import static ro.anud.globalcooldown.effects.EffectOnPawnPriority.MOVEMENT;
@@ -32,7 +32,7 @@ public class MoveOnPawn implements EffectOnPawn {
     private Point destination;
     private ActionOnPawn actionOnPawn;
     private Integer age;
-    private List<ConditionOnPawnEntity> conditions;
+    private Boolean isSideEffect;
 
     @Builder
     public MoveOnPawn(Long id,
@@ -40,19 +40,23 @@ public class MoveOnPawn implements EffectOnPawn {
                       Point destination,
                       ActionOnPawn actionOnPawn,
                       Integer age,
-                      List<ConditionOnPawnEntity> conditions) {
+                      Boolean isSideEffect) {
         this.id = Objects.requireNonNull(id, "id must not be null");
         this.pawn = Objects.requireNonNull(pawn, "pawn must not be null");
         this.destination = Objects.requireNonNull(destination, "destination must not be null");
         this.actionOnPawn = Objects.requireNonNull(actionOnPawn, "actionOnPawn must not be null");
         this.age = Objects.requireNonNull(age, "age must not be null");
-        this.conditions = Objects.requireNonNull(conditions, "conditions must not be null");
+        this.isSideEffect = Objects.requireNonNull(isSideEffect, "isSideEffect must not be null");
         arrived = false;
     }
 
     @Override
     public Pawn execute() {
-        LOGGER.debug("for " + pawn.toString());
+        LOGGER.debug("execute " +
+                             "id=" + id +
+                             ", group=" + actionOnPawn.getId() +
+                             ", depth=" + actionOnPawn.getDepth() +
+                             ", for " + pawn);
         arrived = pawn.getPoint().distance(destination) < pawn.getSpeed();
         if (arrived) {
             return pawn.streamSetPoint(destination);
@@ -73,41 +77,50 @@ public class MoveOnPawn implements EffectOnPawn {
                 .x(this.getDestination().getX())
                 .y(this.getDestination().getY())
                 .age(this.age)
-                .conditions(conditions)
+                .action(ActionOnPawnEntity.builder()
+                                .id(this.getActionOnPawn().getId())
+                                .build())
+                .isSideEffect(isSideEffect)
                 .build();
     }
 
     @Override
     public void incrementAge() {
         this.age += 1;
-        LOGGER.debug("increment age :" + this.age);
+        LOGGER.debug("incrementAge :" + this.age);
     }
 
     @Override
     public void resetAge() {
-        LOGGER.debug("reset age");
         this.age = 0;
+        LOGGER.debug("resetAge :" + this.age);
     }
 
     @Override
     public boolean isRemovable() {
+        LOGGER.debug("isRemovable :" + arrived);
         return arrived;
     }
 
     @Override
     public EffectOnPawnPriority getPriority() {
+        LOGGER.debug("getPriority :" + MOVEMENT);
         return MOVEMENT;
     }
 
 
     @Override
     public boolean isExecutable() {
-        for (ConditionOnPawnEntity condition : conditions) {
+        boolean executable;
+        executable = actionOnPawn.getDepth() == 0;
+        for (ConditionOnPawnEntity condition : actionOnPawn.getConditionOnPawnEntitySet()) {
             if (!condition.test(pawn)) {
-                return false;
+                executable = false;
             }
         }
-        return actionOnPawn.getDepth() == 0;
+
+        LOGGER.debug("isExecutable :" + executable);
+        return executable;
     }
 
     @Override

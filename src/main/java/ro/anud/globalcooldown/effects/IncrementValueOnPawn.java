@@ -13,7 +13,6 @@ import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
 import ro.anud.globalcooldown.entity.IncrementValueOnPawnEntity;
 import ro.anud.globalcooldown.entity.Pawn;
 
-import java.util.List;
 import java.util.Objects;
 
 import static ro.anud.globalcooldown.effects.EffectOnPawnPriority.ADDITION;
@@ -32,7 +31,7 @@ public class IncrementValueOnPawn implements EffectOnPawn {
     private boolean completed;
     private ActionOnPawn actionOnPawn;
     private Integer age;
-    private List<ConditionOnPawnEntity> conditions;
+    private Boolean isSideEffect;
 
     @Builder
     private IncrementValueOnPawn(Long id,
@@ -41,21 +40,21 @@ public class IncrementValueOnPawn implements EffectOnPawn {
                                  Integer rate,
                                  ActionOnPawn actionOnPawn,
                                  Integer age,
-                                 List<ConditionOnPawnEntity> conditions) {
+                                 Boolean isSideEffect) {
         this.id = Objects.requireNonNull(id, "id must not be null");
         this.pawn = Objects.requireNonNull(pawn, "pawn must not be null");
         this.duration = Objects.requireNonNull(duration, "duration must not be null");
         this.rate = Objects.requireNonNull(rate, "rate must not be null");
         this.actionOnPawn = Objects.requireNonNull(actionOnPawn, "actionOnPawn must not be null");
         this.age = Objects.requireNonNull(age, "age must not be null");
-        this.conditions = Objects.requireNonNull(conditions, "conditions must not be null");
+        this.isSideEffect = Objects.requireNonNull(isSideEffect, "isSideEffect must not be null");
         this.completed = false;
     }
 
     @Override
     public Pawn execute() {
         LOGGER.debug(
-                "EXECUTING " +
+                "execute " +
                         "id=" + id +
                         ", group=" + actionOnPawn.getId() +
                         ", depth=" + actionOnPawn.getDepth() +
@@ -77,35 +76,48 @@ public class IncrementValueOnPawn implements EffectOnPawn {
                 .rate(this.getRate())
                 .age(this.getAge())
                 .action(ActionOnPawnEntity.builder()
-                                            .id(this.getActionOnPawn().getId())
-                                            .build())
-                .conditions(conditions)
+                                .id(this.getActionOnPawn().getId())
+                                .build())
+                .isSideEffect(isSideEffect)
                 .build();
     }
 
     @Override
     public void incrementAge() {
         this.age += 1;
+        LOGGER.debug("incrementAge :" + this.age);
     }
 
     @Override
     public void resetAge() {
         this.age = 0;
+        LOGGER.debug("resetAge :" + this.age);
     }
 
     @Override
     public boolean isRemovable() {
+        LOGGER.debug("isRemovable :" + completed);
         return completed;
     }
 
     @Override
     public EffectOnPawnPriority getPriority() {
+        LOGGER.debug("getPriority :" + ADDITION);
         return ADDITION;
     }
 
     @Override
     public boolean isExecutable() {
-        return actionOnPawn.getDepth() == 0;
+        boolean executable;
+        executable = actionOnPawn.getDepth() == 0;
+        for (ConditionOnPawnEntity condition : actionOnPawn.getConditionOnPawnEntitySet()) {
+            if (!condition.test(pawn)) {
+                executable = false;
+            }
+        }
+
+        LOGGER.debug("isExecutable :" + executable);
+        return executable;
     }
 
     @Override

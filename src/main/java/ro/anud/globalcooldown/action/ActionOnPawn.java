@@ -2,6 +2,9 @@ package ro.anud.globalcooldown.action;
 
 import lombok.Builder;
 import lombok.Data;
+import ro.anud.globalcooldown.condition.ConditionOnPawnEntity;
+
+import java.util.Set;
 
 @Data
 @Builder
@@ -10,6 +13,7 @@ public class ActionOnPawn {
     private Integer depth;
     private String type;
     private Long id;
+    private Set<ConditionOnPawnEntity> conditionOnPawnEntitySet;
 
     @Override
     public boolean equals(Object o) {
