@@ -7,7 +7,6 @@ import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.anud.globalcooldown.action.ActionOnPawn;
-import ro.anud.globalcooldown.condition.ConditionOnPawnEntity;
 import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
 import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
 import ro.anud.globalcooldown.entity.IncrementValueOnPawnEntity;
@@ -20,34 +19,30 @@ import static ro.anud.globalcooldown.effects.EffectOnPawnPriority.ADDITION;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class IncrementValueOnPawn implements EffectOnPawn {
+public class IncrementValueOnPawn extends EffectOnPawn {
     public static final String NAME = "INCREMENT_VALUE";
     private static final Logger LOGGER = LoggerFactory.getLogger(IncrementValueOnPawn.class);
 
-    private Long id;
-    protected Pawn pawn;
     private int duration;
     private int rate;
     private boolean completed;
-    private ActionOnPawn actionOnPawn;
-    private Integer age;
-    private Boolean isSideEffect;
+    private EffectOnPawnPriority priority;
 
     @Builder
-    private IncrementValueOnPawn(Long id,
-                                 Pawn pawn,
-                                 int duration,
-                                 Integer rate,
-                                 ActionOnPawn actionOnPawn,
-                                 Integer age,
-                                 Boolean isSideEffect) {
-        this.id = Objects.requireNonNull(id, "id must not be null");
-        this.pawn = Objects.requireNonNull(pawn, "pawn must not be null");
+    private IncrementValueOnPawn(final Long id,
+                                 final Pawn pawn,
+                                 final ActionOnPawn actionOnPawn,
+                                 final Integer age,
+                                 final Boolean isSideEffect,
+                                 final int duration,
+                                 final Integer rate) {
+        super(id, pawn, actionOnPawn, age, isSideEffect, LOGGER);
         this.duration = Objects.requireNonNull(duration, "duration must not be null");
         this.rate = Objects.requireNonNull(rate, "rate must not be null");
-        this.actionOnPawn = Objects.requireNonNull(actionOnPawn, "actionOnPawn must not be null");
-        this.age = Objects.requireNonNull(age, "age must not be null");
-        this.isSideEffect = Objects.requireNonNull(isSideEffect, "isSideEffect must not be null");
+        this.priority = EffectOnPawnPriority.SUBTRACTION;
+        if(rate < 0) {
+            priority = EffectOnPawnPriority.ADDITION;
+        }
         this.completed = false;
     }
 
@@ -72,26 +67,14 @@ public class IncrementValueOnPawn implements EffectOnPawn {
                 .id(this.getId())
                 .type(IncrementValueOnPawn.NAME)
                 .duration(this.getDuration())
-                .pawn(this.getPawn())
+                .pawn(this.pawn)
                 .rate(this.getRate())
                 .age(this.getAge())
                 .action(ActionOnPawnEntity.builder()
-                                .id(this.getActionOnPawn().getId())
+                                .id(this.actionOnPawn.getId())
                                 .build())
                 .isSideEffect(isSideEffect)
                 .build();
-    }
-
-    @Override
-    public void incrementAge() {
-        this.age += 1;
-        LOGGER.debug("incrementAge :" + this.age);
-    }
-
-    @Override
-    public void resetAge() {
-        this.age = 0;
-        LOGGER.debug("resetAge :" + this.age);
     }
 
     @Override
@@ -102,27 +85,9 @@ public class IncrementValueOnPawn implements EffectOnPawn {
 
     @Override
     public EffectOnPawnPriority getPriority() {
+
         LOGGER.debug("getPriority :" + ADDITION);
         return ADDITION;
-    }
-
-    @Override
-    public boolean isExecutable() {
-        boolean executable;
-        executable = actionOnPawn.getDepth() == 0;
-        for (ConditionOnPawnEntity condition : actionOnPawn.getConditionOnPawnEntitySet()) {
-            if (!condition.test(pawn)) {
-                executable = false;
-            }
-        }
-
-        LOGGER.debug("isExecutable :" + executable);
-        return executable;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
     }
 
 
