@@ -1,7 +1,7 @@
 package ro.anud.globalcooldown.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ro.anud.globalcooldown.condition.ConditionOnPawnEntity;
+import ro.anud.globalcooldown.entity.ConditionOnPawnEntity;
 
 public interface ConditionOnPawnRepository extends JpaRepository<ConditionOnPawnEntity, Long> {
 

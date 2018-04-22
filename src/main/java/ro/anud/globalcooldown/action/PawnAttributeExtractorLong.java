@@ -1,16 +1,16 @@
-package ro.anud.globalcooldown.condition;
+package ro.anud.globalcooldown.action;
 
 import ro.anud.globalcooldown.entity.Pawn;
 
 import java.util.Objects;
 import java.util.function.Function;
 
-public enum PawnLongAttributeExtractor {
+public enum PawnAttributeExtractorLong {
     VALUE(Pawn::getValue);
 
     private Function<Pawn, Long> extractor;
 
-    PawnLongAttributeExtractor(Function<Pawn, Long> extractor) {
+    PawnAttributeExtractorLong(Function<Pawn, Long> extractor) {
         this.extractor = Objects.requireNonNull(extractor, "extractor must not be null");
     }
 

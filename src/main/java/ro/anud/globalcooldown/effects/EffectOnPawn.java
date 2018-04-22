@@ -2,7 +2,7 @@ package ro.anud.globalcooldown.effects;
 
 import org.slf4j.Logger;
 import ro.anud.globalcooldown.action.ActionOnPawn;
-import ro.anud.globalcooldown.condition.ConditionOnPawnEntity;
+import ro.anud.globalcooldown.entity.ConditionOnPawnEntity;
 import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
 import ro.anud.globalcooldown.entity.Pawn;
 

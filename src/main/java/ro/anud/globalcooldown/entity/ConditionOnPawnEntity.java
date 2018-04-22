@@ -1,10 +1,11 @@
-package ro.anud.globalcooldown.condition;
+package ro.anud.globalcooldown.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ro.anud.globalcooldown.entity.Pawn;
+import ro.anud.globalcooldown.comparator.LongComparator;
+import ro.anud.globalcooldown.action.PawnAttributeExtractorLong;
 
 import javax.persistence.*;
 
@@ -21,8 +22,8 @@ public class ConditionOnPawnEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_condition_on_pawn_gen")
     @SequenceGenerator(name = "seq_condition_on_pawn_gen", allocationSize = 1, sequenceName = "seq_condition_on_pawn")
     private Long id;
-    private PawnLongAttributeExtractor attribute;
-    private NumberAttributeComparatorUtil comparator;
+    private PawnAttributeExtractorLong attribute;
+    private LongComparator comparator;
     private Long value;
 
     public boolean test(Pawn pawn) {

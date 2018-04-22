@@ -3,9 +3,9 @@ package ro.anud.globalcooldown.model.action;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ro.anud.globalcooldown.condition.ConditionOnPawnEntity;
-import ro.anud.globalcooldown.condition.NumberAttributeComparatorUtil;
-import ro.anud.globalcooldown.condition.PawnLongAttributeExtractor;
+import ro.anud.globalcooldown.entity.ConditionOnPawnEntity;
+import ro.anud.globalcooldown.comparator.LongComparator;
+import ro.anud.globalcooldown.action.PawnAttributeExtractorLong;
 import ro.anud.globalcooldown.effects.IncrementValueOnPawn;
 import ro.anud.globalcooldown.effects.MoveOnPawn;
 import ro.anud.globalcooldown.entity.*;
@@ -36,9 +36,9 @@ public class MoveOnPawnActionInputModel implements ActionOnPawnInputModel {
                 .pawnId(pawnId)
                 .conditions(Collections.singleton(ConditionOnPawnEntity.builder()
                                                           .attribute(
-                                                                  PawnLongAttributeExtractor.VALUE)
+                                                                  PawnAttributeExtractorLong.VALUE)
                                                           .comparator(
-                                                                  NumberAttributeComparatorUtil.GREATER_THAN)
+                                                                  LongComparator.GREATER_THAN)
                                                           .value(0L)
                                                           .build()))
                 .build();
