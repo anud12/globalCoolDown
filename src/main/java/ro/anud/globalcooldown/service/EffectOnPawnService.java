@@ -21,6 +21,7 @@ public class EffectOnPawnService {
     private static Logger LOGGER = LoggerFactory.getLogger(EffectOnPawnService.class);
     private EffectOnPawnRepository effectOnPawnRepository;
     private ConditionOnPawnRepository conditionOnPawnRepository;
+    private AreaService areaService;
 
     @PostConstruct
     public void onInit() {
@@ -30,7 +31,7 @@ public class EffectOnPawnService {
         return effectOnPawnRepository.findAll()
                 .stream()
                 .peek(effectOnPawn -> LOGGER.debug("GETTING " + effectOnPawn.getId()))
-                .map(EffectOnPawnEntity::toAction)
+                .map(effectOnPawnEntity -> effectOnPawnEntity.toAction(areaService))
                 .collect(Collectors.toList());
     }
 
@@ -54,7 +55,7 @@ public class EffectOnPawnService {
                                                    .peek(effectOnPawn -> LOGGER.debug("SAVING " + effectOnPawn.getId()))
                                                    .collect(Collectors.toList())
         ).stream()
-                .map(EffectOnPawnEntity::toAction)
+                .map(effectOnPawnEntity -> effectOnPawnEntity.toAction(areaService))
                 .collect(Collectors.toList());
 
     }

@@ -34,7 +34,7 @@ public class PawnController {
     }
 
     @MessageMapping("/pawn")
-    @SendTo("/world")
+    @SendTo("/pawn")
     public List<PawnOutputModel> getAll(final String message) {
         System.out.println(message);
         simpMessagingTemplate.convertAndSend("/app/world", pawnService.getAll().stream()
@@ -44,7 +44,7 @@ public class PawnController {
                 .collect(Collectors.toList());
     }
 
-    @SubscribeMapping("/world")
+    @SubscribeMapping("/pawn")
     public List<PawnOutputModel> pawnSubscription() {
         System.out.println("onSubscribe");
         return pawnService.getAll().stream().map(PawnMapper::toPawnOutputModel)

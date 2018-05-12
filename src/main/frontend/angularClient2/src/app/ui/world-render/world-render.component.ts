@@ -2,6 +2,7 @@ import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {PawnService} from '../../pawn/pawn.service';
 import {UiService} from '../ui.service';
 import {AuthenticationService} from '../../authentication/authentication.service';
+import {MapService} from '../../map/map.service';
 
 @Component({
     selector: 'app-world-render',
@@ -14,15 +15,20 @@ export class WorldRenderComponent implements OnInit {
     private ownColor: string;
     private neutralColor: string;
     private backgroundColor: string;
+    private mapBackgroundColor: string;
+    private mapStrokeColor: string;
 
     constructor(private pawnService: PawnService,
+                private areaService: MapService,
                 private uiService: UiService,
                 @Inject('Window') private window: Window,
                 private authenticationService: AuthenticationService) {
         this.strokeColor = 'white';
         this.ownColor = 'green';
         this.neutralColor = 'teal';
-        this.backgroundColor = '#424242';
+        this.backgroundColor = 'black';
+        this.mapBackgroundColor = '#263238';
+        this.mapStrokeColor = '#78909C';
     }
 
     @ViewChild('canvas') canvasRef: ElementRef;
@@ -31,6 +37,9 @@ export class WorldRenderComponent implements OnInit {
     public height: number = 0;
 
     ngOnInit() {
+        this.areaService.getAreaStompSubscription().subscribe(() => {
+            console.log('render area subscription');
+        });
         this.uiService.getDrawObserver().subscribe(() => {
             this.draw();
         });
@@ -44,7 +53,7 @@ export class WorldRenderComponent implements OnInit {
             //fill in the background
             context.fillStyle = this.backgroundColor;
             context.fillRect(0, 0, this.width, this.height);
-
+            this.drawArea(context);
             this.pawnService.getListById().forEach(value => {
                 context.font = `${this.uiService.fontSize}px gnu-unifont`;
                 if (this.authenticationService.getModel().id === value.userId) {
@@ -69,5 +78,24 @@ export class WorldRenderComponent implements OnInit {
         this.canvas.height = this.height;
         this.canvas.width = this.width;
         this.draw();
+    }
+
+    drawArea(context: CanvasRenderingContext2D) {
+        const area = this.areaService.getArea();
+        context.beginPath();
+        area.lineList.forEach(value => {
+            context.lineTo(value.start.x * this.uiService.coordinateScale, value.start.y * this.uiService.coordinateScale);
+        });
+        context.closePath();
+        context.fillStyle = this.mapBackgroundColor;
+        context.fill();
+
+        context.beginPath();
+        area.lineList.forEach(value => {
+            context.lineTo(value.start.x * this.uiService.coordinateScale, value.start.y * this.uiService.coordinateScale);
+        });
+       context.closePath();
+       context.strokeStyle = this.mapStrokeColor;
+       context.stroke();
     }
 }

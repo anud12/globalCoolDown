@@ -16,7 +16,7 @@ public class PawnPublisher {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     public void publish(List<Pawn> pawnList) {
-        simpMessagingTemplate.convertAndSend("/app/world", pawnList
+        simpMessagingTemplate.convertAndSend("/app/pawn", pawnList
                 .stream()
                 .map(PawnMapper::toPawnOutputModel)
                 .collect(Collectors.toList()));

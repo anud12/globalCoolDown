@@ -4,6 +4,7 @@ import lombok.*;
 import ro.anud.globalcooldown.effects.EffectOnPawn;
 import ro.anud.globalcooldown.effects.IncrementValueOnPawn;
 import ro.anud.globalcooldown.mapper.ActionOnPawnMapper;
+import ro.anud.globalcooldown.service.AreaService;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -40,7 +41,7 @@ public class IncrementValueOnPawnEntity extends EffectOnPawnEntity {
     }
 
     @Override
-    public EffectOnPawn toAction() {
+    public EffectOnPawn toAction(AreaService areaService) {
         return IncrementValueOnPawn.builder()
                 .id(this.getId())
                 .duration(this.getDuration())

@@ -5,6 +5,7 @@ import ro.anud.globalcooldown.effects.EffectOnPawn;
 import ro.anud.globalcooldown.effects.MoveOnPawn;
 import ro.anud.globalcooldown.geometry.Point;
 import ro.anud.globalcooldown.mapper.ActionOnPawnMapper;
+import ro.anud.globalcooldown.service.AreaService;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -42,7 +43,7 @@ public class MoveOnPawnEntity extends EffectOnPawnEntity {
     }
 
     @Override
-    public EffectOnPawn toAction() {
+    public EffectOnPawn toAction(AreaService areaService) {
         return MoveOnPawn.builder()
                 .id(this.getId())
                 .destination(new Point(this.getX(),
@@ -52,6 +53,7 @@ public class MoveOnPawnEntity extends EffectOnPawnEntity {
                 .actionOnPawn(ActionOnPawnMapper.toAction(this.getAction()))
                 .age(age)
                 .isSideEffect(isSideEffect)
+                .areaService(areaService)
                 .build();
     }
 }

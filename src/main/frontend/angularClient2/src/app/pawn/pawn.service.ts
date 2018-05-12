@@ -61,7 +61,7 @@ export class PawnService {
     }
 
     subscribe() {
-        this.subscription = this.stompService.subscribe('/app/world')
+        this.subscription = this.stompService.subscribe('/app/pawn')
             .subscribe(message => {
                 const pawnList: Array<PawnModel> = JSON.parse(message.body);
                 pawnList.forEach(element => {

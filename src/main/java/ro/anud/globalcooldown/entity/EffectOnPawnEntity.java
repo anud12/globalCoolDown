@@ -3,6 +3,7 @@ package ro.anud.globalcooldown.entity;
 import lombok.Data;
 import lombok.ToString;
 import ro.anud.globalcooldown.effects.EffectOnPawn;
+import ro.anud.globalcooldown.service.AreaService;
 
 import javax.persistence.*;
 
@@ -30,5 +31,5 @@ public abstract class EffectOnPawnEntity {
 
     protected Boolean isSideEffect;
 
-    public abstract EffectOnPawn toAction();
+    public abstract EffectOnPawn toAction(AreaService areaService);
 }
