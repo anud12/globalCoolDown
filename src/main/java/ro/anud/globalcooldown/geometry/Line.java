@@ -2,11 +2,13 @@ package ro.anud.globalcooldown.geometry;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Optional;
 
 @Data
 @Builder
+@EqualsAndHashCode
 public class Line {
 
 
@@ -60,4 +62,23 @@ public class Line {
         return findIntersection(this, l2);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Line)) return false;
+        if (!super.equals(o)) return false;
+
+        Line line = (Line) o;
+
+        if (getStart() != null ? !getStart().equals(line.getStart()) : line.getStart() != null) return false;
+        return getEnd() != null ? getEnd().equals(line.getEnd()) : line.getEnd() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (getStart() != null ? getStart().hashCode() : 0);
+        result = 31 * result + (getEnd() != null ? getEnd().hashCode() : 0);
+        return result;
+    }
 }
