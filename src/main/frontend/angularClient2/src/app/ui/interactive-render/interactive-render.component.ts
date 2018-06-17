@@ -89,7 +89,7 @@ export class InteractiveRenderComponent implements OnInit {
 
     private drawInformation(context: CanvasRenderingContext2D) {
         this.pawnService.getSelectedList().forEach(value => {
-            context.font = `${this.uiService.fontSize }px gnu-unifont`;
+            context.font = `${this.uiService.fontSize/1.5 }px gnu-unifont`;
             context.fillStyle = this.strokeColor;
             context.fillText(
                 'V:' + value.value as any,

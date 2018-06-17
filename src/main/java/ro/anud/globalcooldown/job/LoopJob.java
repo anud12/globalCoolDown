@@ -28,7 +28,7 @@ public class LoopJob {
     private ActionService actionService;
     private GameDataService gameDataService;
 
-    @Scheduled(fixedRate = 250)
+    @Scheduled(fixedRate = 30)
     public void loop() {
 
         List<EffectOnPawn> effectOnPawnList = effectOnPawnService.getAll();
@@ -48,6 +48,7 @@ public class LoopJob {
 
         effectOnPawnService.updateAll(effectOnPawnList);
         actionService.updateAll();
-        pawnPublisher.publish(pawnService.saveAll(pawnList));
+        pawnService.saveAll(pawnList);
+        pawnPublisher.publish(pawnService.getAll());
     }
 }
