@@ -21,7 +21,6 @@ public class EffectOnPawnService {
     private static Logger LOGGER = LoggerFactory.getLogger(EffectOnPawnService.class);
     private EffectOnPawnRepository effectOnPawnRepository;
     private ConditionOnPawnRepository conditionOnPawnRepository;
-    private AreaService areaService;
 
     @PostConstruct
     public void onInit() {
@@ -31,7 +30,7 @@ public class EffectOnPawnService {
         return effectOnPawnRepository.findAll()
                 .stream()
                 .peek(effectOnPawn -> LOGGER.debug("GETTING " + effectOnPawn.getId()))
-                .map(effectOnPawnEntity -> effectOnPawnEntity.toAction(areaService))
+                .map(EffectOnPawnEntity::toAction)
                 .collect(Collectors.toList());
     }
 
@@ -39,9 +38,9 @@ public class EffectOnPawnService {
     public List<EffectOnPawn> updateAll(List<EffectOnPawn> effectOnPawnList) {
         List<EffectOnPawnEntity> toBeDeletedList = effectOnPawnList.stream()
                 .filter(EffectOnPawn::isRemovable)
+                .map(EffectOnPawn::toEntity)
                 .peek(effectOnPawn -> LOGGER.debug(
                         "DELETING " + effectOnPawn.getId()))
-                .map(EffectOnPawn::toEntity)
                 .collect(Collectors.toList());
         effectOnPawnRepository.deleteInBatch(toBeDeletedList);
         return effectOnPawnRepository.save(effectOnPawnList.stream()
@@ -55,7 +54,7 @@ public class EffectOnPawnService {
                                                    .peek(effectOnPawn -> LOGGER.debug("SAVING " + effectOnPawn.getId()))
                                                    .collect(Collectors.toList())
         ).stream()
-                .map(effectOnPawnEntity -> effectOnPawnEntity.toAction(areaService))
+                .map(EffectOnPawnEntity::toAction)
                 .collect(Collectors.toList());
 
     }

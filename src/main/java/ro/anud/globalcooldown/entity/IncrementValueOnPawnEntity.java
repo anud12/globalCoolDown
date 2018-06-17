@@ -1,13 +1,14 @@
 package ro.anud.globalcooldown.entity;
 
 import lombok.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.anud.globalcooldown.effects.EffectOnPawn;
 import ro.anud.globalcooldown.effects.IncrementValueOnPawn;
-import ro.anud.globalcooldown.mapper.ActionOnPawnMapper;
-import ro.anud.globalcooldown.service.AreaService;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Objects;
 
 @Entity
@@ -18,8 +19,13 @@ import java.util.Objects;
 @AllArgsConstructor
 @ToString(callSuper = true)
 public class IncrementValueOnPawnEntity extends EffectOnPawnEntity {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IncrementValueOnPawn.class);
+
     private int duration;
     private int rate;
+
+    @Transient
+    private boolean completed;
 
     @Builder
     private IncrementValueOnPawnEntity(final Long id,
@@ -41,15 +47,9 @@ public class IncrementValueOnPawnEntity extends EffectOnPawnEntity {
     }
 
     @Override
-    public EffectOnPawn toAction(AreaService areaService) {
+    public EffectOnPawn toAction() {
         return IncrementValueOnPawn.builder()
-                .id(this.getId())
-                .duration(this.getDuration())
-                .rate(this.rate)
-                .pawn(this.getPawn())
-                .actionOnPawn(ActionOnPawnMapper.toAction(this.getAction()))
-                .age(age)
-                .isSideEffect(isSideEffect)
+                .incrementValueOnPawnEntity(this)
                 .build();
     }
 }

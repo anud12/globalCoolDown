@@ -43,17 +43,9 @@ public class MoveOnPawnEntity extends EffectOnPawnEntity {
     }
 
     @Override
-    public EffectOnPawn toAction(AreaService areaService) {
+    public EffectOnPawn toAction() {
         return MoveOnPawn.builder()
-                .id(this.getId())
-                .destination(new Point(this.getX(),
-                                       this.getY())
-                )
-                .pawn(this.getPawn())
-                .actionOnPawn(ActionOnPawnMapper.toAction(this.getAction()))
-                .age(age)
-                .isSideEffect(isSideEffect)
-                .areaService(areaService)
+                .moveOnPawnEntity(this)
                 .build();
     }
 }

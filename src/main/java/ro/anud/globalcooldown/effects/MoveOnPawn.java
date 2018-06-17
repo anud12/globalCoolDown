@@ -6,15 +6,12 @@ import lombok.Getter;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.anud.globalcooldown.action.ActionOnPawn;
-import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
-import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
-import ro.anud.globalcooldown.entity.MoveOnPawnEntity;
-import ro.anud.globalcooldown.entity.Pawn;
+import ro.anud.globalcooldown.entity.*;
 import ro.anud.globalcooldown.geometry.Line;
 import ro.anud.globalcooldown.geometry.Point;
 import ro.anud.globalcooldown.geometry.Vector;
 import ro.anud.globalcooldown.service.AreaService;
+import ro.anud.globalcooldown.service.GameDataService;
 
 import java.util.Objects;
 
@@ -23,31 +20,37 @@ import static ro.anud.globalcooldown.effects.EffectOnPawnPriority.MOVEMENT;
 @Getter
 @EqualsAndHashCode
 @ToString(callSuper = true)
-public class MoveOnPawn extends EffectOnPawn {
+public class MoveOnPawn implements EffectOnPawn {
     public static final String NAME = "MOVE_ACTION";
     private static final Logger LOGGER = LoggerFactory.getLogger(MoveOnPawn.class);
     private static Long COLLISSION_REVERT_DISTANCE = 10L;
 
     private boolean arrived;
-    private Point destination;
-    private AreaService areaService;
+
+    private final Long id;
+    private final Pawn pawn;
+    private final ActionOnPawnEntity actionOnPawn;
+    private final Boolean isSideEffect;
+
+    private final Point destination;
+    private Integer age;
 
     @Builder
-    public MoveOnPawn(Long id,
-                      Pawn pawn,
-                      Point destination,
-                      ActionOnPawn actionOnPawn,
-                      Integer age,
-                      Boolean isSideEffect,
-                      AreaService areaService) {
-        super(id, pawn, actionOnPawn, age, isSideEffect, LOGGER);
-        this.destination = Objects.requireNonNull(destination, "destination must not be null");
-        this.areaService = Objects.requireNonNull(areaService, "areaService must not be null");
+    public MoveOnPawn(final MoveOnPawnEntity moveOnPawnEntity) {
+        Objects.requireNonNull(moveOnPawnEntity, "moveOnPawnEntity must not be null");
+        this.id = moveOnPawnEntity.getId();
+        this.pawn = moveOnPawnEntity.getPawn();
+        this.actionOnPawn = moveOnPawnEntity.getAction();
+        this.age = moveOnPawnEntity.getAge();
+        this.isSideEffect = moveOnPawnEntity.getIsSideEffect();
+        this.destination = new Point(moveOnPawnEntity.getX(), moveOnPawnEntity.getY());
+
         arrived = false;
     }
 
     @Override
-    public Pawn execute() {
+    public Pawn execute(final GameDataService gameDataService) {
+        AreaService areaService = gameDataService.getAreaService();
         LOGGER.debug("execute " +
                              "id=" + id +
                              ", group=" + actionOnPawn.getId() +
@@ -105,6 +108,31 @@ public class MoveOnPawn extends EffectOnPawn {
                                 .build())
                 .isSideEffect(isSideEffect)
                 .build();
+    }
+
+    @Override
+    public boolean isExecutable() {
+        boolean executable;
+        executable = actionOnPawn.getDepth() == 0;
+        for (ConditionOnPawnEntity condition : actionOnPawn.getConditions()) {
+            if (!condition.test(pawn)) {
+                executable = false;
+            }
+        }
+        LOGGER.debug("isExecutable :" + executable);
+        return executable;
+    }
+
+    @Override
+    public void incrementAge() {
+        this.age += 1;
+        LOGGER.debug("incrementAge :" + this.age);
+    }
+
+    @Override
+    public void resetAge() {
+        this.age = 0;
+        LOGGER.debug("resetAge :" + this.age);
     }
 
     @Override

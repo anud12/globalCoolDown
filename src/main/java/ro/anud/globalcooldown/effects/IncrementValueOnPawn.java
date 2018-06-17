@@ -6,11 +6,11 @@ import lombok.Getter;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.anud.globalcooldown.action.ActionOnPawn;
-import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
+import ro.anud.globalcooldown.entity.ConditionOnPawnEntity;
 import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
 import ro.anud.globalcooldown.entity.IncrementValueOnPawnEntity;
 import ro.anud.globalcooldown.entity.Pawn;
+import ro.anud.globalcooldown.service.GameDataService;
 
 import java.util.Objects;
 
@@ -19,62 +19,83 @@ import static ro.anud.globalcooldown.effects.EffectOnPawnPriority.ADDITION;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class IncrementValueOnPawn extends EffectOnPawn {
+public class IncrementValueOnPawn implements EffectOnPawn {
     public static final String NAME = "INCREMENT_VALUE";
     private static final Logger LOGGER = LoggerFactory.getLogger(IncrementValueOnPawn.class);
 
-    private int duration;
-    private int rate;
     private boolean completed;
     private EffectOnPawnPriority priority;
 
+    private IncrementValueOnPawnEntity entity;
+
     @Builder
-    private IncrementValueOnPawn(final Long id,
-                                 final Pawn pawn,
-                                 final ActionOnPawn actionOnPawn,
-                                 final Integer age,
-                                 final Boolean isSideEffect,
-                                 final int duration,
-                                 final Integer rate) {
-        super(id, pawn, actionOnPawn, age, isSideEffect, LOGGER);
-        this.duration = Objects.requireNonNull(duration, "duration must not be null");
-        this.rate = Objects.requireNonNull(rate, "rate must not be null");
+    private IncrementValueOnPawn(final IncrementValueOnPawnEntity incrementValueOnPawnEntity) {
+        this.entity = Objects.requireNonNull(incrementValueOnPawnEntity, "incrementValueOnPawnEntity must not be null");
+
         this.priority = EffectOnPawnPriority.SUBTRACTION;
-        if(rate < 0) {
+        if (incrementValueOnPawnEntity.getRate() < 0) {
             priority = EffectOnPawnPriority.ADDITION;
         }
         this.completed = false;
     }
 
     @Override
-    public Pawn execute() {
+    public Pawn execute(GameDataService gameDataService) {
         LOGGER.debug(
                 "execute " +
-                        "id=" + id +
-                        ", group=" + actionOnPawn.getId() +
-                        ", depth=" + actionOnPawn.getDepth() +
-                        ", for " + pawn);
-        duration--;
-        if (duration <= 0) {
+                        "id=" + entity.getId() +
+                        ", group=" + entity.getAction().getId() +
+                        ", depth=" + entity.getAction().getDepth() +
+                        ", for " + entity.getPawn());
+        entity.setDuration(entity.getDuration() - 1);
+        if (entity.getDuration() <= 0) {
             completed = true;
         }
-        return pawn.streamSetValue(pawn.getValue() + this.rate);
+        return entity.getPawn().streamSetValue(entity.getPawn().getValue() + entity.getRate());
     }
 
     @Override
     public EffectOnPawnEntity toEntity() {
         return IncrementValueOnPawnEntity.builder()
-                .id(this.getId())
+                .id(entity.getId())
                 .type(IncrementValueOnPawn.NAME)
-                .duration(this.getDuration())
-                .pawn(this.pawn)
-                .rate(this.getRate())
-                .age(this.getAge())
-                .action(ActionOnPawnEntity.builder()
-                                .id(this.actionOnPawn.getId())
-                                .build())
-                .isSideEffect(isSideEffect)
+                .duration(entity.getDuration())
+                .pawn(entity.getPawn())
+                .rate(entity.getRate())
+                .age(entity.getAge())
+                .action(entity.getAction())
+                .isSideEffect(entity.getIsSideEffect())
                 .build();
+    }
+
+    @Override
+    public boolean isExecutable() {
+        boolean executable;
+        executable = entity.getAction().getDepth() == 0;
+        for (ConditionOnPawnEntity condition : entity.getAction().getConditions()) {
+            if (!condition.test(entity.getPawn())) {
+                executable = false;
+            }
+        }
+        LOGGER.debug("isExecutable :" + executable);
+        return executable;
+    }
+
+    @Override
+    public void incrementAge() {
+        entity.setAge(entity.getAge() + 1);
+        LOGGER.debug("incrementAge :" + entity.getAge());
+    }
+
+    @Override
+    public void resetAge() {
+        entity.setAge(0);
+        LOGGER.debug("resetAge :" + entity.getAge());
+    }
+
+    @Override
+    public Integer getAge() {
+        return entity.getAge();
     }
 
     @Override

@@ -10,6 +10,7 @@ import ro.anud.globalcooldown.entity.Pawn;
 import ro.anud.globalcooldown.publisher.PawnPublisher;
 import ro.anud.globalcooldown.service.ActionService;
 import ro.anud.globalcooldown.service.EffectOnPawnService;
+import ro.anud.globalcooldown.service.GameDataService;
 import ro.anud.globalcooldown.service.PawnService;
 
 import java.util.Comparator;
@@ -25,7 +26,7 @@ public class LoopJob {
     private EffectOnPawnService effectOnPawnService;
     private PawnPublisher pawnPublisher;
     private ActionService actionService;
-
+    private GameDataService gameDataService;
 
     @Scheduled(fixedRate = 250)
     public void loop() {
@@ -40,7 +41,7 @@ public class LoopJob {
                                 .thenComparing(Comparator.comparing(EffectOnPawn::getAge)
                                                        .reversed()))
                 .peek(EffectOnPawn::resetAge)
-                .map(EffectOnPawn::execute)
+                .map(effectOnPawn -> effectOnPawn.execute(gameDataService))
                 .distinct()
                 .peek(pawn -> pawn.setVersion(pawn.getVersion() + 1))
                 .collect(Collectors.toList());

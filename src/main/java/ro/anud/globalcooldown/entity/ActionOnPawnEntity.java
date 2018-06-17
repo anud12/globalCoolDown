@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -48,5 +49,15 @@ public class ActionOnPawnEntity implements Serializable {
                 ", name='" + name + '\'' +
                 ", parent=" + parent +
                 '}';
+    }
+
+    public Integer getDepth() {
+        int depth = -1;
+        ActionOnPawnEntity action = this;
+        do {
+            depth++;
+            action = action.getParent();
+        } while (Objects.nonNull(action));
+        return depth;
     }
 }
