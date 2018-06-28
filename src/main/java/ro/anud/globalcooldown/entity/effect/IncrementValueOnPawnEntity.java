@@ -1,10 +1,12 @@
-package ro.anud.globalcooldown.entity;
+package ro.anud.globalcooldown.entity.effect;
 
 import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.anud.globalcooldown.effects.EffectOnPawn;
 import ro.anud.globalcooldown.effects.IncrementValueOnPawn;
+import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
+import ro.anud.globalcooldown.entity.Pawn;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -13,7 +15,6 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "increment_value_on_pawn")
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

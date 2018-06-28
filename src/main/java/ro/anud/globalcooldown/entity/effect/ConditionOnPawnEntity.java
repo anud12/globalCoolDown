@@ -1,4 +1,4 @@
-package ro.anud.globalcooldown.entity;
+package ro.anud.globalcooldown.entity.effect;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ro.anud.globalcooldown.comparator.LongComparator;
 import ro.anud.globalcooldown.action.PawnAttributeExtractorLong;
+import ro.anud.globalcooldown.entity.Pawn;
 
 import javax.persistence.*;
 

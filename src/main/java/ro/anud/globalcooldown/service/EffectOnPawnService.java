@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ro.anud.globalcooldown.effects.EffectOnPawn;
 import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
-import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
+import ro.anud.globalcooldown.entity.effect.EffectOnPawnEntity;
 import ro.anud.globalcooldown.repository.ConditionOnPawnRepository;
 import ro.anud.globalcooldown.repository.EffectOnPawnRepository;
 

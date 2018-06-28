@@ -21,7 +21,11 @@ public class PawnService {
         return pawnRepository.save(pawnSet);
     }
 
+    public Pawn save(Pawn pawn) {
+        return pawnRepository.save(pawn);
+    }
+
     public Pawn getById(Long id) {
-		return pawnRepository.findOne(id);
+        return pawnRepository.findOne(id);
     }
 }

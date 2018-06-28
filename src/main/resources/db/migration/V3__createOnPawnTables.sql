@@ -11,7 +11,7 @@ CREATE TABLE action_on_pawn (
 CREATE SEQUENCE seq_effect_on_pawn;
 CREATE TABLE effect_on_pawn (
   id             BIGINT PRIMARY KEY,
-  type           VARCHAR(25) NOT NULL,
+  type           VARCHAR(255) NOT NULL,
   pawn_id        BIGINT      NOT NULL REFERENCES pawn (id),
   age            INT         NOT NULL,
   action_id      BIGINT REFERENCES action_on_pawn (id),
@@ -30,12 +30,16 @@ CREATE TABLE move_on_pawn (
   y  BIGINT NOT NULL
 );
 
+CREATE TABLE create_pawn_on_pawn(
+  id BIGINT PRIMARY KEY REFERENCES effect_on_pawn(id),
+  pawn_generator VARCHAR(255) NOT NULL
+);
 
 CREATE SEQUENCE seq_condition_on_pawn;
 CREATE TABLE condition_on_pawn (
   id         BIGINT PRIMARY KEY,
-  attribute  VARCHAR(25),
-  comparator VARCHAR(25),
+  attribute  VARCHAR(255),
+  comparator VARCHAR(255),
   value      BIGINT NOT NULL,
   action_id  BIGINT REFERENCES action_on_pawn (id)
 );

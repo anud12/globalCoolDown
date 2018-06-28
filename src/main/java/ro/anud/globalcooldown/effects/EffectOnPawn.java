@@ -1,6 +1,6 @@
 package ro.anud.globalcooldown.effects;
 
-import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
+import ro.anud.globalcooldown.entity.effect.EffectOnPawnEntity;
 import ro.anud.globalcooldown.entity.Pawn;
 import ro.anud.globalcooldown.service.GameDataService;
 

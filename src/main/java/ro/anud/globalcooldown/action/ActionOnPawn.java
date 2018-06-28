@@ -2,7 +2,7 @@ package ro.anud.globalcooldown.action;
 
 import lombok.Builder;
 import lombok.Data;
-import ro.anud.globalcooldown.entity.ConditionOnPawnEntity;
+import ro.anud.globalcooldown.entity.effect.ConditionOnPawnEntity;
 
 import java.util.Set;
 

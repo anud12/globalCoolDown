@@ -1,7 +1,7 @@
 package ro.anud.globalcooldown.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
+import ro.anud.globalcooldown.entity.effect.EffectOnPawnEntity;
 
 import java.util.List;
 

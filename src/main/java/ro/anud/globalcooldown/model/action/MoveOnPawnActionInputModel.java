@@ -3,12 +3,15 @@ package ro.anud.globalcooldown.model.action;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ro.anud.globalcooldown.entity.ConditionOnPawnEntity;
+import ro.anud.globalcooldown.entity.effect.ConditionOnPawnEntity;
 import ro.anud.globalcooldown.comparator.LongComparator;
 import ro.anud.globalcooldown.action.PawnAttributeExtractorLong;
 import ro.anud.globalcooldown.effects.IncrementValueOnPawn;
 import ro.anud.globalcooldown.effects.MoveOnPawn;
 import ro.anud.globalcooldown.entity.*;
+import ro.anud.globalcooldown.entity.effect.EffectOnPawnEntity;
+import ro.anud.globalcooldown.entity.effect.IncrementValueOnPawnEntity;
+import ro.anud.globalcooldown.entity.effect.MoveOnPawnEntity;
 
 import java.util.Collections;
 import java.util.HashSet;

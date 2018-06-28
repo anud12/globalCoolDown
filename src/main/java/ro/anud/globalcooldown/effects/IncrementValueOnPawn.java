@@ -6,9 +6,9 @@ import lombok.Getter;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.anud.globalcooldown.entity.ConditionOnPawnEntity;
-import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
-import ro.anud.globalcooldown.entity.IncrementValueOnPawnEntity;
+import ro.anud.globalcooldown.entity.effect.ConditionOnPawnEntity;
+import ro.anud.globalcooldown.entity.effect.EffectOnPawnEntity;
+import ro.anud.globalcooldown.entity.effect.IncrementValueOnPawnEntity;
 import ro.anud.globalcooldown.entity.Pawn;
 import ro.anud.globalcooldown.service.GameDataService;
 

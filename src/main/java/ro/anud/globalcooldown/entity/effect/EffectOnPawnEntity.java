@@ -1,8 +1,10 @@
-package ro.anud.globalcooldown.entity;
+package ro.anud.globalcooldown.entity.effect;
 
 import lombok.Data;
 import lombok.ToString;
 import ro.anud.globalcooldown.effects.EffectOnPawn;
+import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
+import ro.anud.globalcooldown.entity.Pawn;
 
 import javax.persistence.*;
 

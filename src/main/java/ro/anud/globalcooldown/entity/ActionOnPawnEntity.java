@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ro.anud.globalcooldown.entity.effect.ConditionOnPawnEntity;
+import ro.anud.globalcooldown.entity.effect.EffectOnPawnEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;

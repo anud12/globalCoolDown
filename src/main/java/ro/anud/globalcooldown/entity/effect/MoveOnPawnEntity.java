@@ -1,11 +1,10 @@
-package ro.anud.globalcooldown.entity;
+package ro.anud.globalcooldown.entity.effect;
 
 import lombok.*;
 import ro.anud.globalcooldown.effects.EffectOnPawn;
 import ro.anud.globalcooldown.effects.MoveOnPawn;
-import ro.anud.globalcooldown.geometry.Point;
-import ro.anud.globalcooldown.mapper.ActionOnPawnMapper;
-import ro.anud.globalcooldown.service.AreaService;
+import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
+import ro.anud.globalcooldown.entity.Pawn;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;

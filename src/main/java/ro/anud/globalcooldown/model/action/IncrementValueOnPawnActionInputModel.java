@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ro.anud.globalcooldown.effects.IncrementValueOnPawn;
 import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
-import ro.anud.globalcooldown.entity.EffectOnPawnEntity;
-import ro.anud.globalcooldown.entity.IncrementValueOnPawnEntity;
+import ro.anud.globalcooldown.entity.effect.EffectOnPawnEntity;
+import ro.anud.globalcooldown.entity.effect.IncrementValueOnPawnEntity;
 import ro.anud.globalcooldown.entity.Pawn;
 
 import java.util.HashSet;
