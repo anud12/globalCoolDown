@@ -20,7 +20,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class MoveOnPawnActionInputModel implements ActionOnPawnInputModel {
+public class MoveOnPawnAction implements ActionOnPawn {
     public static final String NAME = "MOVE_ACTION";
     private Long pawnId;
     private Long x;
@@ -34,7 +34,7 @@ public class MoveOnPawnActionInputModel implements ActionOnPawnInputModel {
 
         Set<EffectOnPawnEntity> effectOnPawnEntityArrayList = new HashSet<>();
         ActionOnPawnEntity actionOnPawnEntity = ActionOnPawnEntity.builder()
-                .name(MoveOnPawnActionInputModel.NAME)
+                .name(MoveOnPawnAction.NAME)
                 .effectOnPawnEntityList(effectOnPawnEntityArrayList)
                 .pawnId(pawnId)
                 .conditions(Collections.singleton(ConditionOnPawnEntity.builder()

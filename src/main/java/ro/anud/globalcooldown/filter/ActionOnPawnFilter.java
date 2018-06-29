@@ -2,7 +2,7 @@ package ro.anud.globalcooldown.filter;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import ro.anud.globalcooldown.model.action.ActionOnPawnInputModel;
+import ro.anud.globalcooldown.model.action.ActionOnPawn;
 import ro.anud.globalcooldown.repository.PawnRepository;
 import ro.anud.globalcooldown.security.model.SpringSecurityUser;
 
@@ -18,11 +18,11 @@ public class ActionOnPawnFilter {
 		this.pawnRepository = Objects.requireNonNull(pawnRepository, "pawnRepository must not be null");
 	}
 
-	public Optional filter(ActionOnPawnInputModel actionOnPawnInputModel) {
+	public Optional filter(ActionOnPawn actionOnPawn) {
 		SpringSecurityUser springSecurityUser = (SpringSecurityUser) SecurityContextHolder.getContext()
 				.getAuthentication()
 				.getPrincipal();
-		return pawnRepository.findOneById(actionOnPawnInputModel.toEntity().getPawnId())
+		return pawnRepository.findOneById(actionOnPawn.toEntity().getPawnId())
 				.map(pawn -> {
 					if (springSecurityUser.getId().equals(pawn.getUserId())) {
 						return Optional.of(true);

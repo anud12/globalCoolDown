@@ -15,7 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class IncrementValueOnPawnActionInputModel implements ActionOnPawnInputModel {
+public class IncrementValueOnPawnAction implements ActionOnPawn {
 
     public static final String NAME = "INCREMENT_VALUE";
     protected Long pawnId;

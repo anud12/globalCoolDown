@@ -25,7 +25,7 @@ public class CreatePawnOnPawn implements EffectOnPawn {
         Pawn parentPawn = entity.getPawn();
         Pawn pawn = entity.getPawnGenerator().buildPawn();
         pawn.setUserId(parentPawn.getUserId());
-        pawn.setPoint(pawn.getPoint());
+        pawn.setPoint(entity.getPawn().getPoint());
 
         gameDataService.getPawnService().save(pawn);
         return pawn;

@@ -9,9 +9,10 @@ import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = IncrementValueOnPawnActionInputModel.class, name = IncrementValueOnPawnActionInputModel.NAME),
-        @JsonSubTypes.Type(value = MoveOnPawnActionInputModel.class, name = MoveOnPawnActionInputModel.NAME),
+        @JsonSubTypes.Type(value = IncrementValueOnPawnAction.class, name = IncrementValueOnPawnAction.NAME),
+        @JsonSubTypes.Type(value = MoveOnPawnAction.class, name = MoveOnPawnAction.NAME),
+        @JsonSubTypes.Type(value = CreatePawnfromPawn.class, name = CreatePawnfromPawn.NAME),
 })
-public interface ActionOnPawnInputModel {
+public interface ActionOnPawn {
     ActionOnPawnEntity toEntity();
 }

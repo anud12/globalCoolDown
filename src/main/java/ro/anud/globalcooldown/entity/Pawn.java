@@ -3,9 +3,7 @@ package ro.anud.globalcooldown.entity;
 import lombok.*;
 import ro.anud.globalcooldown.geometry.Point;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @AllArgsConstructor
 @Getter
@@ -15,6 +13,8 @@ import javax.persistence.Id;
 @ToString
 public class Pawn {
     @Id
+    @GeneratedValue(generator = "pawn_seq_gen", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "pawn_seq_gen", sequenceName = "pawn_seq", allocationSize = 1)
     private Long id;
     private String name;
     @Column(name = "val")

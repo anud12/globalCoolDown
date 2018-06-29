@@ -11,6 +11,7 @@ public enum PawnGenerator {
             .value(0L)
             .characterCode(80L)
             .speed(100L)
+            .version(0L)
             .build());
 
     private Supplier<Pawn> pawnSupplier;

@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
-import ro.anud.globalcooldown.model.action.ActionOnPawnInputModel;
+import ro.anud.globalcooldown.model.action.ActionOnPawn;
 import ro.anud.globalcooldown.repository.ActionOnPawnRepository;
 
 import java.time.LocalDateTime;
@@ -20,7 +20,7 @@ public class ActionService {
     private static Logger LOGGER = LoggerFactory.getLogger(ActionService.class);
     private ActionOnPawnRepository actionOnPawnRepository;
 
-    public void queue(ActionOnPawnInputModel model) {
+    public void queue(ActionOnPawn model) {
         ActionOnPawnEntity entity = model.toEntity();
         entity.setSaveDateTime(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         actionOnPawnRepository.findFirstByPawnIdAndNameOrderBySaveDateTimeDesc(entity.getPawnId(), entity.getName())
@@ -32,8 +32,8 @@ public class ActionService {
         LOGGER.debug("SAVED " + savedEntity.getId());
     }
 
-    public void override(ActionOnPawnInputModel actionOnPawnInputModel) {
-        ActionOnPawnEntity entity = actionOnPawnInputModel.toEntity();
+    public void override(ActionOnPawn actionOnPawn) {
+        ActionOnPawnEntity entity = actionOnPawn.toEntity();
         actionOnPawnRepository.findFirstByPawnIdAndNameOrderBySaveDateTimeDesc(entity.getPawnId(), entity.getName())
                 .ifPresent(actionOnPawnEntity -> {
                     LOGGER.debug("DELETED " + actionOnPawnEntity.getId());
