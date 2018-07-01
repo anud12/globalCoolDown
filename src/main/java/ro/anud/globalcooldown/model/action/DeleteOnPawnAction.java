@@ -5,7 +5,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
 import ro.anud.globalcooldown.entity.Pawn;
-import ro.anud.globalcooldown.entity.effect.*;
+import ro.anud.globalcooldown.entity.effect.CreatePawnOnPawnEntity;
+import ro.anud.globalcooldown.entity.effect.DeleteOnPawnEntity;
+import ro.anud.globalcooldown.entity.effect.EffectOnPawnEntity;
 import ro.anud.globalcooldown.generator.PawnGenerator;
 
 import java.util.HashSet;
@@ -14,8 +16,8 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CreatePawnfromPawn implements ActionOnPawn {
-    public static final String NAME = "CREATE_PAWN_ACTION";
+public class DeleteOnPawnAction implements ActionOnPawn {
+    public static final String NAME = "DELETE_PAWN_ACTION";
     private Long pawnId;
 
     @Override
@@ -31,13 +33,12 @@ public class CreatePawnfromPawn implements ActionOnPawn {
                 .pawnId(pawnId)
                 .build();
 
-        effectOnPawnEntityArrayList.add(CreatePawnOnPawnEntity.builder()
+        effectOnPawnEntityArrayList.add(DeleteOnPawnEntity.builder()
                                                 .action(actionOnPawnEntity)
                                                 .pawn(pawn)
                                                 .type(NAME)
                                                 .age(0)
                                                 .isSideEffect(false)
-                                                .pawnGenerator(PawnGenerator.PAWN)
                                                 .build());
         return actionOnPawnEntity;
     }

@@ -35,6 +35,10 @@ CREATE TABLE create_pawn_on_pawn(
   pawn_generator VARCHAR(255) NOT NULL
 );
 
+CREATE TABLE delete_on_pawn(
+  id BIGINT PRIMARY KEY REFERENCES effect_on_pawn(id)
+);
+
 CREATE SEQUENCE seq_condition_on_pawn;
 CREATE TABLE condition_on_pawn (
   id         BIGINT PRIMARY KEY,

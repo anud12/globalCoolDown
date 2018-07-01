@@ -13,4 +13,6 @@ public interface ActionOnPawnRepository extends JpaRepository<ActionOnPawnEntity
     Optional<ActionOnPawnEntity> findFirstByPawnIdAndNameOrderBySaveDateTimeAsc(Long pawnId, String name);
 
     List<ActionOnPawnEntity> findAllByParentIn(List<ActionOnPawnEntity> actionOnPawnEntities);
+
+    void removeAllByPawnId(Long id);
 }

@@ -37,7 +37,7 @@ export class PawnService {
     private pawnList: Map<number, PawnModel>;
     private selectedPawnList: Map<number, PawnModel>;
     private stompService: StompService;
-    private pawnListSubject: Subject<Message>;
+    private pawnListSubject: Subject<Map<number, PawnModel>>;
     private selectedPawnListSubject: Subject<Message>;
     private subscription: Subscription;
 
@@ -63,6 +63,7 @@ export class PawnService {
     subscribe() {
         this.subscription = this.stompService.subscribe('/app/pawn')
             .subscribe(message => {
+                this.pawnList = new Map();
                 const pawnList: Array<PawnModel> = JSON.parse(message.body);
                 pawnList.forEach(element => {
                     this.pawnList.set(element.id, element);
@@ -70,7 +71,7 @@ export class PawnService {
                         this.selectedPawnList.set(element.id, element);
                     }
                 });
-                this.pawnListSubject.next();
+                this.pawnListSubject.next(this.pawnList);
             });
     }
 
@@ -79,7 +80,7 @@ export class PawnService {
         this.subscription = undefined;
     }
 
-    getPawnStompSubscription(): Observable<Message> {
+    getPawnStompSubscription(): Observable<Map<number, PawnModel>> {
         return this.pawnListSubject.asObservable();
     }
 

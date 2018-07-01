@@ -4,6 +4,7 @@ import {UiService} from '../ui.service';
 import {SelectBoxModel} from '../model/select-box.model';
 import {DimensionModel} from '../../model/dimension.model';
 import {PointModel} from '../../model/point.model';
+import {PawnModel} from '../../pawn/model/pawn.model';
 
 @Component({
     selector: 'app-interactive-render',
@@ -34,7 +35,7 @@ export class InteractiveRenderComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.uiService.getDrawObserver().subscribe(() => {
+        this.uiService.getDrawObserver().subscribe((pawnMap) => {
             this.draw();
         });
         this.canvas = this.canvasRef.nativeElement;
@@ -89,7 +90,7 @@ export class InteractiveRenderComponent implements OnInit {
 
     private drawInformation(context: CanvasRenderingContext2D) {
         this.pawnService.getSelectedList().forEach(value => {
-            context.font = `${this.uiService.fontSize/1.5 }px gnu-unifont`;
+            context.font = `${this.uiService.fontSize / 1.5 }px gnu-unifont`;
             context.fillStyle = this.strokeColor;
             context.fillText(
                 'V:' + value.value as any,

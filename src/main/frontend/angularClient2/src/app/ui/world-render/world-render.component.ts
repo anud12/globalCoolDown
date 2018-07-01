@@ -1,8 +1,8 @@
 import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
-import {PawnService} from '../../pawn/pawn.service';
 import {UiService} from '../ui.service';
 import {AuthenticationService} from '../../authentication/authentication.service';
 import {MapService} from '../../map/map.service';
+import {PawnModel} from '../../pawn/model/pawn.model';
 
 @Component({
     selector: 'app-world-render',
@@ -18,8 +18,7 @@ export class WorldRenderComponent implements OnInit {
     private mapBackgroundColor: string;
     private mapStrokeColor: string;
 
-    constructor(private pawnService: PawnService,
-                private areaService: MapService,
+    constructor(private areaService: MapService,
                 private uiService: UiService,
                 @Inject('Window') private window: Window,
                 private authenticationService: AuthenticationService) {
@@ -40,21 +39,21 @@ export class WorldRenderComponent implements OnInit {
         this.areaService.getAreaStompSubscription().subscribe(() => {
             console.log('render area subscription');
         });
-        this.uiService.getDrawObserver().subscribe(() => {
-            this.draw();
+        this.uiService.getDrawObserver().subscribe((pawnMap) => {
+            this.draw(pawnMap);
         });
         this.canvas = this.canvasRef.nativeElement;
         this.onResize();
     }
 
-    draw() {
+    draw(pawnMap: Map<number, PawnModel>) {
         if (this.canvas.getContext) {
             const context = this.canvas.getContext('2d');
             //fill in the background
             context.fillStyle = this.backgroundColor;
             context.fillRect(0, 0, this.width, this.height);
             this.drawArea(context);
-            this.pawnService.getListById().forEach(value => {
+            pawnMap.forEach(value => {
                 context.font = `${this.uiService.fontSize}px gnu-unifont`;
                 if (this.authenticationService.getModel().id === value.userId) {
                     context.fillStyle = this.ownColor;
@@ -77,7 +76,6 @@ export class WorldRenderComponent implements OnInit {
         this.width = this.window.innerWidth;
         this.canvas.height = this.height;
         this.canvas.width = this.width;
-        this.draw();
     }
 
     drawArea(context: CanvasRenderingContext2D) {
@@ -94,8 +92,8 @@ export class WorldRenderComponent implements OnInit {
         area.lineList.forEach(value => {
             context.lineTo(value.start.x * this.uiService.coordinateScale, value.start.y * this.uiService.coordinateScale);
         });
-       context.closePath();
-       context.strokeStyle = this.mapStrokeColor;
-       context.stroke();
+        context.closePath();
+        context.strokeStyle = this.mapStrokeColor;
+        context.stroke();
     }
 }

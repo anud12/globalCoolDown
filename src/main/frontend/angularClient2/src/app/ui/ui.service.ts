@@ -3,12 +3,13 @@ import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
 import {PawnService} from '../pawn/pawn.service';
 import {DimensionModel} from '../model/dimension.model';
+import {PawnModel} from '../pawn/model/pawn.model';
 
 @Injectable()
 export class UiService {
 
 
-    private observer: Subject<null>;
+    private observer: Subject<Map<number, PawnModel>>;
     public coordinateScale: number;
     public fontSize: number;
 
@@ -16,17 +17,17 @@ export class UiService {
         this.coordinateScale = 1 / 100;
         this.fontSize = 18;
         this.observer = new Subject();
-        this.pawnService.getPawnStompSubscription().subscribe(() => {
-            this.draw();
+        this.pawnService.getPawnStompSubscription().subscribe((pawnMap) => {
+            this.draw(pawnMap);
         });
     }
 
 
-    draw() {
-        this.observer.next();
+    draw(pawnMap: Map<number, PawnModel>) {
+        this.observer.next(pawnMap);
     }
 
-    getDrawObserver(): Observable<null> {
+    getDrawObserver(): Observable<Map<number, PawnModel>> {
         return this.observer.asObservable();
     }
 
