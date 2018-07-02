@@ -1,16 +1,15 @@
 package ro.anud.globalcooldown.generator;
 
-import ro.anud.globalcooldown.effects.EffectOnPawn;
 import ro.anud.globalcooldown.effects.IncrementValueOnPawn;
 import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
 import ro.anud.globalcooldown.entity.Pawn;
 import ro.anud.globalcooldown.entity.effect.EffectOnPawnEntity;
 import ro.anud.globalcooldown.entity.effect.IncrementValueOnPawnEntity;
-import ro.anud.globalcooldown.model.action.ActionOnPawn;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public enum PawnGenerator {
@@ -22,9 +21,9 @@ public enum PawnGenerator {
             .version(0L)
             .build(),
          (pawn, actionOnPawnEntity) -> {
-             List<EffectOnPawnEntity> list = new ArrayList<>();
+             Set<EffectOnPawnEntity> list = new HashSet<>();
              list.add(IncrementValueOnPawnEntity.builder()
-                              .duration(100)
+                              .duration(100000)
                               .rate(1)
                               .age(0)
                               .isSideEffect(false)
@@ -37,10 +36,10 @@ public enum PawnGenerator {
 
 
     private Supplier<Pawn> pawnSupplier;
-    private BiFunction<Pawn, ActionOnPawnEntity, List<EffectOnPawnEntity>> pawnEffectListFunction;
+    private BiFunction<Pawn, ActionOnPawnEntity, Set<EffectOnPawnEntity>> pawnEffectListFunction;
 
     PawnGenerator(final Supplier<Pawn> pawnSupplier,
-                  BiFunction<Pawn, ActionOnPawnEntity, List<EffectOnPawnEntity>> pawnEffectListFunction) {
+                  BiFunction<Pawn, ActionOnPawnEntity, Set<EffectOnPawnEntity>> pawnEffectListFunction) {
         this.pawnSupplier = Objects.requireNonNull(pawnSupplier, "pawnSupplier must not be null");
         this.pawnEffectListFunction = Objects.requireNonNull(pawnEffectListFunction,
                                                              "pawnEffectListFunction must not be null");
@@ -50,7 +49,7 @@ public enum PawnGenerator {
         return pawnSupplier.get();
     }
 
-    public List<EffectOnPawnEntity> createEffectsForPawn(Pawn pawn, ActionOnPawnEntity actionOnPawnEntity) {
+    public Set<EffectOnPawnEntity> createEffectsForPawn(Pawn pawn, ActionOnPawnEntity actionOnPawnEntity) {
         return pawnEffectListFunction.apply(pawn, actionOnPawnEntity);
     }
 }

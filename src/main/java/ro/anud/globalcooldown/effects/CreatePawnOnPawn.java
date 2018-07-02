@@ -2,12 +2,15 @@ package ro.anud.globalcooldown.effects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
 import ro.anud.globalcooldown.entity.Pawn;
 import ro.anud.globalcooldown.entity.effect.CreatePawnOnPawnEntity;
 import ro.anud.globalcooldown.entity.effect.EffectOnPawnEntity;
 import ro.anud.globalcooldown.service.GameDataService;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class CreatePawnOnPawn implements EffectOnPawn {
     public static final String NAME = "CREATE_PAWN";
@@ -28,9 +31,17 @@ public class CreatePawnOnPawn implements EffectOnPawn {
         pawn.setPoint(entity.getPawn().getPoint());
 
         pawn = gameDataService.getPawnService().save(pawn);
+        Set<EffectOnPawnEntity> effectOnPawnEntitySet = new HashSet<>();
+        ActionOnPawnEntity actionOnPawnEntity = ActionOnPawnEntity.builder()
+                .pawnId(pawn.getId())
+                .name("CREATING_PAWN")
+                .effectOnPawnEntityList(effectOnPawnEntitySet)
+                .build();
+        actionOnPawnEntity.setEffectOnPawnEntityList(entity.getPawnGenerator()
+                                                             .createEffectsForPawn(pawn, entity.getAction()));
         gameDataService
-                .getEffectOnPawnService()
-                .save(entity.getPawnGenerator().createEffectsForPawn(pawn, entity.getAction()));
+                .getActionService()
+                .save(actionOnPawnEntity);
         return pawn;
     }
 

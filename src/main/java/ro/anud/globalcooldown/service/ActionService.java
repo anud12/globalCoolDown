@@ -20,6 +20,11 @@ public class ActionService {
     private static Logger LOGGER = LoggerFactory.getLogger(ActionService.class);
     private ActionOnPawnRepository actionOnPawnRepository;
 
+    public void save(ActionOnPawnEntity actionOnPawnEntity) {
+        actionOnPawnEntity.setSaveDateTime(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        actionOnPawnRepository.save(actionOnPawnEntity);
+    }
+
     public void queue(ActionOnPawn model) {
         ActionOnPawnEntity entity = model.toEntity();
         entity.setSaveDateTime(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
