@@ -58,4 +58,10 @@ public class EffectOnPawnService {
                 .collect(Collectors.toList());
 
     }
+
+    public List<EffectOnPawn> save(List<EffectOnPawnEntity> effectOnPawnEntityList) {
+        return effectOnPawnRepository.save(effectOnPawnEntityList).stream()
+                .map(EffectOnPawnEntity::toAction)
+                .collect(Collectors.toList());
+    }
 }

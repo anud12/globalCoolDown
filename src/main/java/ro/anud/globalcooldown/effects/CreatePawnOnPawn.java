@@ -23,11 +23,14 @@ public class CreatePawnOnPawn implements EffectOnPawn {
     @Override
     public Pawn execute(GameDataService gameDataService) {
         Pawn parentPawn = entity.getPawn();
-        Pawn pawn = entity.getPawnGenerator().buildPawn();
+        Pawn pawn = entity.getPawnGenerator().createPawn();
         pawn.setUserId(parentPawn.getUserId());
         pawn.setPoint(entity.getPawn().getPoint());
 
-        gameDataService.getPawnService().save(pawn);
+        pawn = gameDataService.getPawnService().save(pawn);
+        gameDataService
+                .getEffectOnPawnService()
+                .save(entity.getPawnGenerator().createEffectsForPawn(pawn, entity.getAction()));
         return pawn;
     }
 

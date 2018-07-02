@@ -5,10 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
 import ro.anud.globalcooldown.entity.Pawn;
-import ro.anud.globalcooldown.entity.effect.CreatePawnOnPawnEntity;
 import ro.anud.globalcooldown.entity.effect.DeleteOnPawnEntity;
 import ro.anud.globalcooldown.entity.effect.EffectOnPawnEntity;
-import ro.anud.globalcooldown.generator.PawnGenerator;
 
 import java.util.HashSet;
 import java.util.Set;

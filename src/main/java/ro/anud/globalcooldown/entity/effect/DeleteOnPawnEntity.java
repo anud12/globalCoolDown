@@ -5,7 +5,6 @@ import ro.anud.globalcooldown.effects.DeleteOnPawn;
 import ro.anud.globalcooldown.effects.EffectOnPawn;
 import ro.anud.globalcooldown.entity.ActionOnPawnEntity;
 import ro.anud.globalcooldown.entity.Pawn;
-import ro.anud.globalcooldown.generator.PawnGenerator;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
