@@ -62,8 +62,8 @@
                 <configuration>
                     <jsonLibrary>jackson2</jsonLibrary>
                     <classPatterns>
-                        ro.anud.globalCooldown.model.**,
-                        ro.anud.globalCooldown.aspect.**
+                        <pattern>ro.anud.globalCooldown.model.**</pattern>
+                        <pattern>ro.anud.globalCooldown.aspect.**</pattern>
                     </classPatterns>
                     <outputKind>module</outputKind>
                     <outputFileType>implementationFile</outputFileType>
