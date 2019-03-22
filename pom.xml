@@ -60,10 +60,11 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <mapClasses>asClasses</mapClasses>
                     <jsonLibrary>jackson2</jsonLibrary>
                     <classPatterns>
                         <pattern>ro.anud.globalCooldown.model.**</pattern>
-                        <pattern>ro.anud.globalCooldown.aspect.**</pattern>
+                        <pattern>ro.anud.globalCooldown.trait.**</pattern>
                     </classPatterns>
                     <outputKind>module</outputKind>
                     <outputFileType>implementationFile</outputFileType>
