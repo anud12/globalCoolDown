@@ -1,16 +1,14 @@
 package ro.anud.globalCooldown.trait;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import javafx.geometry.Point2D;
+import lombok.*;
 
 @Builder
 @Setter
 @Getter
 @ToString
+@EqualsAndHashCode
 public class LocationTrait implements Trait {
     final static String NAME = "name";
-    private double x;
-    private double y;
+    private Point2D point2D;
 }

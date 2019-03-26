@@ -7,10 +7,11 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
+import ro.anud.globalCooldown.command.MoveCommand;
 import ro.anud.globalCooldown.command.TeleportCommand;
+import ro.anud.globalCooldown.model.Point;
 import ro.anud.globalCooldown.service.GameObjectService;
 import ro.anud.globalCooldown.trait.CommandTrait;
-import ro.anud.globalCooldown.trait.LocationTrait;
 
 import java.util.Objects;
 
@@ -32,17 +33,38 @@ public class GameObjectTopic {
         LOGGER.info(id);
     }
 
-    @MessageMapping("/ws/gameObject/queue/{command}")
-    public void queueCommand(@DestinationVariable("command") final String command,
-                             @RequestBody LocationTrait locationTrait,
-                             final SimpMessageHeaderAccessor headerAccessor) {
-        System.out.println(command + ": " + locationTrait);
-        gameObjectService.getById(1).getTrait(CommandTrait.class).ifPresent(commandTrait -> {
-            commandTrait.queueCommand(TeleportCommand.builder()
-                    .x(locationTrait.getX())
-                    .y(locationTrait.getY())
-                    .build());
-        });
+    @MessageMapping("/ws/gameObject/{id}/queue/teleport")
+    public void teleport(@DestinationVariable("id") final Long id,
+                         @RequestBody Point point,
+                         final SimpMessageHeaderAccessor headerAccessor) {
+        gameObjectService.getById(id)
+                .getTrait(CommandTrait.class)
+                .ifPresent(commandTrait -> commandTrait.queueCommand(
+                        TeleportCommand
+                                .builder()
+                                .x(point.getX())
+                                .y(point.getY())
+                                .build()
+                        )
+                );
+
+        System.out.println(gameObjectService.getById(1).getTrait(CommandTrait.class).get());
+    }
+
+
+    @MessageMapping("/ws/gameObject/{id}/queue/move")
+    public void move(@DestinationVariable("id") final Long id,
+                     @RequestBody Point point,
+                     final SimpMessageHeaderAccessor headerAccessor) {
+        gameObjectService.getById(id)
+                .getTrait(CommandTrait.class)
+                .ifPresent(commandTrait -> commandTrait.queueCommand(
+                        MoveCommand
+                                .builder()
+                                .destinationLocation(point.toPoint2D())
+                                .build()
+                        )
+                );
 
         System.out.println(gameObjectService.getById(1).getTrait(CommandTrait.class).get());
     }

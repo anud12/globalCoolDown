@@ -13,6 +13,5 @@ import java.util.Optional;
 @ToString
 public class CommandResponse {
     public List<GameObjectModel> gameObjectModel;
-    public Boolean completed;
     public Optional<Command> command;
 }

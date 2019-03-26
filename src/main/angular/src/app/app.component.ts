@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {RxStompService} from "@stomp/ng2-stompjs";
 import {GlService} from "./opengl/gl.service";
-import {GameObjectModel, LocationTrait} from "./java.models";
+import {GameObjectModel, LocationTrait, Point} from "./java.models";
 
 @Component({
   selector: 'app-root',
@@ -13,26 +13,40 @@ export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild('glcanvas') glcanvas: ElementRef;
 
   gameObjectList: Array<GameObjectModel> = [];
-  action: LocationTrait;
+  teleport: Point;
+  move: Point;
 
   constructor(private rxStompService: RxStompService) {
-    this.action = {
+    this.teleport = {
       x: 0,
       y: 0
-    }
+    };
+      this.move= {
+          x: 0,
+          y: 0
+      }
   }
 
   ngOnInit() {
 
   }
 
-  sendAction() {
-    console.log("Publish", this.action)
+  sendTeleport() {
+    console.log("Publish", this.teleport)
     this.rxStompService.stompClient.publish({
-      destination: "/ws/gameObject/queue/Teleport",
-      body: JSON.stringify(this.action)
+      destination: "/ws/gameObject/1/queue/teleport",
+      body: JSON.stringify(this.teleport)
     })
   }
+
+
+    sendMove() {
+        console.log("Publish", this.move)
+        this.rxStompService.stompClient.publish({
+                                                    destination: "/ws/gameObject/1/queue/move",
+                                                    body: JSON.stringify(this.move)
+                                                })
+    }
 
   ngAfterViewInit(): void {
     const canvas = this.glcanvas.nativeElement;
@@ -46,7 +60,10 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.rxStompService.stompClient.subscribe("/ws/world", (message: any) => {
         this.gameObjectList = JSON.parse(message.body);
         glService.clear();
-        glService.draw(this.gameObjectList.map(value1 => value1.aspects.LocationTrait as LocationTrait));
+        glService.draw(this.gameObjectList.map(value1 => {
+          const trait = value1.aspects.LocationTrait as LocationTrait;
+          return trait.point2D
+        }));
       })
     })
   }

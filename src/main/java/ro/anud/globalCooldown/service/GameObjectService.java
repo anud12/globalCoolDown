@@ -1,5 +1,6 @@
 package ro.anud.globalCooldown.service;
 
+import javafx.geometry.Point2D;
 import org.springframework.stereotype.Service;
 import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.trait.CommandTrait;
@@ -15,8 +16,7 @@ public class GameObjectService {
         this.gameObjectModel = new GameObjectModel();
 
         gameObjectModel.addTrait(LocationTrait.builder()
-                .x(0)
-                .y(0)
+                .point2D(new Point2D(0, 0))
                 .build()
         );
 
@@ -29,7 +29,7 @@ public class GameObjectService {
         gameObjectModel.addTrait(new CommandTrait());
     }
 
-    public GameObjectModel getById(int id) {
+    public GameObjectModel getById(final long id) {
         return gameObjectModel;
     }
 }
