@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import ro.anud.globalCooldown.model.GameObjectModel;
+import ro.anud.globalCooldown.trait.CommandTrait;
 import ro.anud.globalCooldown.trait.LocationTrait;
 import ro.anud.globalCooldown.trait.MetaTrait;
 
@@ -38,9 +39,7 @@ public class CreateCommand implements Command {
                                         .builder()
                                         .point2D(new Point2D(point.getX(), point.getY()))
                                         .build(),
-                                MetaTrait.builder()
-                                        .id(0L)
-                                        .build()
+                                new CommandTrait()
                         )
                 ))
                 .command(null)
