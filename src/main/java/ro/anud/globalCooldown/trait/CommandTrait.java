@@ -22,7 +22,11 @@ public class CommandTrait implements Trait {
         commandList = new ArrayList<>();
     }
 
-    public void queueCommand(final Command command) {
+    public void clear() {
+        commandList.clear();
+    }
+
+    public void addCommand(final Command command) {
         commandList.add(command);
     }
 }

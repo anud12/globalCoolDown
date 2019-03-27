@@ -7,6 +7,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
+import ro.anud.globalCooldown.command.CreateCommand;
 import ro.anud.globalCooldown.command.MoveCommand;
 import ro.anud.globalCooldown.command.TeleportCommand;
 import ro.anud.globalCooldown.model.Point;
@@ -39,7 +40,7 @@ public class GameObjectTopic {
                          final SimpMessageHeaderAccessor headerAccessor) {
         gameObjectService.getById(id)
                 .getTrait(CommandTrait.class)
-                .ifPresent(commandTrait -> commandTrait.queueCommand(
+                .ifPresent(commandTrait -> commandTrait.addCommand(
                         TeleportCommand
                                 .builder()
                                 .x(point.getX())
@@ -48,7 +49,7 @@ public class GameObjectTopic {
                         )
                 );
 
-        System.out.println(gameObjectService.getById(1).getTrait(CommandTrait.class).get());
+        System.out.println(gameObjectService.getById(id).getTrait(CommandTrait.class).get());
     }
 
 
@@ -58,7 +59,7 @@ public class GameObjectTopic {
                      final SimpMessageHeaderAccessor headerAccessor) {
         gameObjectService.getById(id)
                 .getTrait(CommandTrait.class)
-                .ifPresent(commandTrait -> commandTrait.queueCommand(
+                .ifPresent(commandTrait -> commandTrait.addCommand(
                         MoveCommand
                                 .builder()
                                 .destinationLocation(point.toPoint2D())
@@ -66,6 +67,21 @@ public class GameObjectTopic {
                         )
                 );
 
-        System.out.println(gameObjectService.getById(1).getTrait(CommandTrait.class).get());
+        System.out.println(gameObjectService.getById(id).getTrait(CommandTrait.class).get());
+    }
+
+    @MessageMapping("/ws/gameObject/{id}/queue/create")
+    public void create(@DestinationVariable("id") final Long id,
+                       final SimpMessageHeaderAccessor headerAccessor) {
+        gameObjectService.getById(id)
+                .getTrait(CommandTrait.class)
+                .ifPresent(commandTrait -> commandTrait.addCommand(
+                        CreateCommand
+                                .builder()
+                                .build()
+                        )
+                );
+
+        System.out.println(gameObjectService.getById(id).getTrait(CommandTrait.class).get());
     }
 }

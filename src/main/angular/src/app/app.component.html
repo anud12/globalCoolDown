@@ -20,4 +20,8 @@
         <input name="y" [(ngModel)]="move.y">
         <button>Move</button>
     </form>
+    <form (submit)="sendCreate()" ngForm>
+        <input name="objectName" [(ngModel)]="objectName">
+        <button>Create Object</button>
+    </form>
 </div>

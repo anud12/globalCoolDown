@@ -6,26 +6,39 @@ import lombok.Setter;
 import ro.anud.globalCooldown.trait.Trait;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Setter
 @Getter
 public class GameObjectModel {
-    private Map<String, Trait> aspects;
+    private Map<String, Trait> traitMap;
 
-    @Builder
     public GameObjectModel() {
-        aspects = new HashMap<>();
+        traitMap = new HashMap<>();
     }
 
-    public void addTrait(Trait o) {
-        aspects.put(o.getClass().getSimpleName(), o);
+    @Builder
+    public GameObjectModel(List<Trait> traitList) {
+        traitMap = new HashMap<>();
+        this.addAll(traitList);
+    }
+
+
+    public void addAll(List<Trait> traitList) {
+        traitList.forEach(trait -> this.traitMap
+                .put(trait.getClass().getSimpleName(), trait)
+        );
+    }
+
+    public void addTrait(Trait trait) {
+        this.traitMap.put(trait.getClass().getSimpleName(), trait);
     }
 
     public <T extends Trait> Optional<T> getTrait(Class<T> aspectClazz) {
         try {
-            T clazz = (T) aspects.get(aspectClazz.getSimpleName());
+            T clazz = (T) traitMap.get(aspectClazz.getSimpleName());
             return Optional.ofNullable(clazz);
         } catch (ClassCastException e) {
             return Optional.empty();

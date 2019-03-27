@@ -4,69 +4,78 @@ import {GlService} from "./opengl/gl.service";
 import {GameObjectModel, LocationTrait, Point} from "./java.models";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, AfterViewInit {
-  message: string = "message";
-  @ViewChild('glcanvas') glcanvas: ElementRef;
+    message: string = "message";
+    @ViewChild('glcanvas') glcanvas: ElementRef;
 
-  gameObjectList: Array<GameObjectModel> = [];
-  teleport: Point;
-  move: Point;
 
-  constructor(private rxStompService: RxStompService) {
-    this.teleport = {
-      x: 0,
-      y: 0
-    };
-      this.move= {
-          x: 0,
-          y: 0
-      }
-  }
+    gameObjectList: Array<GameObjectModel> = [];
+    teleport: Point;
+    move: Point;
+    objectName: string;
 
-  ngOnInit() {
+    constructor(private rxStompService: RxStompService) {
+        this.teleport = {
+            x: 0,
+            y: 0
+        };
+        this.move = {
+            x: 0,
+            y: 0
+        }
+    }
 
-  }
+    ngOnInit() {
 
-  sendTeleport() {
-    console.log("Publish", this.teleport)
-    this.rxStompService.stompClient.publish({
-      destination: "/ws/gameObject/1/queue/teleport",
-      body: JSON.stringify(this.teleport)
-    })
-  }
+    }
+
+    sendTeleport() {
+        console.log("Publish", this.teleport)
+        this.rxStompService.stompClient.publish({
+            destination: "/ws/gameObject/0/queue/teleport",
+            body: JSON.stringify(this.teleport)
+        })
+    }
 
 
     sendMove() {
         console.log("Publish", this.move)
         this.rxStompService.stompClient.publish({
-                                                    destination: "/ws/gameObject/1/queue/move",
-                                                    body: JSON.stringify(this.move)
-                                                })
+            destination: "/ws/gameObject/0/queue/move",
+            body: JSON.stringify(this.move)
+        })
     }
 
-  ngAfterViewInit(): void {
-    const canvas = this.glcanvas.nativeElement;
-    console.log(canvas)
-    const glService = new GlService(canvas);
-    this.rxStompService.connected$.subscribe(value => {
-      this.rxStompService.stompClient.subscribe('/ws/hello', (message: any) => {
-        this.message = message.body;
-      });
+    sendCreate() {
+        console.log("Publish", this.objectName)
+        this.rxStompService.stompClient.publish({
+            destination: "/ws/gameObject/0/queue/create",
+            body: JSON.stringify(this.objectName)
+        })
+    }
 
-      this.rxStompService.stompClient.subscribe("/ws/world", (message: any) => {
-        this.gameObjectList = JSON.parse(message.body);
-        glService.clear();
-        glService.draw(this.gameObjectList.map(value1 => {
-          const trait = value1.aspects.LocationTrait as LocationTrait;
-          return trait.point2D
-        }));
-      })
-    })
-  }
+    ngAfterViewInit(): void {
+        const canvas = this.glcanvas.nativeElement;
+        const glService = new GlService(canvas);
+        this.rxStompService.connected$.subscribe(value => {
+            this.rxStompService.stompClient.subscribe('/ws/hello', (message: any) => {
+                this.message = message.body;
+            });
+
+            this.rxStompService.stompClient.subscribe("/ws/world", (message: any) => {
+                this.gameObjectList = JSON.parse(message.body);
+                glService.clear();
+                glService.draw(this.gameObjectList.map(value1 => {
+                    const trait = value1.traitMap.LocationTrait as LocationTrait;
+                    return trait.point2D
+                }));
+            })
+        })
+    }
 
 }
 

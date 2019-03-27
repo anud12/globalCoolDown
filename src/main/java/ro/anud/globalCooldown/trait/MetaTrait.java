@@ -10,6 +10,5 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public class MetaTrait implements Trait {
-    private String name;
     private Long id;
 }
