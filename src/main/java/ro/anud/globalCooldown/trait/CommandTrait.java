@@ -22,8 +22,9 @@ public class CommandTrait implements Trait {
         commandList = new ArrayList<>();
     }
 
-    public void clear() {
+    public void clearAndSet(final List<Command> commands) {
         commandList.clear();
+        commandList.addAll(commands);
     }
 
     public void addCommand(final Command command) {

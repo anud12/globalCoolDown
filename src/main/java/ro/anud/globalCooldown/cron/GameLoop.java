@@ -43,12 +43,14 @@ public class GameLoop {
             commandResponses.forEach(commandResponse -> gameObjectModel
                     .getTrait(CommandTrait.class)
                     .ifPresent(commandTrait -> {
-                        commandTrait.clear();
-                        commandResponses.stream()
+                        commandTrait.clearAndSet(commandResponses
+                                .stream()
                                 .map(CommandResponse::getCommand)
                                 .filter(Optional::isPresent)
                                 .map(Optional::get)
-                                .forEach(commandTrait::addCommand);
+                                .collect(Collectors.toList())
+                        );
+
                     })
             );
             commandResponses.forEach(commandResponse -> commandResponse
