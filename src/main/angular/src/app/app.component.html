@@ -1,27 +1,11 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div style="text-align:center">
+
     <canvas width="500" height="500"
-            style="border: solid 1px gray"
             #glcanvas></canvas>
-    <div *ngFor="let gameObject of gameObjectList">
-        <app-game-object [gameObject]="gameObject"></app-game-object>
+    <div *ngFor="let key of gameObjectId">
+        <app-game-object [gameObject]="gameObjectMap.get(key)"></app-game-object>
     </div>
     <div>{{message}}</div>
-
-    <form (submit)="sendTeleport()" ngForm>
-        <input name="x" [(ngModel)]="teleport.x">
-        <input name="y" [(ngModel)]="teleport.y">
-        <button>Teleport</button>
-    </form>
-
-
-    <form (submit)="sendMove()" ngForm>
-        <input name="x" [(ngModel)]="move.x">
-        <input name="y" [(ngModel)]="move.y">
-        <button>Move</button>
-    </form>
-    <form (submit)="sendCreate()" ngForm>
-        <input name="objectName" [(ngModel)]="objectName">
-        <button>Create Object</button>
-    </form>
+    <app-action [subject]="getActionSubject()"></app-action>
 </div>

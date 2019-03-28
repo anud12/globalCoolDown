@@ -1,8 +1,8 @@
 /* tslint:disable */
-// Generated using typescript-generator version 2.12.476 on 2019-03-23 16:56:46.
+// Generated using typescript-generator version 2.12.476 on 2019-03-28 11:45:27.
 
 export class GameObjectModel {
-    aspects: { [index: string]: Trait };
+    traitMap: { [index: string]: Trait };
 }
 
 export class GameObjectModelBuilder {
@@ -28,7 +28,6 @@ export class LocationTraitBuilder {
 }
 
 export class MetaTrait implements Trait {
-    name: string;
     id: number;
 }
 

@@ -1,19 +1,22 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {GameObjectModel} from "../java.models";
+import {GameObject} from "../models/GameObject";
 
 @Component({
-  selector: 'app-game-object',
-  templateUrl: './game-object.component.html',
-  styleUrls: ['./game-object.component.scss']
+    selector: 'app-game-object',
+    templateUrl: './game-object.component.html',
+    styleUrls: ['./game-object.component.scss']
 })
 export class GameObjectComponent implements OnInit {
 
-  @Input() gameObject: GameObjectModel;
+    @Input() gameObject: GameObject;
 
-  constructor() {
-  }
+    constructor() {
+    }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+    }
 
+    onClick() {
+        this.gameObject.client.selected = !this.gameObject.client.selected
+    }
 }

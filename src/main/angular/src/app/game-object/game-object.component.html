@@ -1,4 +1,4 @@
-<div style="border: 1px solid black; margin: 0px 25%">
+<div style="border: 1px solid black; margin: 0px 25%" (click)="onClick()">
     <div>
         <div>[{{gameObject.traitMap.MetaTrait.id}}]</div>
     </div>
@@ -7,4 +7,5 @@
             {{gameObject.traitMap.LocationTrait.point2D.y}}
         </div>
     </div>
+    <div>{{gameObject.client.selected}}</div>
 </div>

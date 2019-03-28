@@ -7,11 +7,13 @@ import {InjectableRxStompConfig, RxStompService, rxStompServiceFactory} from "@s
 import {myRxStompConfig} from "./config/myRxStomp.config";
 import {GameObjectComponent} from './game-object/game-object.component';
 import {FormsModule} from "@angular/forms";
+import {ActionComponent} from "./game-components/action/action.component";
 
 @NgModule({
   declarations: [
-    AppComponent,
-    GameObjectComponent
+      AppComponent,
+      GameObjectComponent,
+      ActionComponent
   ],
   imports: [
     BrowserModule,
