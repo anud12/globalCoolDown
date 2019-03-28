@@ -1,5 +1,5 @@
 export const ActionsEndpoints = {
-    teleport: "queue/teleport",
-    move: "queue/move",
-    create: "queue/create",
+    teleport: "action/teleport",
+    move: "action/move",
+    create: "action/create",
 };

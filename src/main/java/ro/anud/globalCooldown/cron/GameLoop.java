@@ -27,7 +27,7 @@ public class GameLoop {
         this.commandService = Objects.requireNonNull(commandService, "commandService must not be null");
     }
 
-    @Scheduled(fixedRate = 10)
+    @Scheduled(fixedRate = 1000)
     private void gameLoop() {
         List<GameObjectModel> gameObjectModels = gameObjectService.getAll();
         Map<GameObjectModel, List<CommandResponse>> commandResponseList = gameObjectModels

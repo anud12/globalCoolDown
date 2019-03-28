@@ -17,6 +17,7 @@ import ro.anud.globalCooldown.trait.CommandTrait;
 import java.util.Objects;
 
 @Controller
+@MessageMapping("/ws/gameObject/")
 public class GameObjectTopic {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameObjectTopic.class);
@@ -27,14 +28,14 @@ public class GameObjectTopic {
         this.gameObjectService = Objects.requireNonNull(gameObjectService, "gameObjectService must not be null");
     }
 
-    @MessageMapping("/ws/gameObject/{id}")
+    @MessageMapping("{id}")
     public void gameObject(@DestinationVariable("id") final String id,
                            final SimpMessageHeaderAccessor headerAccessor) {
         LOGGER.info(headerAccessor.getSessionAttributes().toString());
         LOGGER.info(id);
     }
 
-    @MessageMapping("/ws/gameObject/{id}/queue/teleport")
+    @MessageMapping("{id}/action/teleport")
     public void teleport(@DestinationVariable("id") final Long id,
                          @RequestBody Point point,
                          final SimpMessageHeaderAccessor headerAccessor) {
@@ -48,12 +49,10 @@ public class GameObjectTopic {
                                 .build()
                         )
                 );
-
-        System.out.println(gameObjectService.getById(id).getTrait(CommandTrait.class).get());
     }
 
 
-    @MessageMapping("/ws/gameObject/{id}/queue/move")
+    @MessageMapping("{id}/action/move")
     public void move(@DestinationVariable("id") final Long id,
                      @RequestBody Point point,
                      final SimpMessageHeaderAccessor headerAccessor) {
@@ -66,11 +65,9 @@ public class GameObjectTopic {
                                 .build()
                         )
                 );
-
-        System.out.println(gameObjectService.getById(id).getTrait(CommandTrait.class).get());
     }
 
-    @MessageMapping("/ws/gameObject/{id}/queue/create")
+    @MessageMapping("{id}/action/create")
     public void create(@DestinationVariable("id") final Long id,
                        final SimpMessageHeaderAccessor headerAccessor) {
         gameObjectService.getById(id)
@@ -81,7 +78,5 @@ public class GameObjectTopic {
                                 .build()
                         )
                 );
-
-        System.out.println(gameObjectService.getById(id).getTrait(CommandTrait.class).get());
     }
 }
