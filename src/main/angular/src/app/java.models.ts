@@ -1,5 +1,5 @@
 /* tslint:disable */
-// Generated using typescript-generator version 2.12.476 on 2019-03-28 11:45:27.
+// Generated using typescript-generator version 2.12.476 on 2019-03-31 22:10:41.
 
 export class GameObjectModel {
     traitMap: { [index: string]: Trait };

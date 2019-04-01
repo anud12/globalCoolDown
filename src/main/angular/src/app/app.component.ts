@@ -8,10 +8,10 @@ import {ActionComponentEvent} from "./game-components/action/action.component";
 import {GameObject} from "./models/GameObject";
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss']
-})
+               selector: 'app-root',
+               templateUrl: './app.component.html',
+               styleUrls: ['./app.component.scss']
+           })
 export class AppComponent implements AfterViewInit {
     message: string = "message";
     json = JSON
@@ -34,14 +34,6 @@ export class AppComponent implements AfterViewInit {
                     this.stompService.publish(url, actionComponentEvent.body);
                 }
             })
-            // this.gameObjectMap.map(gameObject => {
-            //     return gameObject.traitMap.MetaTrait.id;
-            // })
-            //     .forEach(id => {
-            //         const url = `/ws/gameObject/${id}/${actionComponentEvent.endpoint}`;
-            //         console.log(url);
-            //         this.stompService.publish(url, actionComponentEvent.body);
-            //     })
         });
         return actionSubject;
     }
