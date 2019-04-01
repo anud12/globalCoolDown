@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {RxStompService} from "@stomp/ng2-stompjs";
 import {GlService} from "./opengl/gl.service";
-import {GameObjectModel, LocationTrait} from "./java.models";
+import {GameObjectModel, LocationTrait, MetaTrait} from "./java.models";
 import {StompService} from "./stomp.service";
 import {Subject} from "rxjs";
 import {ActionComponentEvent} from "./game-components/action/action.component";
@@ -18,7 +18,7 @@ export class AppComponent implements AfterViewInit {
     @ViewChild('glcanvas') glcanvas: ElementRef;
 
     gameObjectMap: Map<number, GameObject> = new Map();
-    gameObjectId: Array<GameObject> = [];
+    gameObjectId: Array<number> = [];
 
     constructor(private rxStompService: RxStompService,
                 private stompService: StompService) {
@@ -60,7 +60,7 @@ export class AppComponent implements AfterViewInit {
             gameObjectList.forEach((value: GameObject) => {
                 value.client = {};
                 this.replaceInMap(value, tempMap);
-                this.gameObjectId.push(value.traitMap.MetaTrait.id);
+                this.gameObjectId.push((value.traitMap.MetaTrait as MetaTrait).id);
             });
             this.gameObjectMap = tempMap;
 
@@ -72,8 +72,8 @@ export class AppComponent implements AfterViewInit {
         })
     }
 
-    replaceInMap(gameObjectModel: GameObject, tempMap: Map<GameObject>) {
-        const key = gameObjectModel.traitMap.MetaTrait.id;
+    replaceInMap(gameObjectModel: GameObject, tempMap: Map<number, GameObject>) {
+        const key = (gameObjectModel.traitMap.MetaTrait as MetaTrait).id;
         tempMap.set(key, gameObjectModel);
         const secondValue = this.gameObjectMap.get(key);
         if (secondValue) {

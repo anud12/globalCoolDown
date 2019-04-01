@@ -8,6 +8,7 @@ import {myRxStompConfig} from "./config/myRxStomp.config";
 import {GameObjectComponent} from './game-object/game-object.component';
 import {FormsModule} from "@angular/forms";
 import {ActionComponent} from "./game-components/action/action.component";
+import {SecurityModule} from "./security/security.module";
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import {ActionComponent} from "./game-components/action/action.component";
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    SecurityModule
   ],
   providers: [{
     provide: InjectableRxStompConfig,
