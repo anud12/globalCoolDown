@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Point} from "../../java.models";
 import {Subject} from "rxjs";
-import {ActionsEndpoints} from "../../endpoints/action.endpoints";
+import {ActionsWsEndpoints} from "../../endpoints/action.ws.endpoints";
 
 export type ActionComponentEvent = {
     endpoint: string,
@@ -32,7 +32,7 @@ export class ActionComponent implements OnInit {
     sendTeleport() {
         console.log("Publish", this.teleport)
         this.subject.next({
-            endpoint: ActionsEndpoints.teleport,
+            endpoint: ActionsWsEndpoints.teleport,
             body: JSON.stringify(this.teleport)
         })
     }
@@ -41,7 +41,7 @@ export class ActionComponent implements OnInit {
     sendMove() {
         console.log("Publish", this.move);
         this.subject.next({
-            endpoint: ActionsEndpoints.move,
+            endpoint: ActionsWsEndpoints.move,
             body: JSON.stringify(this.move)
         })
     }
@@ -49,7 +49,7 @@ export class ActionComponent implements OnInit {
     sendCreate() {
         console.log("Publish");
         this.subject.next({
-            endpoint: ActionsEndpoints.create,
+            endpoint: ActionsWsEndpoints.create,
             body: ""
         })
     }

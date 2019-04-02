@@ -1,5 +1,5 @@
 /* tslint:disable */
-// Generated using typescript-generator version 2.12.476 on 2019-03-31 22:10:41.
+// Generated using typescript-generator version 2.12.476 on 2019-04-02 19:05:38.
 
 export class GameObjectModel {
     traitMap: { [index: string]: Trait };
@@ -14,6 +14,13 @@ export class Point {
 }
 
 export class PointBuilder {
+}
+
+export class UserModel {
+    username: string;
+}
+
+export class UserModelBuilder {
 }
 
 export class CommandTrait implements Trait {

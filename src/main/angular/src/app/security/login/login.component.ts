@@ -1,15 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {LoginValidators} from "./login.validators";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {GenericValidatorService, ValidatorChain} from "../../generic-validator/generic-validator.service";
-
-export class LoginForm {
-    username: string;
-
-    constructor() {
-        this.username = ""
-    }
-}
+import {SecurityService} from "../security.service";
+import {UserModel} from "../../java.models";
+import {UserModelValidators} from "./userModelValidators";
 
 @Component({
     selector: 'app-login',
@@ -18,7 +12,7 @@ export class LoginForm {
 })
 export class LoginComponent implements OnInit {
 
-    loginForm: LoginForm = {
+    loginForm: UserModel = {
         username: ""
     };
 
@@ -27,17 +21,26 @@ export class LoginComponent implements OnInit {
         password: new FormControl('')
     })
 
-    validatorChain: ValidatorChain<LoginForm>;
+    validatorChain: ValidatorChain<UserModel>;
 
     constructor(private validatorService: GenericValidatorService,
                 private fb: FormBuilder,
-                private loginValidators: LoginValidators) {
+                private securityService: SecurityService,
+                private userModelValidators: UserModelValidators) {
         this.validatorChain = this.validatorService
-            .build<LoginForm>()
-            .check(loginValidators.usernameLengthValidation)
+            .build<UserModel>()
+            .check(userModelValidators.usernameLengthValidation)
     }
 
     ngOnInit() {
+    }
+
+    formSubmit() {
+        this.securityService.registerUser(this.loginForm).subscribe(value => {
+            this.securityService.registerUser(this.loginForm).subscribe(value1 => {
+            });
+            console.log(value)
+        })
     }
 
     reactiveFormPress() {
@@ -49,5 +52,9 @@ export class LoginComponent implements OnInit {
         let errors = this.validatorChain.validate(this.loginForm);
         console.log(this.loginForm, errors);
         // console.log("KeyPress")
+    }
+
+    getMe() {
+        this.securityService.getMe().subscribe(value => console.log(value))
     }
 }

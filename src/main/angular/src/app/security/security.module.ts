@@ -2,8 +2,9 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {LoginComponent} from './login/login.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {LoginValidators} from "./login/login.validators";
 import {GenericValidatorModule} from "../generic-validator/generic-validator.module";
+import {HttpClientModule} from "@angular/common/http";
+import {UserModelValidators} from "./login/userModelValidators";
 
 @NgModule({
     declarations: [LoginComponent],
@@ -11,10 +12,11 @@ import {GenericValidatorModule} from "../generic-validator/generic-validator.mod
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        GenericValidatorModule
+        GenericValidatorModule,
+        HttpClientModule
     ],
     providers: [
-        LoginValidators
+        UserModelValidators
     ],
     exports: [
         LoginComponent
