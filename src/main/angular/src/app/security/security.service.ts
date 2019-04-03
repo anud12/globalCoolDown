@@ -12,14 +12,26 @@ export class SecurityService {
     }
 
     registerUser(user: UserModel) {
-        return this.httpClient.post(SecurityEndpoints.register, user)
+        return this.httpClient.post(SecurityEndpoints.register, user, {withCredentials: true})
     }
 
     loginUser(user: UserModel) {
-        return this.httpClient.post(SecurityEndpoints.login, user)
+        let body = `username=${user.username}`;
+        return this.httpClient.post(SecurityEndpoints.login,
+            body,
+            {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                withCredentials: true,
+            }
+        )
     }
 
     getMe() {
-        return this.httpClient.get(SecurityEndpoints.getMe);
+        return this.httpClient.get(SecurityEndpoints.getMe, {
+            withCredentials: true,
+            responseType: 'text' as 'json'
+        });
     }
 }

@@ -6,10 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ro.anud.globalCooldown.model.UserModel;
 import ro.anud.globalCooldown.service.MyUserDetailsService;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.security.Principal;
 import java.util.Objects;
 
@@ -23,6 +19,11 @@ public class SecurityController {
 
     public SecurityController(final MyUserDetailsService myUserDetailsService) {
         this.myUserDetailsService = Objects.requireNonNull(myUserDetailsService, "myUserDetailsService must not be null");
+    }
+
+    @GetMapping("/login")
+    public String getLogin() {
+        return "login";
     }
 
     @PostMapping("/register")

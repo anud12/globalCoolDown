@@ -37,8 +37,6 @@ export class LoginComponent implements OnInit {
 
     formSubmit() {
         this.securityService.registerUser(this.loginForm).subscribe(value => {
-            this.securityService.registerUser(this.loginForm).subscribe(value1 => {
-            });
             console.log(value)
         })
     }
@@ -56,5 +54,11 @@ export class LoginComponent implements OnInit {
 
     getMe() {
         this.securityService.getMe().subscribe(value => console.log(value))
+    }
+
+    doLogin() {
+        this.securityService.loginUser(this.loginForm).subscribe((value: Response) => {
+            console.log(value);
+        })
     }
 }
