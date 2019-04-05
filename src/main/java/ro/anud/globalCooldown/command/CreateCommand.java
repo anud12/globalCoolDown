@@ -24,7 +24,7 @@ public class CreateCommand implements Command {
                 .validate(gameObjectModel.getTrait(LocationTrait.class))
                 .isAnyNotPresent()) {
             return CommandResponse.builder()
-                    .command(null)
+                    .nextCommand(null)
                     .build();
         }
         Point2D point = commandArguments.getGameObjectModel()
@@ -42,7 +42,7 @@ public class CreateCommand implements Command {
                                 new CommandTrait()
                         )
                 ))
-                .command(null)
+                .nextCommand(null)
                 .build();
     }
 }

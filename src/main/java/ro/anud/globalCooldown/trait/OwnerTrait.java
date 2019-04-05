@@ -7,6 +7,6 @@ import lombok.*;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class MetaTrait implements Trait {
-    private Long id;
+public class OwnerTrait implements Trait {
+    private String ownerId;
 }

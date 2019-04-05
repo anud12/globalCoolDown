@@ -3,6 +3,7 @@ package ro.anud.globalCooldown.model;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import ro.anud.globalCooldown.trait.Trait;
 
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 @Setter
 @Getter
+@ToString
 public class GameObjectModel {
     private Map<String, Trait> traitMap;
 

@@ -33,7 +33,7 @@ public class MoveCommand implements Command {
                 .validate(gameObjectModel.getTrait(LocationTrait.class))
                 .isAnyNotPresent()) {
             return CommandResponse.builder()
-                    .command(null)
+                    .nextCommand(null)
                     .build();
         }
         double speed = 0.01;
@@ -51,12 +51,12 @@ public class MoveCommand implements Command {
         trait.setPoint2D(newLocation);
         if (point2D.distance(destinationLocation) <= length) {
             return CommandResponse.builder()
-                    .command(null)
+                    .nextCommand(null)
                     .build();
         }
 
         return CommandResponse.builder()
-                .command(this)
+                .nextCommand(this)
                 .build();
     }
 }

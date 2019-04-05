@@ -5,6 +5,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {GenericValidatorModule} from "../generic-validator/generic-validator.module";
 import {HttpClientModule} from "@angular/common/http";
 import {UserModelValidators} from "./login/userModelValidators";
+import {CookieService} from "ngx-cookie-service";
 
 @NgModule({
     declarations: [LoginComponent],
@@ -16,7 +17,8 @@ import {UserModelValidators} from "./login/userModelValidators";
         HttpClientModule
     ],
     providers: [
-        UserModelValidators
+        UserModelValidators,
+        CookieService
     ],
     exports: [
         LoginComponent

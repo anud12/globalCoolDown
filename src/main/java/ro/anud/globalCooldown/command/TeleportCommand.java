@@ -22,7 +22,7 @@ public class TeleportCommand implements Command {
                 trait.setPoint2D(new Point2D(x, y))
         );
         return CommandResponse.builder()
-                .command(null)
+                .nextCommand(null)
                 .build();
     }
 }

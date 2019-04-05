@@ -6,6 +6,7 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,6 @@ import ro.anud.globalCooldown.trait.CommandTrait;
 import java.util.Objects;
 
 @Controller
-@CrossOrigin()
 @MessageMapping("/ws/gameObject/")
 public class GameObjectTopic {
 
@@ -33,7 +33,6 @@ public class GameObjectTopic {
     }
 
     @MessageMapping("{id}")
-    @CrossOrigin(allowedHeaders = "*", origins = "*")
     public void gameObject(@DestinationVariable("id") final String id,
                            final SimpMessageHeaderAccessor headerAccessor) {
         LOGGER.info(headerAccessor.getSessionAttributes().toString());
@@ -43,10 +42,7 @@ public class GameObjectTopic {
     @MessageMapping("{id}/action/teleport")
     public void teleport(@DestinationVariable("id") final Long id,
                          @RequestBody Point point,
-                         final MessageHeaders headerAccessor,
-                         final java.security.Principal principal) {
-        headerAccessor.forEach((s, o) -> System.out.println(s + ":" + o));
-        System.out.println(principal.getName());
+                         final MessageHeaders headerAccessor) {
         gameObjectService.getById(id)
                 .getTrait(CommandTrait.class)
                 .ifPresent(commandTrait -> commandTrait.addCommand(
@@ -55,7 +51,7 @@ public class GameObjectTopic {
                                 .x(point.getX())
                                 .y(point.getY())
                                 .build()
-                        )
+                           )
                 );
     }
 
@@ -71,7 +67,7 @@ public class GameObjectTopic {
                                 .builder()
                                 .destinationLocation(point.toPoint2D())
                                 .build()
-                        )
+                           )
                 );
     }
 
@@ -84,7 +80,7 @@ public class GameObjectTopic {
                         CreateCommand
                                 .builder()
                                 .build()
-                        )
+                           )
                 );
     }
 }

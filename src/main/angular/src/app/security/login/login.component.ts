@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder} from "@angular/forms";
 import {GenericValidatorService, ValidatorChain} from "../../generic-validator/generic-validator.service";
 import {SecurityService} from "../security.service";
 import {UserModel} from "../../java.models";
@@ -15,12 +15,6 @@ export class LoginComponent implements OnInit {
     loginForm: UserModel = {
         username: ""
     };
-
-    profileForm = new FormGroup({
-        username: new FormControl('', Validators.required),
-        password: new FormControl('')
-    })
-
     validatorChain: ValidatorChain<UserModel>;
 
     constructor(private validatorService: GenericValidatorService,
@@ -36,14 +30,7 @@ export class LoginComponent implements OnInit {
     }
 
     formSubmit() {
-        this.securityService.registerUser(this.loginForm).subscribe(value => {
-            console.log(value)
-        })
-    }
-
-    reactiveFormPress() {
-        // console.log(this.profileForm.get("username").errors);
-        // console.log(Validators.required.toString())
+        this.securityService.registerUser(this.loginForm);
     }
 
     formKeyPress() {
@@ -52,13 +39,7 @@ export class LoginComponent implements OnInit {
         // console.log("KeyPress")
     }
 
-    getMe() {
-        this.securityService.getMe().subscribe(value => console.log(value))
-    }
-
     doLogin() {
-        this.securityService.loginUser(this.loginForm).subscribe((value: Response) => {
-            console.log(value);
-        })
+        this.securityService.loginUser(this.loginForm);
     }
 }

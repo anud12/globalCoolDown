@@ -14,14 +14,14 @@ import java.util.Optional;
 @ToString
 public class CommandResponse {
     public final List<List<Trait>> createdGameObjectModelTrait;
-    public final Optional<Command> command;
+    public final Optional<Command> nextCommand;
 
     @Builder
     public CommandResponse(final List<List<Trait>> createdGameObjectModelTrait,
-                           final Command command) {
+                           final Command nextCommand) {
 
 
         this.createdGameObjectModelTrait = Optional.ofNullable(createdGameObjectModelTrait).orElseGet(() -> Arrays.asList(new ArrayList<>()));
-        this.command = Optional.ofNullable(command);
+        this.nextCommand = Optional.ofNullable(nextCommand);
     }
 }

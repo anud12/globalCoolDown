@@ -1,37 +1,38 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {SecurityEndpoints} from "../endpoints/security.http.endpoint";
 import {UserModel} from "../java.models";
+import {UserWsEndpoints} from "../endpoints/user.ws.endpoint";
+import {StompService} from "../stomp.service";
+import {Subject} from "rxjs";
 
 @Injectable({
     providedIn: 'root'
 })
 export class SecurityService {
 
-    constructor(private httpClient: HttpClient) {
+    private tokenSubject: Subject<string> = new Subject();
+
+    constructor(private stompService: StompService) {
+        this.tokenSubject.subscribe(value => {
+            this.stompService.subscribe(`/ws/error-${value}`, response => {
+                console.log(response)
+            })
+        });
+
+        this.stompService.subscribe(UserWsEndpoints.token, response => {
+            console.log("Updated token :" + response);
+            this.tokenSubject.next(response)
+        })
+    }
+
+    onTokenChange() {
+        return this.tokenSubject;
     }
 
     registerUser(user: UserModel) {
-        return this.httpClient.post(SecurityEndpoints.register, user, {withCredentials: true})
+        this.stompService.publish(UserWsEndpoints.register, JSON.stringify(user))
     }
 
     loginUser(user: UserModel) {
-        let body = `username=${user.username}`;
-        return this.httpClient.post(SecurityEndpoints.login,
-            body,
-            {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                withCredentials: true,
-            }
-        )
-    }
-
-    getMe() {
-        return this.httpClient.get(SecurityEndpoints.getMe, {
-            withCredentials: true,
-            responseType: 'text' as 'json'
-        });
+        this.stompService.publish(UserWsEndpoints.login, JSON.stringify(user))
     }
 }

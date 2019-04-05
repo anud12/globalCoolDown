@@ -6,12 +6,13 @@ import {StompService} from "./stomp.service";
 import {Subject} from "rxjs";
 import {ActionComponentEvent} from "./game-components/action/action.component";
 import {GameObject} from "./models/GameObject";
+import {SecurityService} from "./security/security.service";
 
 @Component({
-               selector: 'app-root',
-               templateUrl: './app.component.html',
-               styleUrls: ['./app.component.scss']
-           })
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss']
+})
 export class AppComponent implements AfterViewInit {
     message: string = "message";
     json = JSON
@@ -21,7 +22,8 @@ export class AppComponent implements AfterViewInit {
     gameObjectId: Array<number> = [];
 
     constructor(private rxStompService: RxStompService,
-                private stompService: StompService) {
+                private stompService: StompService,
+                private securityService: SecurityService) {
     }
 
     getActionSubject() {
@@ -46,16 +48,21 @@ export class AppComponent implements AfterViewInit {
             this.message = response;
         });
 
-        this.stompService.subscribe<Array<GameObjectModel>>("/ws/world", gameObjectList => {
-            const tempMap = new Map();
-            this.gameObjectId = [];
-            gameObjectList.forEach((value: GameObject) => {
-                value.client = {};
-                this.replaceInMap(value, tempMap);
-                this.gameObjectId.push((value.traitMap.MetaTrait as MetaTrait).id);
-            });
-            this.gameObjectMap = tempMap;
+        this.securityService.onTokenChange().subscribe(value => {
+            console.log("Subscribing to" + "/ws/world-" + value)
+            this.stompService.subscribe<Array<GameObjectModel>>("/ws/world-" + value, gameObjectList => {
+                const tempMap = new Map();
+                this.gameObjectId = [];
+                gameObjectList.forEach((value: GameObject) => {
+                    value.client = {};
+                    this.replaceInMap(value, tempMap);
+                    this.gameObjectId.push((value.traitMap.MetaTrait as MetaTrait).id);
+                });
+                this.gameObjectMap = tempMap;
+            })
+        })
 
+        this.stompService.subscribe<Array<GameObjectModel>>("/ws/world/all", gameObjectList => {
             glService.clear();
             glService.draw(gameObjectList.map(value1 => {
                 const trait = value1.traitMap.LocationTrait as LocationTrait;

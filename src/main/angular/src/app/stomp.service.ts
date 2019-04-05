@@ -16,11 +16,16 @@ export class StompService {
         this.rxStompService.stompClient.publish({destination, body: body})
     }
 
-    subscribe<T>(destination: string, callback: StompCallback<T>) {
+    subscribe<T>(destination: string, callback: StompCallback<T>, error?: (error: any) => void) {
         return this.rxStompService.connected$
             .subscribe(value => {
                 return this.rxStompService.stompClient.subscribe(destination, message => {
-                    const object = JSON.parse(message.body);
+                    const object;
+                    try {
+                        object = JSON.parse(message.body);
+                    } catch (e) {
+                        object = message.body
+                    }
                     callback(object);
                 })
 
