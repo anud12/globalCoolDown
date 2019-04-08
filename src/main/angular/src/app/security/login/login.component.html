@@ -1,22 +1,23 @@
-<form (keypress)="formKeyPress()"
-      (submit)="formSubmit()">
-    <input type="text"
-           name="username"
-           placeholder="Username"
-           [(ngModel)]="loginForm.username">
-    <button>Register</button>
-</form>
-<button (click)="doLogin()">Login</button>
-
-<!--<form [formGroup]="profileForm"-->
-<!--(keypress)="reactiveFormPress()">-->
-<!--<input type="text"-->
-<!--name="username"-->
-<!--placeholder="Username"-->
-<!--formControlName="username">-->
-<!--<input type="text"-->
-<!--name="password"-->
-<!--placeholder="Password"-->
-<!--formControlName="password">-->
-<!--<button>Login</button>-->
-<!--</form>-->
+<div class="card">
+    <div class="card-body pb-0">
+        <form (keypress)="formKeyPress()"
+              class="col-12"
+              ngForm>
+            <input type="text"
+                   name="username"
+                   placeholder="Username"
+                   class="form-control text-center"
+                   [(ngModel)]="loginForm.username">
+        </form>
+        <div class="row">
+            <button class="btn btn-primary col-6"
+                    (click)="doRegister()">
+                Register
+            </button>
+            <button class="btn btn-primary col-6"
+                    (click)="doLogin()">
+                Login
+            </button>
+        </div>
+    </div>
+</div>

@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
     ngOnInit() {
     }
 
-    formSubmit() {
+    doRegister() {
         this.securityService.registerUser(this.loginForm);
     }
 

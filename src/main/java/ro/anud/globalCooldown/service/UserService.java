@@ -21,6 +21,10 @@ public class UserService {
         userModelMap = new HashMap<>();
     }
 
+    public boolean notExists(UserModel userModel) {
+        return !userModelMap.containsKey(userModel.getUsername());
+    }
+
     public void addUser(UserModel userModel) {
         userModelMap.put(userModel.getUsername(), userModel);
         userModelMap.forEach((s, userModel1) -> LOGGER.info(s + " : " + userModel1));

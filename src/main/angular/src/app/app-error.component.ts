@@ -16,11 +16,11 @@ export class AppErrorComponent implements OnInit {
     errors: Array<string> = [];
 
     ngOnInit() {
-        this.stompService.subscribeGlobal("/ws/error", response => {
+        this.stompService.subscribeGlobal<string>("/ws/error", response => {
             this.errors.push(response)
         })
         this.securityService.onTokenChange().subscribe(value => {
-            this.stompService.subscribePersonal("/ws/error", value, response => {
+            this.stompService.subscribePersonal<string>("/ws/error", value, response => {
                 this.errors.push(response)
             })
         })

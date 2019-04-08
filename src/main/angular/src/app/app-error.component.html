@@ -1,3 +1,7 @@
 <div *ngFor="let error of errors">
-    <div style="color:darkred" (click)="clear(error)">{{error}}</div>
+    <div class="card text-white bg-warning mb-1" (click)="clear(error)">
+        <div class="card-body">
+            {{error}}
+        </div>
+    </div>
 </div>

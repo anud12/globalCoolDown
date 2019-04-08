@@ -1,17 +1,23 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<app-error>
-
-</app-error>
-<div style="text-align:center">
-
-    <canvas width="500" height="500"
-            #glcanvas></canvas>
-    <div *ngFor="let key of gameObjectId">
-        <app-game-object [gameObject]="gameObjectMap.get(key)"></app-game-object>
+<div class="row">
+    <div class="col-4">
+        <app-error>
+        </app-error>
+        <div *ngFor="let key of gameObjectId">
+            <app-game-object [gameObject]="gameObjectMap.get(key)"></app-game-object>
+        </div>
     </div>
-    <div>{{message}}</div>
-    <app-action [subject]="getActionSubject()"></app-action>
-</div>
+    <div class="col-4">
 
-<app-login>
-</app-login>
+        <div style="text-align:center">
+            <div>{{message}}</div>
+            <canvas width="500" height="500"
+                    #glcanvas></canvas>
+            <app-action [subject]="getActionSubject()"></app-action>
+        </div>
+    </div>
+    <div class="col-4">
+        <app-login>
+        </app-login>
+    </div>
+</div>

@@ -1,15 +1,29 @@
-<form (submit)="sendTeleport()" ngForm>
-    <input name="x" [(ngModel)]="teleport.x">
-    <input name="y" [(ngModel)]="teleport.y">
-    <button>Teleport</button>
-</form>
-
-
-<form (submit)="sendMove()" ngForm>
-    <input name="x" [(ngModel)]="move.x">
-    <input name="y" [(ngModel)]="move.y">
-    <button>Move</button>
-</form>
-<form (submit)="sendCreate()" ngForm>
-    <button>Create Object</button>
-</form>
+<div class="card">
+    <div class="card-body pb-0">
+        <div class="row">
+            <form (submit)="sendTeleport()"
+                  ngForm
+                  class="col-12">
+                <input name="x"
+                       class="form-control col-6 d-inline text-center"
+                       [(ngModel)]="teleport.x">
+                <input name="y"
+                       class="form-control col-6 d-inline text-center"
+                       [(ngModel)]="teleport.y">
+                <button class="btn btn-primary btn-block">Teleport</button>
+            </form>
+            <form (submit)="sendMove()"
+                  ngForm
+                  class="col-12">
+                <input name="x"
+                       class="form-control d-inline col-6 text-center"
+                       [(ngModel)]="move.x">
+                <input name="y"
+                       class="form-control d-inline  col-6 text-center"
+                       [(ngModel)]="move.y">
+                <button class="btn btn-primary btn-block">Move</button>
+            </form>
+            <button (click)="sendCreate()" class="btn btn-primary btn-block col-12">Create Object</button>
+        </div>
+    </div>
+</div>

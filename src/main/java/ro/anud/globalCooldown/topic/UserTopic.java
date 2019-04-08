@@ -41,8 +41,12 @@ public class UserTopic {
 
     @MessageMapping("/register")
     public void register(@RequestBody final UserModel userModel) {
-        userService.addUser(userModel);
-        gameObjectService.initializeForUser(userModel);
+        if (userService.notExists(userModel)) {
+            userService.addUser(userModel);
+            gameObjectService.initializeForUser(userModel);
+        } else {
+            throw new RuntimeException("User already exists");
+        }
     }
 
     @MessageMapping("/login")
