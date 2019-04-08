@@ -64,10 +64,12 @@ export class AppComponent implements AfterViewInit {
 
         this.stompService.subscribeGlobal<Array<GameObjectModel>>("/ws/world/all", gameObjectList => {
             glService.clear();
-            glService.draw(gameObjectList.map(value1 => {
-                const trait = value1.traitMap.LocationTrait as LocationTrait;
-                return trait.point2D
-            }));
+            if (gameObjectList.length != 0) {
+                glService.draw(gameObjectList.map(value1 => {
+                    const trait = value1.traitMap.LocationTrait as LocationTrait;
+                    return trait.point2D
+                }));
+            }
         })
     }
 

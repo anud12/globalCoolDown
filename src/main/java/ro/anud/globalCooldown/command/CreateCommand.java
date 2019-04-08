@@ -8,7 +8,7 @@ import lombok.ToString;
 import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.trait.CommandTrait;
 import ro.anud.globalCooldown.trait.LocationTrait;
-import ro.anud.globalCooldown.trait.MetaTrait;
+import ro.anud.globalCooldown.trait.OwnerTrait;
 
 import java.util.Arrays;
 
@@ -27,7 +27,7 @@ public class CreateCommand implements Command {
                     .nextCommand(null)
                     .build();
         }
-        Point2D point = commandArguments.getGameObjectModel()
+        Point2D point = gameObjectModel
                 .getTrait(LocationTrait.class)
                 .get()
                 .getPoint2D();
@@ -39,7 +39,12 @@ public class CreateCommand implements Command {
                                         .builder()
                                         .point2D(new Point2D(point.getX(), point.getY()))
                                         .build(),
-                                new CommandTrait()
+                                new CommandTrait(),
+                                OwnerTrait.builder()
+                                        .ownerId(gameObjectModel.getTrait(OwnerTrait.class)
+                                                         .map(OwnerTrait::getOwnerId)
+                                                         .orElse(""))
+                                        .build()
                         )
                 ))
                 .nextCommand(null)

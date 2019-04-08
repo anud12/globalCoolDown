@@ -72,11 +72,9 @@ public class GameLoop {
         messagingTemplate.convertAndSend("/ws/world/all", gameObjectService.getAll());
         gameObjectService.getAllByOwner()
                 .forEach((username, gameObjectModels1) -> {
-                    LOGGER.info(username + ":" + gameObjectModels1);
                     userService.getConnectionListByName(username)
                             .forEach(connection -> {
                                 String url = "/ws/world@" + connection;
-                                LOGGER.info(url);
                                 messagingTemplate.convertAndSend(url, gameObjectModels1);
                             });
 
