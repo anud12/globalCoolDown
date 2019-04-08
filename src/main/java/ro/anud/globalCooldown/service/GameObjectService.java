@@ -3,28 +3,29 @@ package ro.anud.globalCooldown.service;
 import javafx.geometry.Point2D;
 import org.springframework.stereotype.Service;
 import ro.anud.globalCooldown.model.GameObjectModel;
+import ro.anud.globalCooldown.model.UserModel;
 import ro.anud.globalCooldown.trait.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
 public class GameObjectService {
 
     private List<GameObjectModel> gameObjectModelList;
-    private Supplier<GameObjectModel> createObject;
+    private Function<String, GameObjectModel> createObject;
     private GameObjectModel gameObjectModel;
 
     public GameObjectService() {
         gameObjectModelList = new ArrayList<>();
-        createObject = () -> {
+        createObject = (ownerId) -> {
             GameObjectModel gameObjectModel = new GameObjectModel();
 
             gameObjectModel.addTrait(OwnerTrait.builder()
-                                             .ownerId("admin")
+                                             .ownerId(ownerId)
                                              .build());
 
             gameObjectModel.addTrait(LocationTrait.builder()
@@ -33,14 +34,15 @@ public class GameObjectService {
             );
 
             gameObjectModel.addTrait(MetaTrait.builder()
-                                             .id(0L)
+                                             .id((long) gameObjectModelList.size())
                                              .build()
             );
 
             gameObjectModel.addTrait(new CommandTrait());
+
             return gameObjectModel;
         };
-        gameObjectModelList.add(createObject.get());
+        //        gameObjectModelList.add(createObject.apply("admin"));
     }
 
     public List<GameObjectModel> getAll() {
@@ -73,5 +75,9 @@ public class GameObjectService {
         gameObjectModelList.add(GameObjectModel.builder()
                                         .traitList(finalList)
                                         .build());
+    }
+
+    public void initializeForUser(final UserModel userModel) {
+        gameObjectModelList.add(createObject.apply(userModel.getUsername()));
     }
 }

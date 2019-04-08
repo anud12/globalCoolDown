@@ -12,12 +12,6 @@ export class SecurityService {
     private tokenSubject: Subject<string> = new Subject();
 
     constructor(private stompService: StompService) {
-        this.tokenSubject.subscribe(value => {
-            this.stompService.subscribePersonal(`/ws/error`, value, response => {
-                console.log(response)
-            })
-        });
-
         this.stompService.subscribeGlobal(UserWsEndpoints.token, response => {
             console.log("Updated token :" + response);
             this.tokenSubject.next(response as string)

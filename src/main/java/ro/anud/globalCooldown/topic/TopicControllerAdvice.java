@@ -29,7 +29,7 @@ public class TopicControllerAdvice {
     @MessageExceptionHandler(RuntimeException.class)
     public void handleException(RuntimeException exception,
                                 final SimpMessageHeaderAccessor inHeaderAccessor) {
-        simpMessagingTemplate.convertAndSend("/ws/error-" + inHeaderAccessor.getUser().getName(),
+        simpMessagingTemplate.convertAndSend("/ws/error@" + inHeaderAccessor.getUser().getName(),
                                              Optional.ofNullable(exception.getMessage()).orElse("")
         );
     }

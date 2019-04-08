@@ -14,10 +14,12 @@ public class WorldTopic {
 
     @SubscribeMapping("/ws/world/all")
     public void all(SimpMessageHeaderAccessor simpMessageHeaderAccessor,
-                    Message message) {
-//        LOGGER.info("/ws/world/all");
-        //        LOGGER.info(simpMessageHeaderAccessor.getSessionAttributes().toString());
-        //        LOGGER.info(simpMessageHeaderAccessor.getSubscriptionId());
-        //        throw new RuntimeException("sad face");
+                    Message message) throws InterruptedException {
+        LOGGER.info("/ws/world/all");
+        LOGGER.info(simpMessageHeaderAccessor.getSessionAttributes().toString());
+        LOGGER.info(simpMessageHeaderAccessor.getSubscriptionId());
+        Thread.sleep(1000);
+        LOGGER.info("Sad face");
+        throw new RuntimeException("sad face");
     }
 }
