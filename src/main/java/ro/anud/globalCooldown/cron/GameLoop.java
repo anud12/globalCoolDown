@@ -74,8 +74,7 @@ public class GameLoop {
                 .forEach((username, gameObjectModels1) -> {
                     userService.getConnectionListByName(username)
                             .forEach(connection -> {
-                                LOGGER.info("Sending " + "/ws/world-" + connection);
-                                messagingTemplate.convertAndSend("/ws/world-" + connection, gameObjectModels);
+                                messagingTemplate.convertAndSend("/ws/world@" + connection, gameObjectModels);
                             });
 
                 });

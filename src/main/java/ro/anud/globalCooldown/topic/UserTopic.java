@@ -15,6 +15,8 @@ import ro.anud.globalCooldown.service.UserService;
 
 import java.util.Objects;
 
+import static ro.anud.globalCooldown.config.websocket.WebsocketSessionAtributes.CONNECTION_ID;
+
 @Controller
 @MessageMapping("/ws/user/")
 public class UserTopic {
@@ -33,7 +35,9 @@ public class UserTopic {
 
     @SubscribeMapping("/token")
     public String getName(final SimpMessageHeaderAccessor inHeaderAccessor) {
-        return inHeaderAccessor.getSessionAttributes().get("name").toString();
+        return inHeaderAccessor.getSessionAttributes()
+                .get(CONNECTION_ID.getKey())
+                .toString();
     }
 
     @MessageMapping("/register")
@@ -47,7 +51,7 @@ public class UserTopic {
     public void login(@RequestBody final UserModel userModel,
                       final SimpMessageHeaderAccessor inHeaderAccessor) {
         userService.login(userModel, inHeaderAccessor.getSessionAttributes()
-                .get("name")
+                .get(CONNECTION_ID.getKey())
                 .toString()
         );
     }

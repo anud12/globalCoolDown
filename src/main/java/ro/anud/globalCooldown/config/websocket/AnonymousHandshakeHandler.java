@@ -11,6 +11,8 @@ import java.security.Principal;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static ro.anud.globalCooldown.config.websocket.WebsocketSessionAtributes.CONNECTION_ID;
+
 public class AnonymousHandshakeHandler extends DefaultHandshakeHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnonymousHandshakeHandler.class);
     private AtomicInteger id = new AtomicInteger(0);
@@ -19,7 +21,7 @@ public class AnonymousHandshakeHandler extends DefaultHandshakeHandler {
     protected Principal determineUser(
             ServerHttpRequest request, WebSocketHandler wsHandler, Map<String, Object> attributes) {
         String name = id.addAndGet(1) + "";
-        attributes.put("name", name);
+        attributes.put(CONNECTION_ID.getKey(), name);
         LOGGER.info("determineUser :" + name);
         return () -> name;
     }

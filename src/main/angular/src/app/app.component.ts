@@ -44,13 +44,13 @@ export class AppComponent implements AfterViewInit {
         const canvas = this.glcanvas.nativeElement;
         const glService = new GlService(canvas);
 
-        this.stompService.subscribe<string>('/ws/hello', response => {
+        this.stompService.subscribeGlobal<string>('/ws/hello', response => {
             this.message = response;
         });
 
         this.securityService.onTokenChange().subscribe(value => {
-            console.log("Subscribing to" + "/ws/world-" + value)
-            this.stompService.subscribe<Array<GameObjectModel>>("/ws/world-" + value, gameObjectList => {
+            console.log("token changed");
+            this.stompService.subscribePersonal<Array<GameObjectModel>>("/ws/world", value, gameObjectList => {
                 const tempMap = new Map();
                 this.gameObjectId = [];
                 gameObjectList.forEach((value: GameObject) => {
@@ -62,7 +62,7 @@ export class AppComponent implements AfterViewInit {
             })
         })
 
-        this.stompService.subscribe<Array<GameObjectModel>>("/ws/world/all", gameObjectList => {
+        this.stompService.subscribeGlobal<Array<GameObjectModel>>("/ws/world/all", gameObjectList => {
             glService.clear();
             glService.draw(gameObjectList.map(value1 => {
                 const trait = value1.traitMap.LocationTrait as LocationTrait;
