@@ -8,9 +8,11 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import ro.anud.globalCooldown.exception.TopicMessageException;
 
+import java.util.Arrays;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class TopicControllerAdvice {
@@ -30,7 +32,22 @@ public class TopicControllerAdvice {
     public void handleException(RuntimeException exception,
                                 final SimpMessageHeaderAccessor inHeaderAccessor) {
         simpMessagingTemplate.convertAndSend("/ws/error@" + inHeaderAccessor.getUser().getName(),
-                                             Optional.ofNullable(exception.getMessage()).orElse("")
+                                             Arrays.asList(exception.getMessage())
         );
     }
+
+    @MessageExceptionHandler(TopicMessageException.class)
+    public void handleTopicMessageException(TopicMessageException exception,
+                                            final SimpMessageHeaderAccessor inHeaderAccessor) {
+        simpMessagingTemplate.convertAndSend("/ws/error@" + inHeaderAccessor.getUser().getName(),
+                                             exception.getValidationChainResultList().stream()
+                                                     .map(validationChainResult -> new StringBuffer()
+                                                             .append(validationChainResult.getField())
+                                                             .append(" : ")
+                                                             .append(validationChainResult.getErrorCode()))
+                                                     .collect(Collectors.toList())
+        );
+    }
+
+
 }

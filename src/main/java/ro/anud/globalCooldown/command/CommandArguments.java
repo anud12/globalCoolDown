@@ -3,7 +3,7 @@ package ro.anud.globalCooldown.command;
 import lombok.Builder;
 import lombok.Getter;
 import ro.anud.globalCooldown.model.GameObjectModel;
-import ro.anud.globalCooldown.validation.OptionalValidation;
+import ro.anud.globalCooldown.validation.optionalValidation.OptionalValidation;
 
 @Getter
 @Builder

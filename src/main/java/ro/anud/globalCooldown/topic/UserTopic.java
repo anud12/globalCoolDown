@@ -8,11 +8,15 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
+import ro.anud.globalCooldown.exception.TopicMessageException;
 import ro.anud.globalCooldown.model.UserModel;
 import ro.anud.globalCooldown.service.GameObjectService;
 import ro.anud.globalCooldown.service.UserService;
+import ro.anud.globalCooldown.validation.validationChain.ValidationChain;
+import ro.anud.globalCooldown.validation.validationChain.ValidationChainResult;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import static ro.anud.globalCooldown.config.websocket.WebsocketSessionAtributes.CONNECTION_ID;
 
@@ -41,12 +45,45 @@ public class UserTopic {
 
     @MessageMapping("/register")
     public void register(@RequestBody final UserModel userModel) {
-        if (userService.notExists(userModel)) {
-            userService.addUser(userModel);
-            gameObjectService.initializeForUser(userModel);
-        } else {
-            throw new RuntimeException("User already exists");
-        }
+        //        if (userService.notExists(userModel)) {
+        //            userService.addUser(userModel);
+        //            gameObjectService.initializeForUser(userModel);
+        //        } else {
+        //            throw new RuntimeException("User already exists");
+        //        }
+        new ValidationChain<>(userModel)
+                .check(userModel1 -> {
+                    if (!userService.notExists(userModel1)) {
+                        return Optional.of(ValidationChainResult.builder()
+                                                   .errorCode("User already exists")
+                                                   .field("username")
+                                                   .build());
+                    } else {
+                        return Optional.empty();
+                    }
+                })
+                .check(userModel1 -> {
+                    if (!userService.notExists(userModel1)) {
+                        return Optional.of(ValidationChainResult.builder()
+                                                   .errorCode("User already exists")
+                                                   .field("password")
+                                                   .build());
+                    } else {
+                        return Optional.empty();
+                    }
+                })
+                .validate(validationChainResults -> {
+                    System.out.println("exception");
+                    throw new TopicMessageException(validationChainResults);
+                });
+        userService.addUser(userModel);
+        gameObjectService.initializeForUser(userModel);
+        //
+        //        if (userService.notExists(userModel)) {
+        //
+        //        } else {
+        //            throw new RuntimeException("User already exists");
+        //        }
     }
 
     @MessageMapping("/login")

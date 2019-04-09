@@ -6,10 +6,10 @@ import org.springframework.messaging.core.MessageSendingOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ro.anud.globalCooldown.command.CommandResponse;
+import ro.anud.globalCooldown.emitter.WorldEmitter;
 import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.service.CommandService;
 import ro.anud.globalCooldown.service.GameObjectService;
-import ro.anud.globalCooldown.service.UserService;
 import ro.anud.globalCooldown.trait.CommandTrait;
 
 import java.util.*;
@@ -23,19 +23,19 @@ public class GameLoop {
     private final MessageSendingOperations<String> messagingTemplate;
     private final GameObjectService gameObjectService;
     private final CommandService commandService;
-    private final UserService userService;
+    private final WorldEmitter worldEmitter;
 
     public GameLoop(MessageSendingOperations messagingTemplate,
                     GameObjectService gameObjectService,
                     final CommandService commandService,
-                    final UserService userService) {
+                    final WorldEmitter worldEmitter) {
         this.messagingTemplate = Objects.requireNonNull(messagingTemplate, "messagingTemplate must not be null");
         this.gameObjectService = Objects.requireNonNull(gameObjectService, "gameObjectService must not be null");
         this.commandService = Objects.requireNonNull(commandService, "commandService must not be null");
-        this.userService = Objects.requireNonNull(userService, "userService must not be null");
+        this.worldEmitter = Objects.requireNonNull(worldEmitter, "worldEmitter must not be null");
     }
 
-    @Scheduled(fixedRate = 500)
+    @Scheduled(fixedRate = 15)
     private void gameLoop() {
         List<GameObjectModel> gameObjectModels = gameObjectService.getAll();
         Map<GameObjectModel, List<CommandResponse>> commandResponseList = gameObjectModels
@@ -50,16 +50,15 @@ public class GameLoop {
         commandResponseList.forEach((gameObjectModel, commandResponses) -> {
             commandResponses.forEach(commandResponse -> gameObjectModel
                     .getTrait(CommandTrait.class)
-                    .ifPresent(commandTrait -> {
-                        commandTrait.clearAndSet(commandResponses
-                                                         .stream()
-                                                         .map(CommandResponse::getNextCommand)
-                                                         .filter(Optional::isPresent)
-                                                         .map(Optional::get)
-                                                         .collect(Collectors.toList())
-                        );
-
-                    })
+                    .ifPresent(commandTrait -> commandTrait.clearAndSet(
+                            commandResponses
+                                    .stream()
+                                    .map(CommandResponse::getNextCommand)
+                                    .filter(Optional::isPresent)
+                                    .map(Optional::get)
+                                    .collect(Collectors.toList())
+                               )
+                    )
             );
             commandResponses.forEach(commandResponse -> commandResponse
                     .createdGameObjectModelTrait
@@ -69,16 +68,9 @@ public class GameLoop {
             );
         });
         messagingTemplate.convertAndSend("/ws/hello", new Date());
-        messagingTemplate.convertAndSend("/ws/world/all", gameObjectService.getAll());
+        worldEmitter.all(gameObjectService.getAll());
         gameObjectService.getAllByOwner()
-                .forEach((username, gameObjectModels1) -> {
-                    userService.getConnectionListByName(username)
-                            .forEach(connection -> {
-                                String url = "/ws/world@" + connection;
-                                messagingTemplate.convertAndSend(url, gameObjectModels1);
-                            });
-
-                });
+                .forEach(worldEmitter::to);
 
     }
 }

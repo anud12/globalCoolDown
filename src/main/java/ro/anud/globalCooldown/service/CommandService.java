@@ -5,7 +5,7 @@ import ro.anud.globalCooldown.command.CommandArguments;
 import ro.anud.globalCooldown.command.CommandResponse;
 import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.trait.CommandTrait;
-import ro.anud.globalCooldown.validation.OptionalValidation;
+import ro.anud.globalCooldown.validation.optionalValidation.OptionalValidation;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +32,7 @@ public class CommandService {
                                         .builder()
                                         .optionalValidation(optionalValidation)
                                         .gameObjectModel(gameObjectModel)
-                                        .deltaTime(1000L)
+                                        .deltaTime(15L)
                                         .build()
                                 )
                         )

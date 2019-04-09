@@ -1,7 +1,6 @@
 import {createProgramWithShadersAnd} from "./util/createProgramWithShadersAnd.function";
 import {compileShader} from "./util/compileShader.function";
 import {convertCoordinatesToGL} from "./util/convertCoordinatesToGL.function";
-import {convertCoordinatesToRelative} from "./util/convetCoordinatesToRelative.function";
 
 export class GlService {
   private gl: WebGLRenderingContext;
@@ -14,7 +13,7 @@ export class GlService {
     attribute vec4 a_Position;
     void main() {
         gl_Position = a_Position;
-        gl_PointSize = 6.0;
+        gl_PointSize = 3.0;
     }
     `;
     let FRAGMENT_SHADER_SOURCE = `

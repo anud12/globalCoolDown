@@ -1,8 +1,6 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div class="row">
     <div class="col-4">
-        <app-error>
-        </app-error>
         <div *ngFor="let key of gameObjectId">
             <app-game-object [gameObject]="gameObjectMap.get(key)"></app-game-object>
         </div>
@@ -19,5 +17,7 @@
     <div class="col-4">
         <app-login>
         </app-login>
+        <app-error>
+        </app-error>
     </div>
 </div>

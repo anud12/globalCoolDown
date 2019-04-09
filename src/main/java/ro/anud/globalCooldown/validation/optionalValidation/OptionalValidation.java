@@ -1,4 +1,4 @@
-package ro.anud.globalCooldown.validation;
+package ro.anud.globalCooldown.validation.optionalValidation;
 
 import org.springframework.stereotype.Service;
 

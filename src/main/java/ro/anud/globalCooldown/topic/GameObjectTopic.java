@@ -21,7 +21,7 @@ import ro.anud.globalCooldown.trait.CommandTrait;
 import java.util.Objects;
 
 @Controller
-@MessageMapping("/ws/gameObject/")
+@MessageMapping("/ws/gameObject")
 public class GameObjectTopic {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameObjectTopic.class);

@@ -20,14 +20,16 @@ export class AppErrorComponent implements OnInit {
             this.errors.push(response)
         })
         this.securityService.onTokenChange().subscribe(value => {
-            this.stompService.subscribePersonal<string>("/ws/error", value, response => {
-                this.errors.push(response)
+            this.stompService.subscribePersonal<Array<string>>("/ws/error", value, response => {
+                console.log(response)
+                response.forEach(value1 => this.errors.push(value1))
             })
         })
     }
 
-    clear(error: string) {
-        this.errors = this.errors.filter(value => value != error)
+    clear(index: number) {
+        console.log(index)
+        this.errors = this.errors.filter((value, index1) => index1 != index)
     }
 
 }

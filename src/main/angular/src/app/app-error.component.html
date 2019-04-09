@@ -1,5 +1,5 @@
-<div *ngFor="let error of errors">
-    <div class="card text-white bg-warning mb-1" (click)="clear(error)">
+<div *ngFor="let error of errors; let i = index">
+    <div class="card text-white bg-warning mb-1" (click)="clear(i)">
         <div class="card-body">
             {{error}}
         </div>

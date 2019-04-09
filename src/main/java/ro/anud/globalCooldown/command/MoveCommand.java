@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.trait.LocationTrait;
-import ro.anud.globalCooldown.validation.OptionalValidation;
+import ro.anud.globalCooldown.validation.optionalValidation.OptionalValidation;
 
 @Builder
 @Getter
@@ -43,11 +43,11 @@ public class MoveCommand implements Command {
         Point2D locationPoint = new Point2D(point2D.getX(), point2D.getY());
         Point2D newLocation = locationPoint
                 .subtract(locationPoint
-                        .subtract(destinationLocation)
-                        .normalize()
-                        .multiply(length)
+                                  .subtract(destinationLocation)
+                                  .normalize()
+                                  .multiply(length)
                 );
-        LOGGER.info(newLocation.toString());
+        //        LOGGER.info(newLocation.toString());
         trait.setPoint2D(newLocation);
         if (point2D.distance(destinationLocation) <= length) {
             return CommandResponse.builder()
