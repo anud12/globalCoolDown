@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {RxStompService} from "@stomp/ng2-stompjs";
 import {GlService} from "./opengl/gl.service";
-import {GameObjectModel, LocationTrait, MetaTrait} from "./java.models";
+import {GameObjectModel, MetaTrait} from "./java.models";
 import {StompService} from "./stomp.service";
 import {Subject} from "rxjs";
 import {ActionComponentEvent} from "./game-components/action/action.component";
@@ -65,10 +65,7 @@ export class AppComponent implements AfterViewInit {
         this.stompService.subscribeGlobal<Array<GameObjectModel>>("/ws/world/all", gameObjectList => {
             glService.clear();
             if (gameObjectList.length != 0) {
-                glService.draw(gameObjectList.map(value1 => {
-                    const trait = value1.traitMap.LocationTrait as LocationTrait;
-                    return trait.point2D
-                }));
+                glService.draw(gameObjectList);
             }
         })
     }

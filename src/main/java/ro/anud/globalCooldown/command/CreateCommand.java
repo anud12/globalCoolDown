@@ -1,6 +1,7 @@
 package ro.anud.globalCooldown.command;
 
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.trait.CommandTrait;
 import ro.anud.globalCooldown.trait.LocationTrait;
 import ro.anud.globalCooldown.trait.OwnerTrait;
+import ro.anud.globalCooldown.trait.RenderTrait;
 
 import java.util.Arrays;
 
@@ -44,6 +46,14 @@ public class CreateCommand implements Command {
                                         .ownerId(gameObjectModel.getTrait(OwnerTrait.class)
                                                          .map(OwnerTrait::getOwnerId)
                                                          .orElse(""))
+                                        .build(),
+                                RenderTrait.builder()
+                                        .modelPointList(Arrays.asList(
+                                                new Point2D(-10D, -10D),
+                                                new Point2D(10D, -10D),
+                                                new Point2D(10D, 10D)
+                                        ))
+                                        .color(Color.GREEN)
                                         .build()
                         )
                 ))

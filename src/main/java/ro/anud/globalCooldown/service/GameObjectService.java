@@ -1,12 +1,14 @@
 package ro.anud.globalCooldown.service;
 
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 import org.springframework.stereotype.Service;
 import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.model.UserModel;
 import ro.anud.globalCooldown.trait.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -16,12 +18,12 @@ import java.util.stream.Collectors;
 public class GameObjectService {
 
     private List<GameObjectModel> gameObjectModelList;
-    private Function<String, GameObjectModel> createObject;
+    private Function<String, GameObjectModel> createObjectFunction;
     private GameObjectModel gameObjectModel;
 
     public GameObjectService() {
         gameObjectModelList = new ArrayList<>();
-        createObject = (ownerId) -> {
+        createObjectFunction = (ownerId) -> {
             GameObjectModel gameObjectModel = new GameObjectModel();
 
             gameObjectModel.addTrait(OwnerTrait.builder()
@@ -38,11 +40,20 @@ public class GameObjectService {
                                              .build()
             );
 
+            gameObjectModel.addTrait(RenderTrait.builder()
+                                             .modelPointList(Arrays.asList(
+                                                     new Point2D(-10D, -10D),
+                                                     new Point2D(10D, -10D),
+                                                     new Point2D(10D, 10D),
+                                                     new Point2D(-10D, 10D)
+                                             ))
+                                             .color(Color.CYAN)
+                                             .build());
+
             gameObjectModel.addTrait(new CommandTrait());
 
             return gameObjectModel;
         };
-        //        gameObjectModelList.add(createObject.apply("admin"));
     }
 
     public List<GameObjectModel> getAll() {
@@ -78,6 +89,6 @@ public class GameObjectService {
     }
 
     public void initializeForUser(final UserModel userModel) {
-        gameObjectModelList.add(createObject.apply(userModel.getUsername()));
+        gameObjectModelList.add(createObjectFunction.apply(userModel.getUsername()));
     }
 }

@@ -29,11 +29,11 @@ public class CommandService {
                         .sequential()
                         .map(command -> command
                                 .execute(CommandArguments
-                                        .builder()
-                                        .optionalValidation(optionalValidation)
-                                        .gameObjectModel(gameObjectModel)
-                                        .deltaTime(15L)
-                                        .build()
+                                                 .builder()
+                                                 .optionalValidation(optionalValidation)
+                                                 .gameObjectModel(gameObjectModel)
+                                                 .deltaTime(500L)
+                                                 .build()
                                 )
                         )
                         .collect(Collectors.toList()))

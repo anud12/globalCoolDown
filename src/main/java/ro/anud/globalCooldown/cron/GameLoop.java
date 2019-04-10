@@ -35,7 +35,7 @@ public class GameLoop {
         this.worldEmitter = Objects.requireNonNull(worldEmitter, "worldEmitter must not be null");
     }
 
-    @Scheduled(fixedRate = 15)
+    @Scheduled(fixedRate = 1500)
     private void gameLoop() {
         List<GameObjectModel> gameObjectModels = gameObjectService.getAll();
         Map<GameObjectModel, List<CommandResponse>> commandResponseList = gameObjectModels
