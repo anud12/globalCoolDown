@@ -11,6 +11,9 @@ import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.trait.LocationTrait;
 import ro.anud.globalCooldown.validation.optionalValidation.OptionalValidation;
 
+import static java.util.Optional.of;
+import static ro.anud.globalCooldown.command.RotateCommand.calculateAngle;
+
 @Builder
 @Getter
 @ToString
@@ -36,19 +39,25 @@ public class MoveCommand implements Command {
                     .nextCommand(null)
                     .build();
         }
-        double speed = 0.01;
+        double speed = 0.1;
         double length = speed * commandArguments.getDeltaTime().floatValue();
         LocationTrait trait = gameObjectModel.getTrait(LocationTrait.class).get();
+
+        if (isMissaligned(gameObjectModel, commandArguments.getDeltaTime())) {
+            CommandResponse commandResponse = new RotateCommand(getDestinationAlignment(trait)).execute(commandArguments);
+            commandResponse.setNextCommand(of(this));
+            return commandResponse;
+        }
         Point2D point2D = trait.getPoint2D();
         Point2D locationPoint = new Point2D(point2D.getX(), point2D.getY());
+        Point2D vector = locationPoint
+                .subtract(destinationLocation)
+                .normalize();
         Point2D newLocation = locationPoint
-                .subtract(locationPoint
-                                  .subtract(destinationLocation)
-                                  .normalize()
-                                  .multiply(length)
-                );
-        //        LOGGER.info(newLocation.toString());
+                .subtract(vector.multiply(length));
         trait.setPoint2D(newLocation);
+
+
         if (point2D.distance(destinationLocation) <= length) {
             return CommandResponse.builder()
                     .nextCommand(null)
@@ -58,5 +67,16 @@ public class MoveCommand implements Command {
         return CommandResponse.builder()
                 .nextCommand(this)
                 .build();
+    }
+
+    private Double getDestinationAlignment(LocationTrait trait) {
+        return calculateAngle(trait.getPoint2D(), destinationLocation);
+    }
+
+    private boolean isMissaligned(GameObjectModel gameObjectModel, Long deltaTime) {
+        double rate = 0.1 * deltaTime;
+        LocationTrait locationTrait = gameObjectModel.getTrait(LocationTrait.class).get();
+        Boolean result = !(Math.abs(locationTrait.getAngle() - getDestinationAlignment(locationTrait)) < rate);
+        return result;
     }
 }

@@ -11,6 +11,8 @@ import java.util.List;
 @Getter
 @ToString
 @EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor
 public class RenderTrait implements Trait {
     private List<Point2D> modelPointList;
     private Color color;

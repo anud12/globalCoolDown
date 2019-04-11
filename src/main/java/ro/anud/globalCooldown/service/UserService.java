@@ -36,6 +36,12 @@ public class UserService {
                 .orElseGet(ArrayList::new);
     }
 
+    public void logout(String connectionId) {
+        usernameToConnectionListMap
+                .values()
+                .forEach(connectionIdList -> connectionIdList.remove(connectionId));
+    }
+
     public void login(UserModel userModel, String connection) {
         usernameToConnectionListMap.putIfAbsent(userModel.getUsername(), new ArrayList<>());
         usernameToConnectionListMap.get(userModel.getUsername()).add(connection);

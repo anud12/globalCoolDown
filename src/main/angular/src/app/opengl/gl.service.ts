@@ -10,7 +10,7 @@ type  glObject = {
 
 export class GlService {
     private gl: WebGLRenderingContext;
-    private clientRect: ClientRect
+    private clientRect: ClientRect;
     private program: WebGLProgram;
     private gameObjectGLService = new GameObjectGLService();
 

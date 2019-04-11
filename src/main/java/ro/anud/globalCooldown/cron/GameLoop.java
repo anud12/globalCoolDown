@@ -35,7 +35,7 @@ public class GameLoop {
         this.worldEmitter = Objects.requireNonNull(worldEmitter, "worldEmitter must not be null");
     }
 
-    @Scheduled(fixedRate = 1500)
+    @Scheduled(fixedRate = 15)
     private void gameLoop() {
         List<GameObjectModel> gameObjectModels = gameObjectService.getAll();
         Map<GameObjectModel, List<CommandResponse>> commandResponseList = gameObjectModels
@@ -68,9 +68,20 @@ public class GameLoop {
             );
         });
         messagingTemplate.convertAndSend("/ws/hello", new Date());
-        worldEmitter.all(gameObjectService.getAll());
+        worldEmitter.all(gameObjectService.getAll()
+                                 .stream()
+                                 .parallel()
+                                 .peek(gameObjectService::buildRender)
+                                 .collect(Collectors.toList())
+        );
         gameObjectService.getAllByOwner()
-                .forEach(worldEmitter::to);
+                .forEach((s, gameObjectModels1) -> worldEmitter
+                        .to(s,
+                            gameObjectModels1
+                                    .stream()
+                                    .parallel()
+                                    .peek(gameObjectService::buildRender)
+                                    .collect(Collectors.toList())));
 
     }
 }

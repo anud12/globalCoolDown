@@ -40,6 +40,12 @@ public class CreateCommand implements Command {
                                 LocationTrait
                                         .builder()
                                         .point2D(new Point2D(point.getX(), point.getY()))
+                                        .modelVertices(Arrays.asList(
+                                                new Point2D(-10D, -10D),
+                                                new Point2D(10D, -10D),
+                                                new Point2D(10D, 10D)
+                                        ))
+                                        .angle(0D)
                                         .build(),
                                 new CommandTrait(),
                                 OwnerTrait.builder()

@@ -13,10 +13,9 @@ import ro.anud.globalCooldown.model.UserModel;
 import ro.anud.globalCooldown.service.GameObjectService;
 import ro.anud.globalCooldown.service.UserService;
 import ro.anud.globalCooldown.validation.validationChain.ValidationChain;
-import ro.anud.globalCooldown.validation.validationChain.ValidationChainResult;
+import ro.anud.globalCooldown.validator.UserValidator;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import static ro.anud.globalCooldown.config.websocket.WebsocketSessionAtributes.CONNECTION_ID;
 
@@ -28,12 +27,15 @@ public class UserTopic {
 
     private final UserService userService;
     private final GameObjectService gameObjectService;
+    private final UserValidator userValidator;
 
 
     public UserTopic(final UserService userService,
-                     final GameObjectService gameObjectService) {
+                     final GameObjectService gameObjectService,
+                     final UserValidator userValidator) {
         this.userService = Objects.requireNonNull(userService, "userService must not be null");
         this.gameObjectService = Objects.requireNonNull(gameObjectService, "gameObjectService must not be null");
+        this.userValidator = Objects.requireNonNull(userValidator, "userValidator must not be null");
     }
 
     @SubscribeMapping("/token")
@@ -45,53 +47,24 @@ public class UserTopic {
 
     @MessageMapping("/register")
     public void register(@RequestBody final UserModel userModel) {
-        //        if (userService.notExists(userModel)) {
-        //            userService.addUser(userModel);
-        //            gameObjectService.initializeForUser(userModel);
-        //        } else {
-        //            throw new RuntimeException("User already exists");
-        //        }
         new ValidationChain<>(userModel)
-                .check(userModel1 -> {
-                    if (!userService.notExists(userModel1)) {
-                        return Optional.of(ValidationChainResult.builder()
-                                                   .errorCode("User already exists")
-                                                   .field("username")
-                                                   .build());
-                    } else {
-                        return Optional.empty();
-                    }
-                })
-                .check(userModel1 -> {
-                    if (!userService.notExists(userModel1)) {
-                        return Optional.of(ValidationChainResult.builder()
-                                                   .errorCode("User already exists")
-                                                   .field("password")
-                                                   .build());
-                    } else {
-                        return Optional.empty();
-                    }
-                })
+                .check(userValidator::usernameNotEmpty)
+                .check(userValidator::usernameIsUnique)
                 .validate(validationChainResults -> {
                     System.out.println("exception");
                     throw new TopicMessageException(validationChainResults);
                 });
         userService.addUser(userModel);
         gameObjectService.initializeForUser(userModel);
-        //
-        //        if (userService.notExists(userModel)) {
-        //
-        //        } else {
-        //            throw new RuntimeException("User already exists");
-        //        }
     }
 
     @MessageMapping("/login")
     public void login(@RequestBody final UserModel userModel,
                       final SimpMessageHeaderAccessor inHeaderAccessor) {
-        userService.login(userModel, inHeaderAccessor.getSessionAttributes()
+        String connectionId = inHeaderAccessor.getSessionAttributes()
                 .get(CONNECTION_ID.getKey())
-                .toString()
-        );
+                .toString();
+        userService.logout(connectionId);
+        userService.login(userModel, connectionId);
     }
 }

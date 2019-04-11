@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {RxStompService, StompState} from "@stomp/ng2-stompjs";
-import {Subscription} from "rxjs";
 
 type StompCallback<T> = (response: T) => void
 
@@ -9,15 +8,19 @@ type StompCallback<T> = (response: T) => void
 })
 export class StompService {
 
-    subscriptionList: Array<Subscription> = [];
+    subscriptionList: Array<any> = [];
 
     constructor(private rxStompService: RxStompService) {
         this.rxStompService.connectionState$
             .asObservable()
-            .subscribe((status: string) => {
+            .subscribe((status: number) => {
                 console.log(`Stomp connection status: ${StompState[status]}`);
-                if (StompState[status] === StompState.DISCONNECTING) {
-                    this.subscriptionList.forEach(value => value.unsubscribe())
+                if (status === StompState.CLOSED) {
+                    this.subscriptionList.forEach(value => {
+                        console.log(value.toString())
+                        value.unsubscribe()
+                    })
+                    this.subscriptionList = [];
                 }
             });
     }
@@ -43,14 +46,13 @@ export class StompService {
                 })
             })
         this.subscriptionList.push(subscription);
-        return subscription;
     }
 
     subscribeGlobal<T>(destination: string, callback: StompCallback<T>) {
-        const subscription = this.rxStompService.connected$
+        return this.rxStompService.connected$
             .subscribe(value => {
                 console.log("subscribeGlobal " + `${destination}`);
-                return this.rxStompService.stompClient.subscribe(destination, message => {
+                const subscription = this.rxStompService.stompClient.subscribe(destination, message => {
                     let object;
                     try {
                         object = JSON.parse(message.body);
@@ -59,8 +61,7 @@ export class StompService {
                     }
                     callback(object);
                 })
+                this.subscriptionList.push(subscription);
             })
-        this.subscriptionList.push(subscription);
-        return subscription;
     }
 }

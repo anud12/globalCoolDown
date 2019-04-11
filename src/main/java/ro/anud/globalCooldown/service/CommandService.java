@@ -32,7 +32,7 @@ public class CommandService {
                                                  .builder()
                                                  .optionalValidation(optionalValidation)
                                                  .gameObjectModel(gameObjectModel)
-                                                 .deltaTime(500L)
+                                                 .deltaTime(15L)
                                                  .build()
                                 )
                         )
