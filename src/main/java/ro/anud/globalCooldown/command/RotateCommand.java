@@ -11,6 +11,8 @@ import ro.anud.globalCooldown.validation.optionalValidation.OptionalValidation;
 
 import java.util.Objects;
 
+import static java.lang.Math.abs;
+
 @Builder
 @Getter
 @ToString
@@ -41,24 +43,40 @@ public class RotateCommand implements Command {
                     .nextCommand(null)
                     .build();
         }
-
         LocationTrait trait = gameObjectModel.getTrait(LocationTrait.class).get();
         double speed = 0.1;
         double rate = speed * commandArguments.getDeltaTime();
         double angle = trait.getAngle();
 
-        if (targetAngle > angle) {
-            trait.setAngle(angle + rate);
-        } else if (targetAngle < angle) {
-            trait.setAngle(angle - rate);
+        double newAngle;
+        if (angle < targetAngle) {
+            if (abs(angle - targetAngle) < 180) {
+                newAngle = angle + rate;
+            } else {
+                newAngle = angle - rate;
+            }
+        } else {
+            if (abs(angle - targetAngle) < 180) {
+                newAngle = angle - rate;
+            } else {
+                newAngle = angle + rate;
+            }
+        }
+        if (newAngle < 0) {
+            newAngle += 360;
+        }
+        if (newAngle > 360) {
+            newAngle -= 360;
         }
 
-        if (Math.abs(targetAngle - trait.getAngle()) > rate) {
+        trait.setAngle(newAngle);
+        if (abs(targetAngle - trait.getAngle()) < rate) {
+            trait.setAngle(targetAngle);
             return CommandResponse.builder()
-                    .nextCommand(this)
                     .build();
         }
         return CommandResponse.builder()
+                .nextCommand(this)
                 .build();
     }
 }

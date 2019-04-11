@@ -59,11 +59,11 @@ public class MoveCommand implements Command {
 
 
         if (point2D.distance(destinationLocation) <= length) {
+            trait.setPoint2D(destinationLocation);
             return CommandResponse.builder()
                     .nextCommand(null)
                     .build();
         }
-
         return CommandResponse.builder()
                 .nextCommand(this)
                 .build();
