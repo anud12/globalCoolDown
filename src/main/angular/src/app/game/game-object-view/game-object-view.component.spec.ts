@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ActionComponent } from './actions.component';
+import { GameObjectViewComponent } from './game-object-view.component';
 
-describe('ActionsComponent', () => {
-  let component: ActionComponent;
-  let fixture: ComponentFixture<ActionComponent>;
+describe('GameObjectViewComponent', () => {
+  let component: GameObjectViewComponent;
+  let fixture: ComponentFixture<GameObjectViewComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ActionComponent ]
+      declarations: [ GameObjectViewComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ActionComponent);
+    fixture = TestBed.createComponent(GameObjectViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

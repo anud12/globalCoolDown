@@ -5,8 +5,11 @@
                 [{{gameObject.traitMap.MetaTrait.id}}]
             </div>
             <div>
-                Location: {{gameObject.traitMap.LocationTrait.point2D.x}},
-                {{gameObject.traitMap.LocationTrait.point2D.y}}
+                Location: {{gameObject.traitMap.LocationTrait.point2D.x | number : '1.2-2'}},
+                {{gameObject.traitMap.LocationTrait.point2D.y |number : '1.2-2'}}
+            </div>
+            <div>
+                Angle: {{gameObject.traitMap.LocationTrait.angle | number : '1.2-2'}}
             </div>
         </div>
     </div>

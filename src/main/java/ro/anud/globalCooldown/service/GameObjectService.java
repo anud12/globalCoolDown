@@ -34,8 +34,8 @@ public class GameObjectService {
                                              .point2D(new Point2D(200, 200))
                                              .modelVertices(Arrays.asList(
                                                      new Point2D(-10D, 10D),
-                                                     new Point2D(10D, 1D),
-                                                     new Point2D(10D, -1D),
+                                                     new Point2D(10D, 5D),
+                                                     new Point2D(10D, -5D),
                                                      new Point2D(-10D, -10D)
                                              ))
                                              .angle(0D)
@@ -128,10 +128,26 @@ public class GameObjectService {
     private SimpleMatrix toTranslationMatrix(Point2D point2D) {
         double[][] doubles = new double[][]
                 {
-                        {1, 0, 0, point2D.getX()},
-                        {0, 1, 0, point2D.getY()},
-                        {0, 0, 1, 0},
-                        {0, 0, 0, 1},
+                        {1,
+                                0,
+                                0,
+                                point2D.getX()
+                        },
+                        {0,
+                                1,
+                                0,
+                                point2D.getY()
+                        },
+                        {0,
+                                0,
+                                1,
+                                0
+                        },
+                        {0,
+                                0,
+                                0,
+                                1
+                        },
                 };
         return new SimpleMatrix(doubles);
     }
@@ -140,10 +156,26 @@ public class GameObjectService {
         Double radians = Math.toRadians(angle);
         double[][] doubles = new double[][]
                 {
-                        {Math.cos(radians), Math.sin(radians), 0, 0},
-                        {-Math.sin(radians), Math.cos(radians), 0, 0},
-                        {0, 0, 1, 0},
-                        {0, 0, 0, 1},
+                        {Math.cos(radians),
+                                Math.sin(radians),
+                                0,
+                                0
+                        },
+                        {-Math.sin(radians),
+                                Math.cos(radians),
+                                0,
+                                0
+                        },
+                        {0,
+                                0,
+                                1,
+                                0
+                        },
+                        {0,
+                                0,
+                                0,
+                                1
+                        },
                 };
         return new SimpleMatrix(doubles);
     }

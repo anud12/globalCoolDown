@@ -1,9 +1,7 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div class="row">
     <div class="col-4">
-        <div *ngFor="let key of gameObjectId">
-            <app-game-object [gameObject]="gameObjectMap.get(key)"></app-game-object>
-        </div>
+        <app-game-object-list></app-game-object-list>
     </div>
     <div class="col-4">
 
@@ -11,7 +9,8 @@
             <div>{{message}}</div>
             <canvas width="500" height="500"
                     #glcanvas></canvas>
-            <app-action [subject]="getActionSubject()"></app-action>
+            <app-game-object-action>
+            </app-game-object-action>
         </div>
     </div>
     <div class="col-4">
