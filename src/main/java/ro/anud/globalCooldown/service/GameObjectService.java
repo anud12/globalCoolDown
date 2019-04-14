@@ -82,7 +82,7 @@ public class GameObjectService {
         return gameObjectModelList.get((int) id);
     }
 
-    public void create(final List<Trait> traits) {
+    public GameObjectModel create(final List<Trait> traits) {
         List<Trait> finalList = traits.stream()
                 .distinct()
                 .filter(trait -> !trait.getClass().equals(MetaTrait.class))
@@ -90,9 +90,11 @@ public class GameObjectService {
         finalList.add(MetaTrait.builder()
                               .id((long) gameObjectModelList.size())
                               .build());
-        gameObjectModelList.add(GameObjectModel.builder()
-                                        .traitList(finalList)
-                                        .build());
+        GameObjectModel gameObjectModel = GameObjectModel.builder()
+                .traitList(finalList)
+                .build();
+        gameObjectModelList.add(gameObjectModel);
+        return gameObjectModel;
     }
 
     public void initializeForUser(final UserModel userModel) {
@@ -194,5 +196,9 @@ public class GameObjectService {
                 };
 
         return new SimpleMatrix(doubles);
+    }
+
+    public void reset() {
+        this.gameObjectModelList.clear();
     }
 }

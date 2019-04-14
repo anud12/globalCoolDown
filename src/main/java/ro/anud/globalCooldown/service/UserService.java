@@ -47,4 +47,9 @@ public class UserService {
         usernameToConnectionListMap.get(userModel.getUsername()).add(connection);
         LOGGER.info(usernameToConnectionListMap.toString());
     }
+
+    public void reset() {
+        usernameToConnectionListMap.clear();
+        userModelMap.clear();
+    }
 }

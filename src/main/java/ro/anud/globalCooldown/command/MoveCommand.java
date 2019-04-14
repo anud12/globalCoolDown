@@ -44,9 +44,11 @@ public class MoveCommand implements Command {
         LocationTrait trait = gameObjectModel.getTrait(LocationTrait.class).get();
 
         if (isMissaligned(gameObjectModel, commandArguments.getDeltaTime())) {
-            CommandResponse commandResponse = new RotateCommand(getDestinationAlignment(trait)).execute(commandArguments);
-            commandResponse.setNextCommand(of(this));
-            return commandResponse;
+            return commandArguments
+                    .getCommandBuilder()
+                    .rotateCommand(getDestinationAlignment(trait))
+                    .execute(commandArguments)
+                    .setNextCommand(of(this));
         }
         Point2D point2D = trait.getPoint2D();
         Point2D locationPoint = new Point2D(point2D.getX(), point2D.getY());
