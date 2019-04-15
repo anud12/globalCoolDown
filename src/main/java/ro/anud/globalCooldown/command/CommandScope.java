@@ -4,13 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 import ro.anud.globalCooldown.builder.CommandBuilder;
 import ro.anud.globalCooldown.builder.TriggerBuilder;
-import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.validation.optionalValidation.OptionalValidation;
 
 @Getter
 @Builder
-public class CommandArguments {
-    private GameObjectModel gameObjectModel;
+public class CommandScope {
     private OptionalValidation optionalValidation;
     private CommandBuilder commandBuilder;
     private TriggerBuilder triggerBuilder;

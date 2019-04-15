@@ -29,9 +29,9 @@ public class MoveCommand implements Command {
 
 
     @Override
-    public CommandResponse execute(final CommandArguments commandArguments) {
-        OptionalValidation optionalValidation = commandArguments.getOptionalValidation();
-        GameObjectModel gameObjectModel = commandArguments.getGameObjectModel();
+    public CommandResponse execute(final CommandScope commandScope,
+                                   final GameObjectModel gameObjectModel) {
+        OptionalValidation optionalValidation = commandScope.getOptionalValidation();
         if (optionalValidation.createChain()
                 .validate(gameObjectModel.getTrait(LocationTrait.class))
                 .isAnyNotPresent()) {
@@ -40,14 +40,14 @@ public class MoveCommand implements Command {
                     .build();
         }
         double speed = 0.1;
-        double length = speed * commandArguments.getDeltaTime().floatValue();
+        double length = speed * commandScope.getDeltaTime().floatValue();
         LocationTrait trait = gameObjectModel.getTrait(LocationTrait.class).get();
 
-        if (isMissaligned(gameObjectModel, commandArguments.getDeltaTime())) {
-            return commandArguments
+        if (isMissaligned(gameObjectModel, commandScope.getDeltaTime())) {
+            return commandScope
                     .getCommandBuilder()
                     .rotateCommand(getDestinationAlignment(trait))
-                    .execute(commandArguments)
+                    .execute(commandScope, gameObjectModel)
                     .setNextCommand(of(this));
         }
         Point2D point2D = trait.getPoint2D();

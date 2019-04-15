@@ -5,8 +5,6 @@ import lombok.*;
 import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.trait.LocationTrait;
 
-import java.util.stream.Collectors;
-
 @Builder
 @ToString
 @Getter
@@ -18,11 +16,12 @@ public class TeleportCommand implements Command {
     private double y;
 
     @Override
-    public CommandResponse execute(final CommandArguments commandArguments) {
-        GameObjectModel gameObjectModel = commandArguments.getGameObjectModel();
-        gameObjectModel.getTrait(LocationTrait.class).ifPresent(trait ->
-                                                                        trait.setPoint2D(new Point2D(x, y))
-        );
+    public CommandResponse execute(final CommandScope commandScope,
+                                   final GameObjectModel gameObjectModel) {
+        gameObjectModel.getTrait(LocationTrait.class)
+                .ifPresent(trait ->
+                                   trait.setPoint2D(new Point2D(x, y))
+                );
         return CommandResponse.builder()
                 .nextCommand(null)
                 .build();

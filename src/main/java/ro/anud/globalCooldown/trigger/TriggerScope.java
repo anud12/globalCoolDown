@@ -7,7 +7,7 @@ import ro.anud.globalCooldown.service.WorldService;
 
 @Getter
 @Builder
-public class TriggerArguments {
+public class TriggerScope {
     private GameObjectService gameObjectService;
     private WorldService worldService;
 }

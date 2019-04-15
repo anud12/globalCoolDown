@@ -18,9 +18,9 @@ import java.util.Arrays;
 @NoArgsConstructor
 public class CreateCommand implements Command {
     @Override
-    public CommandResponse execute(final CommandArguments commandArguments) {
-        GameObjectModel gameObjectModel = commandArguments.getGameObjectModel();
-        if (commandArguments.getOptionalValidation().createChain()
+    public CommandResponse execute(final CommandScope commandScope,
+                                   final GameObjectModel gameObjectModel) {
+        if (commandScope.getOptionalValidation().createChain()
                 .validate(gameObjectModel.getTrait(LocationTrait.class))
                 .isAnyNotPresent()) {
             return CommandResponse.builder()
@@ -33,7 +33,7 @@ public class CreateCommand implements Command {
                 .getPoint2D();
 
         return CommandResponse.builder()
-                .triggerList(Arrays.asList(commandArguments
+                .triggerList(Arrays.asList(commandScope
                                                    .getTriggerBuilder()
                                                    .createGameObjectTrigger(
                                                            Arrays.asList(

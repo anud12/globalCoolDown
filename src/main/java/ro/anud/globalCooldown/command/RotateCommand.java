@@ -33,9 +33,9 @@ public class RotateCommand implements Command {
     }
 
     @Override
-    public CommandResponse execute(final CommandArguments commandArguments) {
-        OptionalValidation optionalValidation = commandArguments.getOptionalValidation();
-        GameObjectModel gameObjectModel = commandArguments.getGameObjectModel();
+    public CommandResponse execute(final CommandScope commandScope,
+                                   final GameObjectModel gameObjectModel) {
+        OptionalValidation optionalValidation = commandScope.getOptionalValidation();
         if (optionalValidation.createChain()
                 .validate(gameObjectModel.getTrait(LocationTrait.class))
                 .isAnyNotPresent()) {
@@ -45,7 +45,7 @@ public class RotateCommand implements Command {
         }
         LocationTrait trait = gameObjectModel.getTrait(LocationTrait.class).get();
         double speed = 0.1;
-        double rate = speed * commandArguments.getDeltaTime();
+        double rate = speed * commandScope.getDeltaTime();
         double angle = trait.getAngle();
 
         double newAngle;

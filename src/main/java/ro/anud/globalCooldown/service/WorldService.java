@@ -40,7 +40,7 @@ public class WorldService {
         this.triggerList = triggerList;
     }
 
-    public List<Trigger> triggerList() {
+    public List<Trigger> getTriggerList() {
         return triggerList;
     }
 

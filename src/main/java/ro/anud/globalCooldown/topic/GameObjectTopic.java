@@ -6,11 +6,8 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.socket.WebSocketMessage;
 import ro.anud.globalCooldown.command.CreateCommand;
 import ro.anud.globalCooldown.command.MoveCommand;
 import ro.anud.globalCooldown.command.TeleportCommand;
@@ -45,13 +42,16 @@ public class GameObjectTopic {
                          final MessageHeaders headerAccessor) {
         gameObjectService.getById(id)
                 .getTrait(CommandTrait.class)
-                .ifPresent(commandTrait -> commandTrait.addCommand(
-                        TeleportCommand
-                                .builder()
-                                .x(point.getX())
-                                .y(point.getY())
-                                .build()
-                           )
+                .ifPresent(commandTrait -> {
+                               commandTrait.clear();
+                               commandTrait.addCommand(
+                                       TeleportCommand
+                                               .builder()
+                                               .x(point.getX())
+                                               .y(point.getY())
+                                               .build()
+                               );
+                           }
                 );
     }
 
@@ -62,12 +62,15 @@ public class GameObjectTopic {
                      final SimpMessageHeaderAccessor headerAccessor) {
         gameObjectService.getById(id)
                 .getTrait(CommandTrait.class)
-                .ifPresent(commandTrait -> commandTrait.addCommand(
-                        MoveCommand
-                                .builder()
-                                .destinationLocation(point.toPoint2D())
-                                .build()
-                           )
+                .ifPresent(commandTrait -> {
+                               commandTrait.clear();
+                               commandTrait.addCommand(
+                                       MoveCommand
+                                               .builder()
+                                               .destinationLocation(point.toPoint2D())
+                                               .build()
+                               );
+                           }
                 );
     }
 
@@ -76,11 +79,14 @@ public class GameObjectTopic {
                        final SimpMessageHeaderAccessor headerAccessor) {
         gameObjectService.getById(id)
                 .getTrait(CommandTrait.class)
-                .ifPresent(commandTrait -> commandTrait.addCommand(
-                        CreateCommand
-                                .builder()
-                                .build()
-                           )
+                .ifPresent(commandTrait -> {
+                               commandTrait.clear();
+                               commandTrait.addCommand(
+                                       CreateCommand
+                                               .builder()
+                                               .build()
+                               );
+                           }
                 );
     }
 }
