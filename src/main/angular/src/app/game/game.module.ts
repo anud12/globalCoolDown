@@ -4,12 +4,14 @@ import {GameObjectListComponent} from './game-object-list/game-object-list.compo
 import {GameObjectActionComponent} from './game-object-action/game-object-action.component';
 import {GameObjectViewComponent} from './game-object-view/game-object-view.component';
 import {FormsModule} from "@angular/forms";
+import {GameCanvasComponent} from './game-canvas/game-canvas.component';
 
 @NgModule({
-    declarations: [GameObjectListComponent, GameObjectActionComponent, GameObjectViewComponent],
+    declarations: [GameObjectListComponent, GameObjectActionComponent, GameObjectViewComponent, GameCanvasComponent],
     exports: [
         GameObjectListComponent,
-        GameObjectActionComponent
+        GameObjectActionComponent,
+        GameCanvasComponent
     ],
     imports: [
         CommonModule,
