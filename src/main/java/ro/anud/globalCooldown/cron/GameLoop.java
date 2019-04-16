@@ -11,8 +11,10 @@ import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.service.CommandService;
 import ro.anud.globalCooldown.service.GameObjectService;
 import ro.anud.globalCooldown.service.TriggerService;
+import ro.anud.globalCooldown.service.UserService;
 import ro.anud.globalCooldown.trigger.Trigger;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -28,20 +30,23 @@ public class GameLoop {
     private final CommandService commandService;
     private final TriggerService triggerService;
     private final WorldEmitter worldEmitter;
+    private final UserService userService;
 
     public GameLoop(MessageSendingOperations messagingTemplate,
                     GameObjectService gameObjectService,
                     final CommandService commandService,
                     final TriggerService triggerService,
-                    final WorldEmitter worldEmitter) {
+                    final WorldEmitter worldEmitter,
+                    final UserService userService) {
         this.messagingTemplate = Objects.requireNonNull(messagingTemplate, "messagingTemplate must not be null");
         this.gameObjectService = Objects.requireNonNull(gameObjectService, "gameObjectService must not be null");
         this.commandService = Objects.requireNonNull(commandService, "commandService must not be null");
         this.triggerService = Objects.requireNonNull(triggerService, "triggerService must not be null");
         this.worldEmitter = Objects.requireNonNull(worldEmitter, "worldEmitter must not be null");
+        this.userService = Objects.requireNonNull(userService, "userService must not be null");
     }
 
-    @Scheduled(fixedRate = 12)
+    @Scheduled(fixedRate = 500)
     private void gameLoop() {
         List<GameObjectModel> gameObjectModels = gameObjectService.getAll();
         List<Trigger> triggerList = gameObjectModels
@@ -60,14 +65,16 @@ public class GameLoop {
                                  .peek(gameObjectService::buildRender)
                                  .collect(Collectors.toList())
         );
-        gameObjectService.getAllByOwner()
-                .forEach((s, gameObjectModels1) -> worldEmitter
-                        .to(s,
-                            gameObjectModels1
-                                    .stream()
-                                    .parallel()
-                                    .peek(gameObjectService::buildRender)
-                                    .collect(Collectors.toList())));
+
+        userService.getUserModelList()
+                .forEach(userModel -> worldEmitter
+                        .to(userModel.getUsername(),
+                            gameObjectService.getAllByOwner()
+                                    .getOrDefault(userModel.getUsername(),
+                                                  Arrays.asList()
+                                    )
+                        )
+                );
 
     }
 }

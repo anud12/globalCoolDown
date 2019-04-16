@@ -5,7 +5,9 @@ import javafx.scene.paint.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import ro.anud.globalCooldown.emitter.WorldEmitter;
 import ro.anud.globalCooldown.model.GameObjectModel;
+import ro.anud.globalCooldown.model.UserModel;
 import ro.anud.globalCooldown.trait.LocationTrait;
 import ro.anud.globalCooldown.trait.OwnerTrait;
 import ro.anud.globalCooldown.trait.RenderTrait;
@@ -23,13 +25,16 @@ public class WorldService {
     private static final Logger LOGGER = LoggerFactory.getLogger(WorldService.class);
     private final GameObjectService gameObjectService;
     private final UserService userService;
+    private final WorldEmitter worldEmitter;
+
     private List<Trigger> triggerList;
     private GameObjectModel gameObjectModel;
 
     public WorldService(final GameObjectService gameObjectService,
-                        final UserService userService) {
+                        final UserService userService, final WorldEmitter worldEmitter) {
         this.gameObjectService = Objects.requireNonNull(gameObjectService, "gameObjectService must not be null");
         this.userService = Objects.requireNonNull(userService, "userService must not be null");
+        this.worldEmitter = Objects.requireNonNull(worldEmitter, "worldEmitter must not be null");
         triggerList = new ArrayList<>();
         triggerList.add(new VictoryTrigger());
         create();
@@ -49,6 +54,10 @@ public class WorldService {
     }
 
     public void reset() {
+        this.userService.getUserModelList()
+                .stream()
+                .map(UserModel::getUsername)
+                .forEach(s -> worldEmitter.to(s, Arrays.asList()));
         this.gameObjectService.reset();
         this.userService.reset();
     }

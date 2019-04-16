@@ -3,6 +3,7 @@ package ro.anud.globalCooldown.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import ro.anud.globalCooldown.emitter.WorldEmitter;
 import ro.anud.globalCooldown.model.UserModel;
 
 import java.util.*;
@@ -13,43 +14,55 @@ public class UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
-    private final Map<String, UserModel> userModelMap;
-    private final Map<String, List<String>> usernameToConnectionListMap;
+    private final Map<String, UserModel> usernameToUserModel;
+    private final Map<String, UserModel> connectionIdToUserName;
+    private final Map<String, List<String>> usernameToConnectionList;
 
     public UserService() {
-        usernameToConnectionListMap = new HashMap<>();
-        userModelMap = new HashMap<>();
+        connectionIdToUserName = new HashMap<>();
+        usernameToConnectionList = new HashMap<>();
+        usernameToUserModel = new HashMap<>();
     }
 
     public boolean notExists(UserModel userModel) {
-        return !userModelMap.containsKey(userModel.getUsername());
+        return !usernameToUserModel.containsKey(userModel.getUsername());
     }
 
     public void addUser(UserModel userModel) {
-        userModelMap.put(userModel.getUsername(), userModel);
-        userModelMap.forEach((s, userModel1) -> LOGGER.info(s + " : " + userModel1));
+        usernameToUserModel.put(userModel.getUsername(), userModel);
+        usernameToUserModel.forEach((s, userModel1) -> LOGGER.info(s + " : " + userModel1));
+    }
+
+    public List<UserModel> getUserModelList() {
+        return new ArrayList<>(usernameToUserModel.values());
     }
 
     public List<String> getConnectionListByName(String username) {
 
-        return Optional.ofNullable(usernameToConnectionListMap.get(username))
+        return Optional.ofNullable(usernameToConnectionList.get(username))
                 .orElseGet(ArrayList::new);
     }
 
+    public Optional<UserModel> getUsernameFromConnectionId(String name) {
+        return Optional.ofNullable(connectionIdToUserName.get(name));
+    }
+
     public void logout(String connectionId) {
-        usernameToConnectionListMap
+        usernameToConnectionList
                 .values()
                 .forEach(connectionIdList -> connectionIdList.remove(connectionId));
     }
 
     public void login(UserModel userModel, String connection) {
-        usernameToConnectionListMap.putIfAbsent(userModel.getUsername(), new ArrayList<>());
-        usernameToConnectionListMap.get(userModel.getUsername()).add(connection);
-        LOGGER.info(usernameToConnectionListMap.toString());
+        usernameToConnectionList.putIfAbsent(userModel.getUsername(), new ArrayList<>());
+        usernameToConnectionList.get(userModel.getUsername()).add(connection);
+        connectionIdToUserName.put(connection, userModel);
+        LOGGER.info(usernameToConnectionList.toString());
     }
 
     public void reset() {
-        usernameToConnectionListMap.clear();
-        userModelMap.clear();
+        usernameToConnectionList.clear();
+        connectionIdToUserName.clear();
+        usernameToUserModel.clear();
     }
 }

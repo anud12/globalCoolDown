@@ -29,7 +29,7 @@ export class GlService {
                 FRAGMENT_SHADER_SOURCE)
         )
             .linkAndUseProgram();
-        this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        this.gl.clearColor(0, 0, 0, 1.0);
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.gl.createBuffer());
     }
 

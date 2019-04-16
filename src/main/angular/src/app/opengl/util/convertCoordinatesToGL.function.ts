@@ -1,5 +1,5 @@
 export const convertCoordinatesToGL = (coordinates: { x: number, y: number }, domRect: ClientRect) => {
-  const x = (coordinates.x - domRect.height / 2) / (domRect.height / 2);
-  const y = (domRect.width / 2 - coordinates.y) / (domRect.width / 2);
-  return {x, y};
+    const x = (((coordinates.x - domRect.width / 2) / (domRect.width / 2)));
+    const y = ((domRect.height / 2 - coordinates.y) / (domRect.height / 2));
+    return {x, y};
 };
