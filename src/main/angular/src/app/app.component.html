@@ -1,21 +1,19 @@
 <!--The content below is only a placeholder and can be replaced.-->
-
+<app-game-canvas></app-game-canvas>
 <div class="row">
-    <div class="col-4">
+    <div class="col-4" style="max-height: 0">
         <app-game-object-list></app-game-object-list>
+        <app-game-object-action>
+        </app-game-object-action>
     </div>
-    <div class="col-4">
+    <div class="col-4" style="max-height: 0">
 
         <div style="text-align:center">
             <div>{{message}}</div>
-            <app-game-canvas></app-game-canvas>
-            <!--<canvas width="500" height="500"-->
-                    <!--#glcanvas></canvas>-->
-            <app-game-object-action>
-            </app-game-object-action>
+
         </div>
     </div>
-    <div class="col-4">
+    <div class="col-4" style="max-height: 0">
         <app-login>
         </app-login>
         <app-error>

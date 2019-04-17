@@ -33,9 +33,9 @@ export class GlService {
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.gl.createBuffer());
     }
 
-    draw(array: Array<GameObjectModel>): void {
+    draw(array: Array<GameObjectModel>, camera: { x: number, y: number, scale: number }): void {
         array.forEach(gameObjectModel => {
-            const position = this.gameObjectGLService.transformGameObject(gameObjectModel, this.clientRect);
+            const position = this.gameObjectGLService.transformGameObject(gameObjectModel, this.clientRect, camera);
             const n = position.length / 2;
 
             this.gl.bufferData(this.gl.ARRAY_BUFFER,

@@ -11,27 +11,59 @@ import {GlService} from "../../opengl/gl.service";
 export class GameCanvasComponent implements AfterViewInit {
     @ViewChild('glcanvas') glcanvas: ElementRef;
     @ViewChild('parentDiv') parentDiv: ElementRef;
+    private camera = {
+        x: 0,
+        y: 0,
+        scale: 1
+    }
+    private gameObjectList = [];
+    private glService;
 
     constructor(private stompService: StompService) {
+
     }
 
     ngAfterViewInit(): void {
-        const canvas = this.glcanvas.nativeElement;
-        const glService = new GlService(canvas);
+        this.glService = new GlService(this.glcanvas.nativeElement);
 
         this.stompService.subscribeGlobal<Array<GameObjectModel>>("/ws/world/all", gameObjectList => {
-            glService.clear();
-            if (gameObjectList.length != 0) {
-                glService.draw(gameObjectList);
+            this.gameObjectList = gameObjectList;
+        })
+        const drawCallback = () => {
+            this.draw()
+            requestAnimationFrame(drawCallback)
+        }
+
+        requestAnimationFrame(drawCallback)
+        this.glcanvas.nativeElement.addEventListener("wheel", (event: WheelEvent) => {
+            this.camera.scale += event.deltaY / 100;
+        })
+        this.glcanvas.nativeElement.addEventListener("contextmenu", event => {
+            event.preventDefault()
+        })
+        this.glcanvas.nativeElement.addEventListener("mousemove", (event: MouseEvent) => {
+            if (event.buttons === 1) {
+                this.onLeftClickDrag(event)
+            }
+            if (event.buttons === 4) {
+                this.onRightClickDrag(event)
             }
         })
     }
 
-    onParentResize() {
-        console.log("hi")
-        const canvas: HTMLCanvasElement = this.glcanvas.nativeElement;
-        const parent: HTMLElement = this.parentDiv.nativeElement;
-        canvas.height = parent.clientHeight;
-        canvas.width = parent.clientWidth;
+    draw() {
+        this.glService.clear();
+        if (this.gameObjectList.length != 0) {
+            this.glService.draw(this.gameObjectList, this.camera);
+        }
+    }
+
+    onRightClickDrag(event: MouseEvent) {
+        this.camera.x += event.movementX / this.camera.scale;
+        this.camera.y += event.movementY / this.camera.scale;
+    }
+
+    onLeftClickDrag(event: MouseEvent) {
+
     }
 }

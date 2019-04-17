@@ -46,7 +46,7 @@ public class GameLoop {
         this.userService = Objects.requireNonNull(userService, "userService must not be null");
     }
 
-    @Scheduled(fixedRate = 500)
+    @Scheduled(fixedRate = 12)
     private void gameLoop() {
         List<GameObjectModel> gameObjectModels = gameObjectService.getAll();
         List<Trigger> triggerList = gameObjectModels
