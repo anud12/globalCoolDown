@@ -2,6 +2,9 @@ import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {StompService} from "../../stomp.service";
 import {GameObjectModel} from "../../java.models";
 import {GlService} from "../../opengl/gl.service";
+import {GameObjectService} from "../game-object.service";
+import {GameCommandService} from "../game-command.service";
+import {GameInputService} from "../game-input.service";
 
 @Component({
     selector: 'app-game-canvas',
@@ -19,7 +22,10 @@ export class GameCanvasComponent implements AfterViewInit {
     private gameObjectList = [];
     private glService;
 
-    constructor(private stompService: StompService) {
+    constructor(private stompService: StompService,
+                private gameObjectService: GameObjectService,
+                private gameInputService: GameInputService,
+                private gameCommandService: GameCommandService) {
 
     }
 
@@ -38,8 +44,15 @@ export class GameCanvasComponent implements AfterViewInit {
         this.glcanvas.nativeElement.addEventListener("wheel", (event: WheelEvent) => {
             this.camera.scale += event.deltaY / 100;
         })
+
         this.glcanvas.nativeElement.addEventListener("contextmenu", event => {
             event.preventDefault()
+            const point = {
+                x: (event.offsetX / this.camera.scale) - this.camera.x,
+                y: (event.offsetY / this.camera.scale) - this.camera.y
+            }
+            console.log(point);
+            this.gameInputService.mouseRightClick(point);
         })
         this.glcanvas.nativeElement.addEventListener("mousemove", (event: MouseEvent) => {
             if (event.buttons === 1) {

@@ -48,4 +48,13 @@ export class GameObjectService {
             tempMap.get(key).client = secondValue.client
         }
     }
+
+    doForSelected(func: (gameObject: GameObjectModel, id: number) => void) {
+        this.personalGameObjectById.forEach((value, key) => {
+            if (value.client.selected) {
+                func(value, key)
+            }
+        })
+
+    }
 }

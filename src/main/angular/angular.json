@@ -28,10 +28,11 @@
             ],
             "styles": [
               "src/styles.scss",
-              "src/assets/styles/bootstrap-material-design-dist/css/bootstrap-material-design.css"
+              "src/assets/styles/bootstrap.min.css"
+              //              "src/assets/styles/bootstrap-material-design-dist/css/bootstrap-material-design.css"
             ],
             "scripts": [
-              "src/assets/styles/bootstrap-material-design-dist/js/bootstrap-material-design.js"
+              //              "src/assets/styles/bootstrap-material-design-dist/js/bootstrap-material-design.js"
             ],
             "es5BrowserSupport": true
           },

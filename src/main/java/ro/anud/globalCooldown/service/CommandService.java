@@ -26,7 +26,7 @@ public class CommandService {
                 .commandBuilder(commandBuilder)
                 .triggerBuilder(triggerBuilder)
                 .optionalValidation(optionalValidation)
-                .deltaTime(1L)
+                .deltaTime(12L)
                 .build();
     }
 

@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {Point} from "../../java.models";
-import {ActionsWsEndpoints} from "../../endpoints/action.ws.endpoints";
 import {GameObjectService} from "../game-object.service";
-import {StompService} from "../../stomp.service";
+import {GameCommandService} from "../game-command.service";
+import {GameInputService} from "../game-input.service";
 
 @Component({
     selector: 'app-game-object-action',
@@ -10,54 +9,28 @@ import {StompService} from "../../stomp.service";
     styleUrls: ['./game-object-action.component.scss']
 })
 export class GameObjectActionComponent implements OnInit {
-
-    teleport: Point = {
-        x: 0,
-        y: 0
-    };
-    move: Point = {
-        x: 0,
-        y: 0
-    };
-
     constructor(private gameObjectService: GameObjectService,
-                private stompService: StompService) {
+                private gameInputService: GameInputService,
+                private gameCommandService: GameCommandService) {
 
     }
 
     ngOnInit() {
     }
 
-    sendTeleport() {
-        this.gameObjectService.personalGameObjectById.forEach((value, key) => {
-            if (value.client.selected) {
-                const url = ActionsWsEndpoints.teleport(key);
-                console.log(url);
-                this.stompService.publish(url, JSON.stringify(this.teleport));
-            }
-        })
+    setTeleport() {
+        this.gameInputService.rightClickCommand = this.gameCommandService.sendTeleport;
     }
 
 
-    sendMove() {
-        this.gameObjectService.personalGameObjectById.forEach((value, key) => {
-            if (value.client.selected) {
-                const url = ActionsWsEndpoints.move(key);
-                console.log(url);
-                this.stompService.publish(url, JSON.stringify(this.move));
-            }
-        })
+    setMove() {
+        this.gameInputService.rightClickCommand = this.gameCommandService.sendMove;
     }
 
     sendCreate() {
-
-        this.gameObjectService.personalGameObjectById.forEach((value, key) => {
-            if (value.client.selected) {
-                const url = ActionsWsEndpoints.create(key);
-                console.log(url);
-                this.stompService.publish(url, "");
-            }
-        })
+        this.gameObjectService.doForSelected((gameObject, id) => {
+            this.gameCommandService.sendCreate(id)
+        });
     }
 
 }
