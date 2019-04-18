@@ -3,7 +3,6 @@ import {StompService} from "../../stomp.service";
 import {GameObjectModel} from "../../java.models";
 import {GlService} from "../../opengl/gl.service";
 import {GameObjectService} from "../game-object.service";
-import {GameCommandService} from "../game-command.service";
 import {GameInputService} from "../game-input.service";
 
 @Component({
@@ -24,8 +23,7 @@ export class GameCanvasComponent implements AfterViewInit {
 
     constructor(private stompService: StompService,
                 private gameObjectService: GameObjectService,
-                private gameInputService: GameInputService,
-                private gameCommandService: GameCommandService) {
+                private gameInputService: GameInputService) {
 
     }
 
@@ -38,11 +36,13 @@ export class GameCanvasComponent implements AfterViewInit {
         const drawCallback = () => {
             this.draw()
             requestAnimationFrame(drawCallback)
-        }
-
-        requestAnimationFrame(drawCallback)
+        };
+        requestAnimationFrame(drawCallback);
         this.glcanvas.nativeElement.addEventListener("wheel", (event: WheelEvent) => {
-            this.camera.scale += event.deltaY / 100;
+            this.camera.scale += event.deltaY / 1000;
+            if (this.camera.scale < 0.10) {
+                this.camera.scale = 0.10;
+            }
         })
 
         this.glcanvas.nativeElement.addEventListener("contextmenu", event => {
@@ -51,7 +51,6 @@ export class GameCanvasComponent implements AfterViewInit {
                 x: (event.offsetX / this.camera.scale) - this.camera.x,
                 y: (event.offsetY / this.camera.scale) - this.camera.y
             }
-            console.log(point);
             this.gameInputService.mouseRightClick(point);
         })
         this.glcanvas.nativeElement.addEventListener("mousemove", (event: MouseEvent) => {

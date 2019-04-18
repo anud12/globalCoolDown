@@ -63,29 +63,6 @@ public class WorldService {
     }
 
     public void create() {
-        this.gameObjectService
-                .create(Arrays.asList(LocationTrait.builder()
-                                              .point2D(new Point2D(0, 0))
-                                              .modelVertices(Arrays.asList(
-                                                      new Point2D(0D, 0D),
-                                                      new Point2D(500D, 0D),
-                                                      new Point2D(500D, 500D),
-                                                      new Point2D(0D, 500D)
-                                              ))
-                                              .angle(0D)
-                                              .build(),
-                                      RenderTrait.builder()
-                                              .modelPointList(Arrays.asList(
-                                                      new Point2D(-0D, -10D),
-                                                      new Point2D(10D, -0D),
-                                                      new Point2D(0D, 10D),
-                                                      new Point2D(-10D, 0D)
-                                              ))
-                                              .color(Color.CADETBLUE)
-                                              .build(),
-                                      OwnerTrait.builder()
-                                              .ownerId("")
-                                              .build()));
         this.gameObjectModel = this.gameObjectService
                 .create(Arrays.asList(LocationTrait.builder()
                                               .point2D(new Point2D(400, 400))
