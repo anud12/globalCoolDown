@@ -57,8 +57,12 @@ public class MoveCommand implements Command {
                 .normalize();
         Point2D newLocation = locationPoint
                 .subtract(vector.multiply(length));
-        trait.setPoint2D(newLocation);
 
+        if (commandScope.getWorldService().isNotBlocked(newLocation)) {
+            return CommandResponse.builder()
+                    .nextCommand(null)
+                    .build();
+        }
 
         if (point2D.distance(destinationLocation) <= length) {
             trait.setPoint2D(destinationLocation);
@@ -66,6 +70,7 @@ public class MoveCommand implements Command {
                     .nextCommand(null)
                     .build();
         }
+        trait.setPoint2D(newLocation);
         return CommandResponse.builder()
                 .nextCommand(this)
                 .build();

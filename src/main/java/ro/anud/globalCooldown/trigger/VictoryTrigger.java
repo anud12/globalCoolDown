@@ -17,7 +17,7 @@ public class VictoryTrigger implements Trigger {
     public TriggerResponse execute(final TriggerScope triggerScope) {
         GameObjectModel gameObjectModel = triggerScope
                 .getWorldService()
-                .getGameObjectModel();
+                .getVictoryGameObjectModel();
         Point2D victoryPoint = gameObjectModel
                 .getTrait(LocationTrait.class)
                 .get()

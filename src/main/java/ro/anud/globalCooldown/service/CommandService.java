@@ -20,12 +20,14 @@ public class CommandService {
 
     public CommandService(final OptionalValidation optionalValidation,
                           final CommandBuilder commandBuilder,
-                          final TriggerBuilder triggerBuilder) {
+                          final TriggerBuilder triggerBuilder,
+                          final WorldService worldService) {
         this.commandScope = CommandScope
                 .builder()
                 .commandBuilder(commandBuilder)
                 .triggerBuilder(triggerBuilder)
                 .optionalValidation(optionalValidation)
+                .worldService(worldService)
                 .deltaTime(12L)
                 .build();
     }

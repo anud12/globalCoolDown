@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class WorldService {
@@ -26,15 +27,21 @@ public class WorldService {
     private final GameObjectService gameObjectService;
     private final UserService userService;
     private final WorldEmitter worldEmitter;
+    private PointIsInsidePointList pointIsInsidePointList;
 
     private List<Trigger> triggerList;
-    private GameObjectModel gameObjectModel;
+    private GameObjectModel victoryGameObjectModel;
+    private List<GameObjectModel> blockGameObjectModelList;
 
     public WorldService(final GameObjectService gameObjectService,
-                        final UserService userService, final WorldEmitter worldEmitter) {
+                        final UserService userService,
+                        final WorldEmitter worldEmitter,
+                        final PointIsInsidePointList pointIsInsidePointList) {
         this.gameObjectService = Objects.requireNonNull(gameObjectService, "gameObjectService must not be null");
         this.userService = Objects.requireNonNull(userService, "userService must not be null");
         this.worldEmitter = Objects.requireNonNull(worldEmitter, "worldEmitter must not be null");
+        this.pointIsInsidePointList = Objects.requireNonNull(pointIsInsidePointList, "pointIsInsidePointList must not be null");
+        blockGameObjectModelList = new ArrayList<>();
         triggerList = new ArrayList<>();
         triggerList.add(new VictoryTrigger());
         create();
@@ -49,8 +56,30 @@ public class WorldService {
         return triggerList;
     }
 
-    public GameObjectModel getGameObjectModel() {
-        return gameObjectModel;
+    public GameObjectModel getVictoryGameObjectModel() {
+        return victoryGameObjectModel;
+    }
+
+    public List<GameObjectModel> getBlockGameObjectModelList() {
+        return blockGameObjectModelList;
+    }
+
+    public boolean isNotBlocked(Point2D gamePoint) {
+        return !this.blockGameObjectModelList
+                .stream()
+                .anyMatch(blockGameObjectModel -> {
+                    LocationTrait blockLocationTrait = blockGameObjectModel.getTrait(LocationTrait.class).get();
+                    blockLocationTrait.getModelVertices()
+                            .stream()
+                            .map(point2D -> point2D.add(blockLocationTrait.getPoint2D()))
+                            .collect(Collectors.toList());
+                    return pointIsInsidePointList.isInside(blockLocationTrait.getModelVertices()
+                                                                    .stream()
+                                                                    .map(point2D -> point2D.add(blockLocationTrait.getPoint2D()))
+                                                                    .collect(Collectors.toList()),
+                                                            gamePoint);
+
+                });
     }
 
     public void reset() {
@@ -63,7 +92,60 @@ public class WorldService {
     }
 
     public void create() {
-        this.gameObjectModel = this.gameObjectService
+
+        blockGameObjectModelList.add(
+                this.gameObjectService
+                        .create(Arrays.asList(LocationTrait.builder()
+                                                      .point2D(new Point2D(0, 0))
+                                                      .modelVertices(Arrays.asList(
+                                                              new Point2D(500D, 0D),
+                                                              new Point2D(1000D, 0D),
+                                                              new Point2D(500D, 200D)
+                                                      ))
+                                                      .angle(0D)
+                                                      .build(),
+                                              RenderTrait.builder()
+                                                      .modelPointList(Arrays.asList(
+                                                              new Point2D(-0D, -10D),
+                                                              new Point2D(10D, -0D),
+                                                              new Point2D(0D, 10D),
+                                                              new Point2D(-10D, 0D)
+                                                      ))
+                                                      .color(Color.BROWN)
+                                                      .build(),
+                                              OwnerTrait.builder()
+                                                      .ownerId("")
+                                                      .build())
+                        )
+        );
+        blockGameObjectModelList.add(
+                this.gameObjectService
+                        .create(Arrays.asList(LocationTrait.builder()
+                                                      .point2D(new Point2D(0, 0))
+                                                      .modelVertices(Arrays.asList(
+                                                              new Point2D(0D, 0D),
+                                                              new Point2D(500D, 0D),
+                                                              new Point2D(500D, 500D),
+                                                              new Point2D(0D, 500D)
+                                                      ))
+                                                      .angle(0D)
+                                                      .build(),
+                                              RenderTrait.builder()
+                                                      .modelPointList(Arrays.asList(
+                                                              new Point2D(-0D, -10D),
+                                                              new Point2D(10D, -0D),
+                                                              new Point2D(0D, 10D),
+                                                              new Point2D(-10D, 0D)
+                                                      ))
+                                                      .color(Color.BROWN)
+                                                      .build(),
+                                              OwnerTrait.builder()
+                                                      .ownerId("")
+                                                      .build())
+                        )
+        );
+
+        this.victoryGameObjectModel = this.gameObjectService
                 .create(Arrays.asList(LocationTrait.builder()
                                               .point2D(new Point2D(400, 400))
                                               .modelVertices(Arrays.asList(
