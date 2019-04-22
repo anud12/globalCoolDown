@@ -48,7 +48,7 @@ public class GameObjectTopic {
                          final SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
         GameObjectModel gameObjectModel = gameObjectService.getById(id);
         new ValidationChain<>(gameObjectModel)
-                .check(commandValidator.gameObjectIsId(simpMessageHeaderAccessor))
+                .check(commandValidator.isMessageOwnerOfGameObject(simpMessageHeaderAccessor))
                 .validate(validationChainResults -> {
                     throw new TopicMessageException(validationChainResults);
                 });
@@ -75,7 +75,7 @@ public class GameObjectTopic {
                      final SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
         GameObjectModel gameObjectModel = gameObjectService.getById(id);
         new ValidationChain<>(gameObjectModel)
-                .check(commandValidator.gameObjectIsId(simpMessageHeaderAccessor))
+                .check(commandValidator.isMessageOwnerOfGameObject(simpMessageHeaderAccessor))
                 .validate(validationChainResults -> {
                     throw new TopicMessageException(validationChainResults);
                 });
@@ -99,7 +99,7 @@ public class GameObjectTopic {
                        final SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
         GameObjectModel gameObjectModel = gameObjectService.getById(id);
         new ValidationChain<>(gameObjectModel)
-                .check(commandValidator.gameObjectIsId(simpMessageHeaderAccessor))
+                .check(commandValidator.isMessageOwnerOfGameObject(simpMessageHeaderAccessor))
                 .validate(validationChainResults -> {
                     throw new TopicMessageException(validationChainResults);
                 });

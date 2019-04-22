@@ -1,9 +1,9 @@
 package ro.anud.globalCooldown.service;
 
 import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
 import org.ejml.simple.SimpleMatrix;
 import org.springframework.stereotype.Service;
+import ro.anud.globalCooldown.factory.TraitMapFactory;
 import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.model.UserModel;
 import ro.anud.globalCooldown.trait.*;
@@ -20,45 +20,21 @@ public class GameObjectService {
     private Function<String, GameObjectModel> createObjectFunction;
     private final OptionalValidation optionalValidation;
 
-    public GameObjectService(final OptionalValidation optionalValidation) {
+    public GameObjectService(final OptionalValidation optionalValidation,
+                             final TraitMapFactory traitMapFactory) {
         this.optionalValidation = Objects.requireNonNull(optionalValidation, "optionalValidation must not be null");
         gameObjectModelList = new ArrayList<>();
         createObjectFunction = (ownerId) -> {
+            Map<Class, Trait> traitMap = traitMapFactory.getType("ship");
             GameObjectModel gameObjectModel = new GameObjectModel();
-
-            gameObjectModel.addTrait(OwnerTrait.builder()
-                                             .ownerId(ownerId)
-                                             .build());
-
-            gameObjectModel.addTrait(LocationTrait.builder()
-                                             .point2D(new Point2D(200, 200))
-                                             .modelVertices(Arrays.asList(
-                                                     new Point2D(-10D, 10D),
-                                                     new Point2D(10D, 5D),
-                                                     new Point2D(10D, -5D),
-                                                     new Point2D(-10D, -10D)
-                                             ))
-                                             .angle(0D)
-                                             .build()
-            );
-
-            gameObjectModel.addTrait(MetaTrait.builder()
-                                             .id((long) gameObjectModelList.size())
-                                             .build()
-            );
-
-            gameObjectModel.addTrait(RenderTrait.builder()
-                                             .modelPointList(Arrays.asList(
-                                                     new Point2D(-10D, -10D),
-                                                     new Point2D(10D, -10D),
-                                                     new Point2D(10D, 10D),
-                                                     new Point2D(-10D, 10D)
-                                             ))
-                                             .color(Color.CYAN)
-                                             .build());
-
-            gameObjectModel.addTrait(new CommandTrait());
-
+            traitMap.put(CommandTrait.class, new CommandTrait());
+            traitMap.put(OwnerTrait.class, OwnerTrait.builder()
+                    .ownerId(ownerId)
+                    .build());
+            traitMap.put(MetaTrait.class, MetaTrait.builder()
+                    .id((long) gameObjectModelList.size())
+                    .build());
+            gameObjectModel.addAll(traitMap.values());
             return gameObjectModel;
         };
     }
@@ -82,7 +58,7 @@ public class GameObjectService {
         return gameObjectModelList.get((int) id);
     }
 
-    public GameObjectModel create(final List<Trait> traits) {
+    public GameObjectModel create(final Collection<Trait> traits) {
         List<Trait> finalList = traits.stream()
                 .distinct()
                 .filter(trait -> !trait.getClass().equals(MetaTrait.class))

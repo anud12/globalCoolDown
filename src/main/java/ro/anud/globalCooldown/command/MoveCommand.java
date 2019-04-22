@@ -45,7 +45,7 @@ public class MoveCommand implements Command {
 
         if (isMissaligned(gameObjectModel, commandScope.getDeltaTime())) {
             return commandScope
-                    .getCommandBuilder()
+                    .getCommandFactory()
                     .rotateCommand(getDestinationAlignment(trait))
                     .execute(commandScope, gameObjectModel)
                     .setNextCommand(of(this));

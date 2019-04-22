@@ -6,10 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import ro.anud.globalCooldown.trait.Trait;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Setter
 @Getter
@@ -28,7 +25,7 @@ public class GameObjectModel {
     }
 
 
-    public void addAll(List<Trait> traitList) {
+    public void addAll(Collection<Trait> traitList) {
         traitList.forEach(trait -> this.traitMap
                 .put(trait.getClass().getSimpleName(), trait)
         );

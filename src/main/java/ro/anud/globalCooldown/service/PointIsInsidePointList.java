@@ -53,8 +53,10 @@ public class PointIsInsidePointList {
 
 
     private int orientation(Point2D p, Point2D q, Point2D r) {
-        double val = (q.getY() - p.getY()) * (r.getX() - q.getX()) -
-                (q.getX() - p.getX()) * (r.getY() - q.getY());
+        double val = (q.getY() - p.getY())
+                * (r.getX() - q.getX())
+                - (q.getX() - p.getX())
+                * (r.getY() - q.getY());
 
         if (val == 0) return 0;  // colinear 
         return (val > 0) ? 1 : 2; // clock or counterclock wise

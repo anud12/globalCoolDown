@@ -1,0 +1,55 @@
+{
+  "ro.anud.globalCooldown.trait.LocationTrait": {
+    "class": "ro.anud.globalCooldown.trait.LocationTrait",
+    "type": "",
+    "point2D": {
+      "x": 200.0,
+      "y": 200.0
+    },
+    "modelVertices": [
+      {
+        "x": -10.0,
+        "y": 10.0
+      },
+      {
+        "x": 10.0,
+        "y": 5.0
+      },
+      {
+        "x": 10.0,
+        "y": -5.0
+      },
+      {
+        "x": -10.0,
+        "y": -10.0
+      }
+    ],
+    "angle": 0.0
+  },
+  "ro.anud.globalCooldown.trait.RenderTrait": {
+    "class": "ro.anud.globalCooldown.trait.RenderTrait",
+    "modelPointList": [
+      {
+        "x": -10.0,
+        "y": 10.0
+      },
+      {
+        "x": 10.0,
+        "y": 5.0
+      },
+      {
+        "x": 10.0,
+        "y": -5.0
+      },
+      {
+        "x": -10.0,
+        "y": -10.0
+      }
+    ],
+    "color": {
+      "red": 0.0,
+      "green": 1.0,
+      "blue": 1.0
+    }
+  }
+}

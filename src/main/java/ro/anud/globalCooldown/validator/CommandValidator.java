@@ -21,7 +21,7 @@ public class CommandValidator {
         this.userService = Objects.requireNonNull(userService, "userService must not be null");
     }
 
-    public Function<GameObjectModel, Optional<ValidationChainResult>> gameObjectIsId(final SimpMessageHeaderAccessor inHeaderAccessor) {
+    public Function<GameObjectModel, Optional<ValidationChainResult>> isMessageOwnerOfGameObject(final SimpMessageHeaderAccessor inHeaderAccessor) {
         return gameObjectModel -> {
             Optional<OwnerTrait> ownerTrait = gameObjectModel.getTrait(OwnerTrait.class);
             String connectionId = (String) inHeaderAccessor.getSessionAttributes()
@@ -29,14 +29,12 @@ public class CommandValidator {
             Optional<String> username = userService.getUsernameFromConnectionId(connectionId)
                     .map(UserModel::getUsername);
 
-            System.out.println(username + ":" + ownerTrait);
-
             boolean result = ownerTrait.isPresent()
                     && username.isPresent()
                     && ownerTrait.get()
                     .getOwnerId()
                     .equals(username.get());
-            System.out.println(result);
+
             if (!result) {
                 return Optional.of(ValidationChainResult.builder()
                                            .errorCode("Permission denied")

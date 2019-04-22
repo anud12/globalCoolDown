@@ -1,23 +1,20 @@
 package ro.anud.globalCooldown.service;
 
 import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ro.anud.globalCooldown.emitter.WorldEmitter;
+import ro.anud.globalCooldown.factory.TraitMapFactory;
 import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.model.UserModel;
 import ro.anud.globalCooldown.trait.LocationTrait;
 import ro.anud.globalCooldown.trait.OwnerTrait;
-import ro.anud.globalCooldown.trait.RenderTrait;
+import ro.anud.globalCooldown.trait.Trait;
 import ro.anud.globalCooldown.trigger.Trigger;
 import ro.anud.globalCooldown.trigger.VictoryTrigger;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +25,7 @@ public class WorldService {
     private final UserService userService;
     private final WorldEmitter worldEmitter;
     private PointIsInsidePointList pointIsInsidePointList;
+    private final TraitMapFactory traitMapFactory;
 
     private List<Trigger> triggerList;
     private GameObjectModel victoryGameObjectModel;
@@ -36,11 +34,13 @@ public class WorldService {
     public WorldService(final GameObjectService gameObjectService,
                         final UserService userService,
                         final WorldEmitter worldEmitter,
-                        final PointIsInsidePointList pointIsInsidePointList) {
+                        final PointIsInsidePointList pointIsInsidePointList,
+                        final TraitMapFactory traitMapFactory) {
         this.gameObjectService = Objects.requireNonNull(gameObjectService, "gameObjectService must not be null");
         this.userService = Objects.requireNonNull(userService, "userService must not be null");
         this.worldEmitter = Objects.requireNonNull(worldEmitter, "worldEmitter must not be null");
         this.pointIsInsidePointList = Objects.requireNonNull(pointIsInsidePointList, "pointIsInsidePointList must not be null");
+        this.traitMapFactory = Objects.requireNonNull(traitMapFactory, "traitMapFactory must not be null");
         blockGameObjectModelList = new ArrayList<>();
         triggerList = new ArrayList<>();
         triggerList.add(new VictoryTrigger());
@@ -74,10 +74,10 @@ public class WorldService {
                             .map(point2D -> point2D.add(blockLocationTrait.getPoint2D()))
                             .collect(Collectors.toList());
                     return pointIsInsidePointList.isInside(blockLocationTrait.getModelVertices()
-                                                                    .stream()
-                                                                    .map(point2D -> point2D.add(blockLocationTrait.getPoint2D()))
-                                                                    .collect(Collectors.toList()),
-                                                            gamePoint);
+                                                                   .stream()
+                                                                   .map(point2D -> point2D.add(blockLocationTrait.getPoint2D()))
+                                                                   .collect(Collectors.toList()),
+                                                           gamePoint);
 
                 });
     }
@@ -92,83 +92,22 @@ public class WorldService {
     }
 
     public void create() {
+        Map<Class, Trait> rectangleSquare = traitMapFactory.getType("rectangleSquare");
+        rectangleSquare.put(OwnerTrait.class, OwnerTrait.builder()
+                .ownerId("")
+                .build());
+        blockGameObjectModelList.add(this.gameObjectService.create(rectangleSquare.values()));
 
-        blockGameObjectModelList.add(
-                this.gameObjectService
-                        .create(Arrays.asList(LocationTrait.builder()
-                                                      .point2D(new Point2D(0, 0))
-                                                      .modelVertices(Arrays.asList(
-                                                              new Point2D(500D, 0D),
-                                                              new Point2D(1000D, 0D),
-                                                              new Point2D(500D, 200D)
-                                                      ))
-                                                      .angle(0D)
-                                                      .build(),
-                                              RenderTrait.builder()
-                                                      .modelPointList(Arrays.asList(
-                                                              new Point2D(-0D, -10D),
-                                                              new Point2D(10D, -0D),
-                                                              new Point2D(0D, 10D),
-                                                              new Point2D(-10D, 0D)
-                                                      ))
-                                                      .color(Color.BROWN)
-                                                      .build(),
-                                              OwnerTrait.builder()
-                                                      .ownerId("")
-                                                      .build())
-                        )
-        );
-        blockGameObjectModelList.add(
-                this.gameObjectService
-                        .create(Arrays.asList(LocationTrait.builder()
-                                                      .point2D(new Point2D(0, 0))
-                                                      .modelVertices(Arrays.asList(
-                                                              new Point2D(0D, 0D),
-                                                              new Point2D(500D, 0D),
-                                                              new Point2D(500D, 500D),
-                                                              new Point2D(0D, 500D)
-                                                      ))
-                                                      .angle(0D)
-                                                      .build(),
-                                              RenderTrait.builder()
-                                                      .modelPointList(Arrays.asList(
-                                                              new Point2D(-0D, -10D),
-                                                              new Point2D(10D, -0D),
-                                                              new Point2D(0D, 10D),
-                                                              new Point2D(-10D, 0D)
-                                                      ))
-                                                      .color(Color.BROWN)
-                                                      .build(),
-                                              OwnerTrait.builder()
-                                                      .ownerId("")
-                                                      .build())
-                        )
-        );
+        Map<Class, Trait> blockSquare = traitMapFactory.getType("blockSquare");
+        blockSquare.put(OwnerTrait.class, OwnerTrait.builder()
+                .ownerId("")
+                .build());
+        blockGameObjectModelList.add(this.gameObjectService.create(blockSquare.values()));
 
-        this.victoryGameObjectModel = this.gameObjectService
-                .create(Arrays.asList(LocationTrait.builder()
-                                              .point2D(new Point2D(400, 400))
-                                              .modelVertices(Arrays.asList(
-                                                      new Point2D(-0D, -10D),
-                                                      new Point2D(10D, -0D),
-                                                      new Point2D(0D, 10D),
-                                                      new Point2D(-10D, 0D)
-                                              ))
-                                              .angle(0D)
-                                              .build(),
-                                      RenderTrait.builder()
-                                              .modelPointList(Arrays.asList(
-                                                      new Point2D(-0D, -10D),
-                                                      new Point2D(10D, -0D),
-                                                      new Point2D(0D, 10D),
-                                                      new Point2D(-10D, 0D)
-                                              ))
-                                              .color(Color.MAGENTA)
-                                              .build(),
-                                      OwnerTrait.builder()
-                                              .ownerId("")
-                                              .build()));
+        Map<Class, Trait> victoryTrait = traitMapFactory.getType("victory");
+        victoryTrait.put(OwnerTrait.class, OwnerTrait.builder()
+                .ownerId("")
+                .build());
+        this.victoryGameObjectModel = this.gameObjectService.create(victoryTrait.values());
     }
-
-
 }

@@ -1,8 +1,8 @@
 package ro.anud.globalCooldown.service;
 
 import org.springframework.stereotype.Service;
-import ro.anud.globalCooldown.builder.CommandBuilder;
-import ro.anud.globalCooldown.builder.TriggerBuilder;
+import ro.anud.globalCooldown.factory.CommandFactory;
+import ro.anud.globalCooldown.factory.TriggerFactory;
 import ro.anud.globalCooldown.command.CommandResponse;
 import ro.anud.globalCooldown.command.CommandScope;
 import ro.anud.globalCooldown.model.GameObjectModel;
@@ -19,13 +19,13 @@ public class CommandService {
     private final CommandScope commandScope;
 
     public CommandService(final OptionalValidation optionalValidation,
-                          final CommandBuilder commandBuilder,
-                          final TriggerBuilder triggerBuilder,
+                          final CommandFactory commandFactory,
+                          final TriggerFactory triggerFactory,
                           final WorldService worldService) {
         this.commandScope = CommandScope
                 .builder()
-                .commandBuilder(commandBuilder)
-                .triggerBuilder(triggerBuilder)
+                .commandFactory(commandFactory)
+                .triggerFactory(triggerFactory)
                 .optionalValidation(optionalValidation)
                 .worldService(worldService)
                 .deltaTime(12L)

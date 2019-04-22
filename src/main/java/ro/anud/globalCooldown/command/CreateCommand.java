@@ -34,7 +34,7 @@ public class CreateCommand implements Command {
 
         return CommandResponse.builder()
                 .triggerList(Arrays.asList(commandScope
-                                                   .getTriggerBuilder()
+                                                   .getTriggerFactory()
                                                    .createGameObjectTrigger(
                                                            Arrays.asList(
                                                                    LocationTrait

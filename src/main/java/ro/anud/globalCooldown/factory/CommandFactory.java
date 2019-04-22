@@ -1,4 +1,4 @@
-package ro.anud.globalCooldown.builder;
+package ro.anud.globalCooldown.factory;
 
 import javafx.geometry.Point2D;
 import org.springframework.stereotype.Service;
@@ -7,7 +7,7 @@ import ro.anud.globalCooldown.command.MoveCommand;
 import ro.anud.globalCooldown.command.RotateCommand;
 
 @Service
-public class CommandBuilder {
+public class CommandFactory {
     public MoveCommand moveCommand(Point2D destinationLocation) {
         return new MoveCommand(destinationLocation);
     }
