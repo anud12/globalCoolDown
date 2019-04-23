@@ -44,7 +44,7 @@ public class RotateCommand implements Command {
                     .build();
         }
         LocationTrait trait = gameObjectModel.getTrait(LocationTrait.class).get();
-        double speed = 0.1;
+        double speed = 0.2;
         double rate = speed * commandScope.getDeltaTime();
         double angle = trait.getAngle();
 

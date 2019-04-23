@@ -38,6 +38,7 @@ public class TraitMapFactory {
 
     public Map<Class, Trait> getType(String string) {
         try {
+            LOGGER.info("getType " + string + " -> " + toLocalFile.apply(string));
             return objectMapper.readValue(toLocalFile.apply(string),
                                           new TypeReference<Map<Class, Trait>>() {}
             );

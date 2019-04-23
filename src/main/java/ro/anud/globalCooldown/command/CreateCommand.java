@@ -4,10 +4,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import lombok.*;
 import ro.anud.globalCooldown.model.GameObjectModel;
-import ro.anud.globalCooldown.trait.CommandTrait;
-import ro.anud.globalCooldown.trait.LocationTrait;
-import ro.anud.globalCooldown.trait.OwnerTrait;
-import ro.anud.globalCooldown.trait.RenderTrait;
+import ro.anud.globalCooldown.trait.*;
 
 import java.util.Arrays;
 
@@ -40,13 +37,17 @@ public class CreateCommand implements Command {
                                                                    LocationTrait
                                                                            .builder()
                                                                            .point2D(new Point2D(point.getX(), point.getY()))
-                                                                           .modelVertices(Arrays.asList(
+                                                                           .angle(0D)
+                                                                           .build(),
+                                                                   ModelTrait.builder()
+                                                                           .vertexPointList(Arrays.asList(
                                                                                    new Point2D(-10D, 10D),
                                                                                    new Point2D(10D, 5D),
                                                                                    new Point2D(10D, -5D),
                                                                                    new Point2D(-10D, -10D)
                                                                            ))
-                                                                           .angle(0D)
+                                                                           .angleOffset(0D)
+                                                                           .vertexColor(Color.CYAN)
                                                                            .build(),
                                                                    new CommandTrait(),
                                                                    OwnerTrait.builder()

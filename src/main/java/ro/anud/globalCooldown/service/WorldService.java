@@ -9,6 +9,7 @@ import ro.anud.globalCooldown.factory.TraitMapFactory;
 import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.model.UserModel;
 import ro.anud.globalCooldown.trait.LocationTrait;
+import ro.anud.globalCooldown.trait.ModelTrait;
 import ro.anud.globalCooldown.trait.OwnerTrait;
 import ro.anud.globalCooldown.trait.Trait;
 import ro.anud.globalCooldown.trigger.Trigger;
@@ -65,20 +66,16 @@ public class WorldService {
     }
 
     public boolean isNotBlocked(Point2D gamePoint) {
-        return !this.blockGameObjectModelList
+        return this.blockGameObjectModelList
                 .stream()
-                .anyMatch(blockGameObjectModel -> {
+                .noneMatch(blockGameObjectModel -> {
+                    ModelTrait blockModelTrait = blockGameObjectModel.getTrait(ModelTrait.class).get();
                     LocationTrait blockLocationTrait = blockGameObjectModel.getTrait(LocationTrait.class).get();
-                    blockLocationTrait.getModelVertices()
-                            .stream()
-                            .map(point2D -> point2D.add(blockLocationTrait.getPoint2D()))
-                            .collect(Collectors.toList());
-                    return pointIsInsidePointList.isInside(blockLocationTrait.getModelVertices()
+                    return pointIsInsidePointList.isInside(blockModelTrait.getVertexPointList()
                                                                    .stream()
                                                                    .map(point2D -> point2D.add(blockLocationTrait.getPoint2D()))
                                                                    .collect(Collectors.toList()),
                                                            gamePoint);
-
                 });
     }
 
@@ -92,22 +89,36 @@ public class WorldService {
     }
 
     public void create() {
-        Map<Class, Trait> rectangleSquare = traitMapFactory.getType("rectangleSquare");
-        rectangleSquare.put(OwnerTrait.class, OwnerTrait.builder()
-                .ownerId("")
-                .build());
-        blockGameObjectModelList.add(this.gameObjectService.create(rectangleSquare.values()));
+        Map<Class, Trait> triangleSquare = traitMapFactory.getType("rectangleSquare");
+        triangleSquare.put(OwnerTrait.class,
+                           OwnerTrait.builder()
+                                   .ownerId("")
+                                   .build());
+        triangleSquare.put(LocationTrait.class,
+                           LocationTrait.builder()
+                                   .point2D(new Point2D(500, 0))
+                                   .angle(0D)
+                                   .build());
+        blockGameObjectModelList.add(
+                this.gameObjectService.create(triangleSquare.values()));
 
         Map<Class, Trait> blockSquare = traitMapFactory.getType("blockSquare");
-        blockSquare.put(OwnerTrait.class, OwnerTrait.builder()
-                .ownerId("")
-                .build());
+        blockSquare.put(OwnerTrait.class,
+                        OwnerTrait.builder()
+                                .ownerId("")
+                                .build());
         blockGameObjectModelList.add(this.gameObjectService.create(blockSquare.values()));
 
         Map<Class, Trait> victoryTrait = traitMapFactory.getType("victory");
-        victoryTrait.put(OwnerTrait.class, OwnerTrait.builder()
-                .ownerId("")
-                .build());
+        victoryTrait.put(OwnerTrait.class,
+                         OwnerTrait.builder()
+                                 .ownerId("")
+                                 .build());
+        victoryTrait.put(LocationTrait.class,
+                         LocationTrait.builder()
+                                 .point2D(new Point2D(400, 400))
+                                 .angle(0D)
+                                 .build());
         this.victoryGameObjectModel = this.gameObjectService.create(victoryTrait.values());
     }
 }

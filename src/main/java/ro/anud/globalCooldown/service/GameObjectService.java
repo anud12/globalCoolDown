@@ -1,13 +1,11 @@
 package ro.anud.globalCooldown.service;
 
 import javafx.geometry.Point2D;
-import org.ejml.simple.SimpleMatrix;
 import org.springframework.stereotype.Service;
 import ro.anud.globalCooldown.factory.TraitMapFactory;
 import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.model.UserModel;
 import ro.anud.globalCooldown.trait.*;
-import ro.anud.globalCooldown.validation.optionalValidation.OptionalValidation;
 
 import java.util.*;
 import java.util.function.Function;
@@ -18,16 +16,21 @@ public class GameObjectService {
 
     private List<GameObjectModel> gameObjectModelList;
     private Function<String, GameObjectModel> createObjectFunction;
-    private final OptionalValidation optionalValidation;
+    private Point2DToSimpleMatrixMapper point2DToSimpleMatrixMapper;
 
-    public GameObjectService(final OptionalValidation optionalValidation,
-                             final TraitMapFactory traitMapFactory) {
-        this.optionalValidation = Objects.requireNonNull(optionalValidation, "optionalValidation must not be null");
+    public GameObjectService(final TraitMapFactory traitMapFactory,
+                             final Point2DToSimpleMatrixMapper point2DToSimpleMatrixMapper) {
+        this.point2DToSimpleMatrixMapper = Objects.requireNonNull(point2DToSimpleMatrixMapper, "point2DToSimpleMatrixMapper must not be null");
         gameObjectModelList = new ArrayList<>();
         createObjectFunction = (ownerId) -> {
-            Map<Class, Trait> traitMap = traitMapFactory.getType("ship");
+            Map<Class, Trait> traitMap = traitMapFactory.getType("smallShip");
             GameObjectModel gameObjectModel = new GameObjectModel();
             traitMap.put(CommandTrait.class, new CommandTrait());
+            traitMap.put(LocationTrait.class, LocationTrait
+                    .builder()
+                    .angle(0D)
+                    .point2D(new Point2D(200, 200))
+                    .build());
             traitMap.put(OwnerTrait.class, OwnerTrait.builder()
                     .ownerId(ownerId)
                     .build());
@@ -35,6 +38,14 @@ public class GameObjectService {
                     .id((long) gameObjectModelList.size())
                     .build());
             gameObjectModel.addAll(traitMap.values());
+            gameObjectModel.getTrait(ModelTrait.class)
+                    .map(modelTrait -> modelTrait.getVertexPointList()
+                            .stream()
+                            .map(point2D -> point2DToSimpleMatrixMapper.toRotationMatrix(modelTrait.getAngleOffset())
+                                    .mult(point2DToSimpleMatrixMapper.toMatrix(point2D)))
+                            .map(point2DToSimpleMatrixMapper::fromMatrix)
+                            .collect(Collectors.toList()))
+                    .ifPresent(pointList -> gameObjectModel.getTrait(ModelTrait.class).get().setVertexPointList(pointList));
             return gameObjectModel;
         };
     }
@@ -69,6 +80,27 @@ public class GameObjectService {
         GameObjectModel gameObjectModel = GameObjectModel.builder()
                 .traitList(finalList)
                 .build();
+
+        gameObjectModel.getTrait(RenderTrait.class).orElseGet(() -> {
+            gameObjectModel.addTrait(RenderTrait.builder().build());
+            return null;
+        });
+        gameObjectModel.getTrait(ModelTrait.class)
+                .map(modelTrait -> modelTrait.getVertexPointList()
+                        .stream()
+                        .map(point2D -> point2DToSimpleMatrixMapper.toRotationMatrix(modelTrait.getAngleOffset())
+                                .mult(point2DToSimpleMatrixMapper.toMatrix(point2D)))
+                        .map(point2DToSimpleMatrixMapper::fromMatrix)
+                        .collect(Collectors.toList()))
+                .ifPresent(pointList -> gameObjectModel.getTrait(ModelTrait.class).get().setVertexPointList(pointList));
+
+        gameObjectModel.getTrait(LocationTrait.class).orElseGet(() -> {
+            gameObjectModel.addTrait(LocationTrait.builder()
+                                             .angle(0D)
+                                             .point2D(new Point2D(0, 0))
+                                             .build());
+            return null;
+        });
         gameObjectModelList.add(gameObjectModel);
         return gameObjectModel;
     }
@@ -78,100 +110,33 @@ public class GameObjectService {
     }
 
     public void buildRender(final GameObjectModel gameObjectModel) {
-        if (optionalValidation.createChain()
-                .validate(gameObjectModel.getTrait(LocationTrait.class))
-                .validate(gameObjectModel.getTrait(RenderTrait.class))
-                .isAnyNotPresent()) {
-            return;
+
+        if (!gameObjectModel.getTrait(RenderTrait.class).isPresent()) {
+            gameObjectModel.addTrait(RenderTrait.builder().build());
+        }
+        if (!gameObjectModel.getTrait(LocationTrait.class).isPresent()) {
+            throw new RuntimeException("buildRender requirements is null");
+        }
+        if (!gameObjectModel.getTrait(ModelTrait.class).isPresent()) {
+            throw new RuntimeException("buildRender requirements is null");
+        }
+        if (!gameObjectModel.getTrait(RenderTrait.class).isPresent()) {
+            throw new RuntimeException("buildRender requirements is null");
         }
         LocationTrait locationTrait = gameObjectModel.getTrait(LocationTrait.class).get();
+        ModelTrait modelTrait = gameObjectModel.getTrait(ModelTrait.class).get();
         RenderTrait renderTrait = gameObjectModel.getTrait(RenderTrait.class).get();
 
-        List<Point2D> renderVertices = locationTrait.getModelVertices()
+        List<Point2D> renderVertices = modelTrait.getVertexPointList()
                 .stream()
-                .map(point2D -> {
-                    SimpleMatrix translation = toTranslationMatrix(locationTrait.getPoint2D());
-                    SimpleMatrix rotation = toRotationMatrix(locationTrait.getAngle());
-                    SimpleMatrix vector = toMatrix(point2D);
-                    return translation
-                            .mult(rotation)
-                            .mult(vector);
-
-                })
-                .map(this::fromMatrix)
+                .map(point2D -> point2DToSimpleMatrixMapper
+                        .toTranslationMatrix(locationTrait.getPoint2D())
+                        .mult(point2DToSimpleMatrixMapper.toRotationMatrix(locationTrait.getAngle()))
+                        .mult(point2DToSimpleMatrixMapper.toMatrix(point2D)))
+                .map(point2DToSimpleMatrixMapper::fromMatrix)
                 .collect(Collectors.toList());
+        renderTrait.setColor(modelTrait.getVertexColor());
         renderTrait.setModelPointList(renderVertices);
-    }
-
-    private SimpleMatrix toTranslationMatrix(Point2D point2D) {
-        double[][] doubles = new double[][]
-                {
-                        {1,
-                                0,
-                                0,
-                                point2D.getX()
-                        },
-                        {0,
-                                1,
-                                0,
-                                point2D.getY()
-                        },
-                        {0,
-                                0,
-                                1,
-                                0
-                        },
-                        {0,
-                                0,
-                                0,
-                                1
-                        },
-                };
-        return new SimpleMatrix(doubles);
-    }
-
-    private SimpleMatrix toRotationMatrix(Double angle) {
-        Double radians = Math.toRadians(angle);
-        double[][] doubles = new double[][]
-                {
-                        {Math.cos(radians),
-                                Math.sin(radians),
-                                0,
-                                0
-                        },
-                        {-Math.sin(radians),
-                                Math.cos(radians),
-                                0,
-                                0
-                        },
-                        {0,
-                                0,
-                                1,
-                                0
-                        },
-                        {0,
-                                0,
-                                0,
-                                1
-                        },
-                };
-        return new SimpleMatrix(doubles);
-    }
-
-    private Point2D fromMatrix(SimpleMatrix simpleMatrix) {
-        return new Point2D(simpleMatrix.get(0, 0), simpleMatrix.get(1, 0));
-    }
-
-    private SimpleMatrix toMatrix(Point2D point2D) {
-        double[][] doubles = new double[][]
-                {
-                        {point2D.getX()},
-                        {point2D.getY()},
-                        {1D},
-                        {1D}
-                };
-
-        return new SimpleMatrix(doubles);
     }
 
     public void reset() {
