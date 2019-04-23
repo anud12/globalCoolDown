@@ -27,6 +27,7 @@ public class WorldService {
     private final WorldEmitter worldEmitter;
     private PointIsInsidePointList pointIsInsidePointList;
     private final TraitMapFactory traitMapFactory;
+    private final Point2DToSimpleMatrixMapper point2DToSimpleMatrixMapper;
 
     private List<Trigger> triggerList;
     private GameObjectModel victoryGameObjectModel;
@@ -36,12 +37,14 @@ public class WorldService {
                         final UserService userService,
                         final WorldEmitter worldEmitter,
                         final PointIsInsidePointList pointIsInsidePointList,
-                        final TraitMapFactory traitMapFactory) {
+                        final TraitMapFactory traitMapFactory,
+                        final Point2DToSimpleMatrixMapper point2DToSimpleMatrixMapper) {
         this.gameObjectService = Objects.requireNonNull(gameObjectService, "gameObjectService must not be null");
         this.userService = Objects.requireNonNull(userService, "userService must not be null");
         this.worldEmitter = Objects.requireNonNull(worldEmitter, "worldEmitter must not be null");
         this.pointIsInsidePointList = Objects.requireNonNull(pointIsInsidePointList, "pointIsInsidePointList must not be null");
         this.traitMapFactory = Objects.requireNonNull(traitMapFactory, "traitMapFactory must not be null");
+        this.point2DToSimpleMatrixMapper = Objects.requireNonNull(point2DToSimpleMatrixMapper, "point2DToSimpleMatrixMapper must not be null");
         blockGameObjectModelList = new ArrayList<>();
         triggerList = new ArrayList<>();
         triggerList.add(new VictoryTrigger());
@@ -99,8 +102,7 @@ public class WorldService {
                                    .point2D(new Point2D(500, 0))
                                    .angle(0D)
                                    .build());
-        blockGameObjectModelList.add(
-                this.gameObjectService.create(triangleSquare.values()));
+        blockGameObjectModelList.add(this.gameObjectService.create(triangleSquare.values()));
 
         Map<Class, Trait> blockSquare = traitMapFactory.getType("blockSquare");
         blockSquare.put(OwnerTrait.class,
