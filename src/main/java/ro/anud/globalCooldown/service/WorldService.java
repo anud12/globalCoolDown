@@ -12,7 +12,9 @@ import ro.anud.globalCooldown.trait.LocationTrait;
 import ro.anud.globalCooldown.trait.ModelTrait;
 import ro.anud.globalCooldown.trait.OwnerTrait;
 import ro.anud.globalCooldown.trait.Trait;
+import ro.anud.globalCooldown.trigger.DeleteGameObjectTrigger;
 import ro.anud.globalCooldown.trigger.Trigger;
+import ro.anud.globalCooldown.trigger.TriggerDelay;
 import ro.anud.globalCooldown.trigger.VictoryTrigger;
 
 import java.util.*;
@@ -120,5 +122,6 @@ public class WorldService {
                                  .angle(0D)
                                  .build());
         this.victoryGameObjectModel = this.gameObjectService.create(victoryTrait.values());
+//        this.triggerList.add(new TriggerDelay(5000L, new DeleteGameObjectTrigger(1L)));
     }
 }

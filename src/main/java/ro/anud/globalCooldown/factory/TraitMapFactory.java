@@ -28,12 +28,10 @@ public class TraitMapFactory {
                                                                                     + string
                                                                                     + ".json");
 
-    public TraitMapFactory(final ObjectMapper objectMapper) throws IOException {
+    public TraitMapFactory(final ObjectMapper objectMapper) {
         this.objectMapper = Objects.requireNonNull(objectMapper, "objectMapper must not be null");
         objectMapper.registerModule(new SimpleModule().addDeserializer(Point2D.class, new Point2DDeserializer()));
         objectMapper.registerModule(new SimpleModule().addDeserializer(Color.class, new ColorDeserializer()));
-        Map<Class, Trait> traitMap = objectMapper.readValue(toLocalFile.apply("ship"), new TypeReference<Map<Class, Trait>>() {});
-        traitMap.forEach((aClass, trait) -> LOGGER.info(aClass + " : " + trait));
     }
 
     public Map<Class, Trait> getType(String string) {
@@ -43,6 +41,7 @@ public class TraitMapFactory {
                                           new TypeReference<Map<Class, Trait>>() {}
             );
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

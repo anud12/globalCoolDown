@@ -31,6 +31,7 @@ public class TopicControllerAdvice {
     @MessageExceptionHandler(RuntimeException.class)
     public void handleException(RuntimeException exception,
                                 final SimpMessageHeaderAccessor inHeaderAccessor) {
+        exception.printStackTrace();
         simpMessagingTemplate.convertAndSend("/ws/error@" + inHeaderAccessor.getUser().getName(),
                                              Arrays.asList(exception.getMessage())
         );
@@ -39,6 +40,7 @@ public class TopicControllerAdvice {
     @MessageExceptionHandler(TopicMessageException.class)
     public void handleTopicMessageException(TopicMessageException exception,
                                             final SimpMessageHeaderAccessor inHeaderAccessor) {
+        exception.printStackTrace();
         simpMessagingTemplate.convertAndSend("/ws/error@" + inHeaderAccessor.getUser().getName(),
                                              exception.getValidationChainResultList().stream()
                                                      .map(validationChainResult -> new StringBuffer()

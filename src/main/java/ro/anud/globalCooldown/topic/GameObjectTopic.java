@@ -13,6 +13,7 @@ import ro.anud.globalCooldown.command.TeleportCommand;
 import ro.anud.globalCooldown.exception.TopicMessageException;
 import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.model.Point;
+import ro.anud.globalCooldown.repository.GameObjectRepository;
 import ro.anud.globalCooldown.service.GameObjectService;
 import ro.anud.globalCooldown.trait.CommandTrait;
 import ro.anud.globalCooldown.validation.validationChain.ValidationChain;
@@ -27,11 +28,14 @@ public class GameObjectTopic {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameObjectTopic.class);
 
     private final GameObjectService gameObjectService;
+    private final GameObjectRepository gameObjectRepository;
     private final CommandValidator commandValidator;
 
     public GameObjectTopic(final GameObjectService gameObjectService,
+                           final GameObjectRepository gameObjectRepository,
                            final CommandValidator commandValidator) {
         this.gameObjectService = Objects.requireNonNull(gameObjectService, "gameObjectService must not be null");
+        this.gameObjectRepository = Objects.requireNonNull(gameObjectRepository, "gameObjectRepository must not be null");
         this.commandValidator = Objects.requireNonNull(commandValidator, "commandValidator must not be null");
     }
 
@@ -46,7 +50,7 @@ public class GameObjectTopic {
     public void teleport(@DestinationVariable("id") final Long id,
                          @RequestBody Point point,
                          final SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
-        GameObjectModel gameObjectModel = gameObjectService.getById(id);
+        GameObjectModel gameObjectModel = gameObjectRepository.getById(id);
         new ValidationChain<>(gameObjectModel)
                 .check(commandValidator.isMessageOwnerOfGameObject(simpMessageHeaderAccessor))
                 .validate(validationChainResults -> {
@@ -73,14 +77,14 @@ public class GameObjectTopic {
     public void move(@DestinationVariable("id") final Long id,
                      @RequestBody Point point,
                      final SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
-        GameObjectModel gameObjectModel = gameObjectService.getById(id);
+        GameObjectModel gameObjectModel = gameObjectRepository.getById(id);
         new ValidationChain<>(gameObjectModel)
                 .check(commandValidator.isMessageOwnerOfGameObject(simpMessageHeaderAccessor))
                 .validate(validationChainResults -> {
                     throw new TopicMessageException(validationChainResults);
                 });
 
-        gameObjectService.getById(id)
+        gameObjectRepository.getById(id)
                 .getTrait(CommandTrait.class)
                 .ifPresent(commandTrait -> {
                                commandTrait.clear();
@@ -97,14 +101,14 @@ public class GameObjectTopic {
     @MessageMapping("{id}/action/create")
     public void create(@DestinationVariable("id") final Long id,
                        final SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
-        GameObjectModel gameObjectModel = gameObjectService.getById(id);
+        GameObjectModel gameObjectModel = gameObjectRepository.getById(id);
         new ValidationChain<>(gameObjectModel)
                 .check(commandValidator.isMessageOwnerOfGameObject(simpMessageHeaderAccessor))
                 .validate(validationChainResults -> {
                     throw new TopicMessageException(validationChainResults);
                 });
 
-        gameObjectService.getById(id)
+        gameObjectRepository.getById(id)
                 .getTrait(CommandTrait.class)
                 .ifPresent(commandTrait -> {
                                commandTrait.clear();

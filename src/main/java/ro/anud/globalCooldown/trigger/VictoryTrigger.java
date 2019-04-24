@@ -22,7 +22,7 @@ public class VictoryTrigger implements Trigger {
                 .getTrait(LocationTrait.class)
                 .get()
                 .getPoint2D();
-        Optional optional = triggerScope.getGameObjectService().getAll()
+        Optional optional = triggerScope.getGameObjectRepository().getAll()
                 .stream()
                 .filter(gameObjectModel1 -> !gameObjectModel1.getTrait(OwnerTrait.class).get().getOwnerId().equals(""))
                 .map(gameObjectModel1 -> gameObjectModel1.getTrait(LocationTrait.class))
