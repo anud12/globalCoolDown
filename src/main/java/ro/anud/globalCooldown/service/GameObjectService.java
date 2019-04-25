@@ -9,9 +9,11 @@ import ro.anud.globalCooldown.mapper.Point2DToSimpleMatrixMapper;
 import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.model.UserModel;
 import ro.anud.globalCooldown.repository.GameObjectRepository;
-import ro.anud.globalCooldown.trait.*;
+import ro.anud.globalCooldown.trait.LocationTrait;
+import ro.anud.globalCooldown.trait.ModelTrait;
+import ro.anud.globalCooldown.trait.OwnerTrait;
+import ro.anud.globalCooldown.trait.RenderTrait;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -33,38 +35,6 @@ public class GameObjectService {
         this.gameObjectFactory = Objects.requireNonNull(gameObjectFactory, "gameObjectFactory must not be null");
     }
 
-    public GameObjectModel create(final Collection<Trait> traits) {
-        List<Trait> finalList = traits.stream()
-                .distinct()
-                .filter(trait -> !trait.getClass().equals(MetaTrait.class))
-                .collect(Collectors.toList());
-        GameObjectModel gameObjectModel = GameObjectModel.builder()
-                .traitList(finalList)
-                .build();
-
-        gameObjectModel.getTrait(RenderTrait.class).orElseGet(() -> {
-            gameObjectModel.addTrait(RenderTrait.builder().build());
-            return null;
-        });
-        gameObjectModel.getTrait(ModelTrait.class)
-                .map(modelTrait -> modelTrait.getVertexPointList()
-                        .stream()
-                        .map(point2D -> point2DToSimpleMatrixMapper.toRotationMatrix(modelTrait.getAngleOffset())
-                                .mult(point2DToSimpleMatrixMapper.toMatrix(point2D)))
-                        .map(point2DToSimpleMatrixMapper::fromMatrix)
-                        .collect(Collectors.toList()))
-                .ifPresent(pointList -> gameObjectModel.getTrait(ModelTrait.class).get().setVertexPointList(pointList));
-
-        gameObjectModel.getTrait(LocationTrait.class).orElseGet(() -> {
-            gameObjectModel.addTrait(LocationTrait.builder()
-                                             .angle(0D)
-                                             .point2D(new Point2D(0, 0))
-                                             .build());
-            return null;
-        });
-        gameObjectRepository.insert(gameObjectModel);
-        return gameObjectModel;
-    }
 
     public void initializeForUser(final UserModel userModel) {
         GameObjectModel gameObjectModel = gameObjectFactory
@@ -106,13 +76,4 @@ public class GameObjectService {
         renderTrait.setColor(modelTrait.getVertexColor());
         renderTrait.setModelPointList(renderVertices);
     }
-
-    public void deleteById(final Long id) {
-        this.gameObjectRepository.deleteById(id);
-    }
-
-    public void reset() {
-        this.gameObjectRepository.reset();
-    }
-
 }

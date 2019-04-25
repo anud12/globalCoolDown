@@ -18,7 +18,7 @@ public class DeleteGameObjectTrigger implements Trigger {
     @Override
     public TriggerResponse execute(final TriggerScope triggerScope) {
         LOGGER.info("deleting " + id);
-        triggerScope.getGameObjectService().deleteById(id);
+        triggerScope.getGameObjectRepository().deleteById(id);
         return TriggerResponse.builder()
                 .nextTrigger(null)
                 .build();

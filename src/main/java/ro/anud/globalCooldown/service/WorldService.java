@@ -5,16 +5,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ro.anud.globalCooldown.emitter.WorldEmitter;
+import ro.anud.globalCooldown.factory.GameObjectFactory;
 import ro.anud.globalCooldown.factory.TraitMapFactory;
 import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.model.UserModel;
+import ro.anud.globalCooldown.repository.GameObjectRepository;
 import ro.anud.globalCooldown.trait.LocationTrait;
 import ro.anud.globalCooldown.trait.ModelTrait;
 import ro.anud.globalCooldown.trait.OwnerTrait;
 import ro.anud.globalCooldown.trait.Trait;
-import ro.anud.globalCooldown.trigger.DeleteGameObjectTrigger;
 import ro.anud.globalCooldown.trigger.Trigger;
-import ro.anud.globalCooldown.trigger.TriggerDelay;
 import ro.anud.globalCooldown.trigger.VictoryTrigger;
 
 import java.util.*;
@@ -24,7 +24,8 @@ import java.util.stream.Collectors;
 public class WorldService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorldService.class);
-    private final GameObjectService gameObjectService;
+    private final GameObjectFactory gameObjectFactory;
+    private final GameObjectRepository gameObjectRepository;
     private final UserService userService;
     private final WorldEmitter worldEmitter;
     private PointIsInsidePointList pointIsInsidePointList;
@@ -34,12 +35,14 @@ public class WorldService {
     private GameObjectModel victoryGameObjectModel;
     private List<GameObjectModel> blockGameObjectModelList;
 
-    public WorldService(final GameObjectService gameObjectService,
+    public WorldService(final GameObjectFactory gameObjectFactory,
+                        final GameObjectRepository gameObjectRepository,
                         final UserService userService,
                         final WorldEmitter worldEmitter,
                         final PointIsInsidePointList pointIsInsidePointList,
                         final TraitMapFactory traitMapFactory) {
-        this.gameObjectService = Objects.requireNonNull(gameObjectService, "gameObjectService must not be null");
+        this.gameObjectFactory = Objects.requireNonNull(gameObjectFactory, "gameObjectFactory must not be null");
+        this.gameObjectRepository = Objects.requireNonNull(gameObjectRepository, "gameObjectRepository must not be null");
         this.userService = Objects.requireNonNull(userService, "userService must not be null");
         this.worldEmitter = Objects.requireNonNull(worldEmitter, "worldEmitter must not be null");
         this.pointIsInsidePointList = Objects.requireNonNull(pointIsInsidePointList, "pointIsInsidePointList must not be null");
@@ -86,7 +89,7 @@ public class WorldService {
                 .stream()
                 .map(UserModel::getUsername)
                 .forEach(s -> worldEmitter.to(s, Arrays.asList()));
-        this.gameObjectService.reset();
+        this.gameObjectRepository.reset();
         this.userService.reset();
     }
 
@@ -101,15 +104,23 @@ public class WorldService {
                                    .point2D(new Point2D(500, 0))
                                    .angle(0D)
                                    .build());
-        blockGameObjectModelList.add(
-                this.gameObjectService.create(triangleSquare.values()));
+        GameObjectModel triangleGameObject = this.gameObjectFactory.createFromTraits(new ArrayList<>(triangleSquare.values()));
+        blockGameObjectModelList.add(triangleGameObject);
+        gameObjectRepository.insert(triangleGameObject);
 
         Map<Class, Trait> blockSquare = traitMapFactory.getType("blockSquare");
         blockSquare.put(OwnerTrait.class,
                         OwnerTrait.builder()
                                 .ownerId("")
                                 .build());
-        blockGameObjectModelList.add(this.gameObjectService.create(blockSquare.values()));
+        blockSquare.put(LocationTrait.class,
+                           LocationTrait.builder()
+                                   .point2D(new Point2D(0, 0))
+                                   .angle(0D)
+                                   .build());
+        GameObjectModel blockGameObject = this.gameObjectFactory.createFromTraits(new ArrayList<>(blockSquare.values()));
+        blockGameObjectModelList.add(blockGameObject);
+        gameObjectRepository.insert(blockGameObject);
 
         Map<Class, Trait> victoryTrait = traitMapFactory.getType("victory");
         victoryTrait.put(OwnerTrait.class,
@@ -121,7 +132,10 @@ public class WorldService {
                                  .point2D(new Point2D(400, 400))
                                  .angle(0D)
                                  .build());
-        this.victoryGameObjectModel = this.gameObjectService.create(victoryTrait.values());
-//        this.triggerList.add(new TriggerDelay(5000L, new DeleteGameObjectTrigger(1L)));
+
+        this.victoryGameObjectModel = this.gameObjectFactory.createFromTraits(new ArrayList<>(victoryTrait.values()));
+        blockGameObjectModelList.add(this.victoryGameObjectModel);
+        gameObjectRepository.insert(this.victoryGameObjectModel);
+        //        this.triggerList.add(new TriggerDelay(5000L, new DeleteGameObjectTrigger(1L)));
     }
 }

@@ -8,9 +8,7 @@ import ro.anud.globalCooldown.mapper.Point2DToSimpleMatrixMapper;
 import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.trait.*;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +26,16 @@ public class GameObjectFactory {
     }
 
 
+    public GameObjectModel createFromTraits(List<Trait> traitList) {
+        Map<Class, Trait> classTraitMap = traitList.stream()
+                .collect(HashMap::new,
+                         (classTraitHashMap, trait) -> classTraitHashMap.put(trait.getClass(), trait),
+                         HashMap::putAll);
+        classTraitMap.putIfAbsent(RenderTrait.class, RenderTrait.builder().build());
+        classTraitMap.putIfAbsent(CommandTrait.class, new CommandTrait());
+        return new GameObjectModel(new ArrayList<>(classTraitMap.values()));
+    }
+
     public GameObjectModel loadFromDisk(final String fileName,
                                         final LocationTrait locationTrait,
                                         final OwnerTrait ownerTrait,
@@ -35,9 +43,8 @@ public class GameObjectFactory {
         Map<Class, Trait> classTraitMap = traitMapFactory.getType(fileName);
         classTraitMap.put(OwnerTrait.class, ownerTrait);
         classTraitMap.put(LocationTrait.class, locationTrait);
-        classTraitMap.put(CommandTrait.class, new CommandTrait());
 
-        GameObjectModel gameObjectModel = new GameObjectModel(new ArrayList<>(classTraitMap.values()));
+        GameObjectModel gameObjectModel = createFromTraits(new ArrayList<>(classTraitMap.values()));
         gameObjectModel.getTrait(ModelTrait.class).ifPresent(modelTrait -> modelTrait
                 .setVertexPointList(modelTrait.getVertexPointList()
                                             .stream()
