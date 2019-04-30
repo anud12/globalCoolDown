@@ -51,7 +51,6 @@ public class UserTopic {
                 .check(userValidator::usernameNotEmpty)
                 .check(userValidator::usernameIsUnique)
                 .validate(validationChainResults -> {
-                    System.out.println("exception");
                     throw new TopicMessageException(validationChainResults);
                 });
         userService.addUser(userModel);

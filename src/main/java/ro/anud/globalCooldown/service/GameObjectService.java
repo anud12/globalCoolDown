@@ -1,117 +1,57 @@
 package ro.anud.globalCooldown.service;
 
 import javafx.geometry.Point2D;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import ro.anud.globalCooldown.factory.TraitMapFactory;
+import ro.anud.globalCooldown.factory.GameObjectFactory;
+import ro.anud.globalCooldown.mapper.Point2DToSimpleMatrixMapper;
 import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.model.UserModel;
-import ro.anud.globalCooldown.trait.*;
+import ro.anud.globalCooldown.repository.GameObjectRepository;
+import ro.anud.globalCooldown.trait.LocationTrait;
+import ro.anud.globalCooldown.trait.ModelTrait;
+import ro.anud.globalCooldown.trait.OwnerTrait;
+import ro.anud.globalCooldown.trait.RenderTrait;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 public class GameObjectService {
 
-    private List<GameObjectModel> gameObjectModelList;
-    private TraitMapFactory traitMapFactory;
+    private static final Logger LOGGER = LoggerFactory.getLogger(GameObjectService.class);
+
     private Point2DToSimpleMatrixMapper point2DToSimpleMatrixMapper;
+    private final GameObjectRepository gameObjectRepository;
+    private GameObjectFactory gameObjectFactory;
 
-    public GameObjectService(final TraitMapFactory traitMapFactory,
-                             final Point2DToSimpleMatrixMapper point2DToSimpleMatrixMapper) {
+    public GameObjectService(final Point2DToSimpleMatrixMapper point2DToSimpleMatrixMapper,
+                             final GameObjectRepository gameObjectRepository,
+                             final GameObjectFactory gameObjectFactory) {
         this.point2DToSimpleMatrixMapper = Objects.requireNonNull(point2DToSimpleMatrixMapper, "point2DToSimpleMatrixMapper must not be null");
-        this.traitMapFactory = Objects.requireNonNull(traitMapFactory, "traitMapFactory must not be null");
-        gameObjectModelList = new ArrayList<>();
+        this.gameObjectRepository = Objects.requireNonNull(gameObjectRepository, "gameObjectRepository must not be null");
+        this.gameObjectFactory = Objects.requireNonNull(gameObjectFactory, "gameObjectFactory must not be null");
     }
 
-    public List<GameObjectModel> getAll() {
-        return gameObjectModelList;
-    }
-
-    public Map<String, List<GameObjectModel>> getAllByOwner() {
-        return gameObjectModelList
-                .stream()
-                .collect(Collectors.groupingBy(gameObjectModel1 -> gameObjectModel1
-                                 .getTrait(OwnerTrait.class)
-                                 .map(OwnerTrait::getOwnerId)
-                                 .orElse("")
-                         )
-                );
-    }
-
-    public GameObjectModel getById(final long id) {
-        return gameObjectModelList.get((int) id);
-    }
-
-    public GameObjectModel create(final Collection<Trait> traits) {
-        List<Trait> finalList = traits.stream()
-                .distinct()
-                .filter(trait -> !trait.getClass().equals(MetaTrait.class))
-                .collect(Collectors.toList());
-        finalList.add(MetaTrait.builder()
-                              .id((long) gameObjectModelList.size())
-                              .build());
-        GameObjectModel gameObjectModel = GameObjectModel.builder()
-                .traitList(finalList)
-                .build();
-
-        gameObjectModel.getTrait(RenderTrait.class).orElseGet(() -> {
-            gameObjectModel.addTrait(RenderTrait.builder().build());
-            return null;
-        });
-        gameObjectModel.getTrait(ModelTrait.class)
-                .map(modelTrait -> modelTrait.getVertexPointList()
-                        .stream()
-                        .map(point2D -> point2DToSimpleMatrixMapper.toRotationMatrix(modelTrait.getAngleOffset())
-                                .mult(point2DToSimpleMatrixMapper.toMatrix(point2D)))
-                        .map(point2DToSimpleMatrixMapper::fromMatrix)
-                        .collect(Collectors.toList()))
-                .ifPresent(pointList -> gameObjectModel.getTrait(ModelTrait.class).get().setVertexPointList(pointList));
-
-        gameObjectModel.getTrait(LocationTrait.class).orElseGet(() -> {
-            gameObjectModel.addTrait(LocationTrait.builder()
-                                             .angle(0D)
-                                             .point2D(new Point2D(0, 0))
-                                             .build());
-            return null;
-        });
-        gameObjectModelList.add(gameObjectModel);
-        return gameObjectModel;
-    }
 
     public void initializeForUser(final UserModel userModel) {
-        String ownerId = userModel.getUsername();
-        Map<Class, Trait> traitMap = traitMapFactory.getType("smallShip");
-        GameObjectModel gameObjectModel = new GameObjectModel();
-        traitMap.put(CommandTrait.class, new CommandTrait());
-        traitMap.put(LocationTrait.class, LocationTrait
-                .builder()
-                .angle(0D)
-                .point2D(new Point2D(200, 200))
-                .build());
-        traitMap.put(OwnerTrait.class, OwnerTrait.builder()
-                .ownerId(ownerId)
-                .build());
-        traitMap.put(MetaTrait.class, MetaTrait.builder()
-                .id((long) gameObjectModelList.size())
-                .build());
-        gameObjectModel.addAll(traitMap.values());
-        gameObjectModel.getTrait(ModelTrait.class)
-                .map(modelTrait -> modelTrait.getVertexPointList()
-                        .stream()
-                        .map(point2D -> point2DToSimpleMatrixMapper.toRotationMatrix(modelTrait.getAngleOffset())
-                                .mult(point2DToSimpleMatrixMapper.toMatrix(point2D)))
-                        .map(point2DToSimpleMatrixMapper::fromMatrix)
-                        .collect(Collectors.toList()))
-                .ifPresent(pointList -> gameObjectModel.getTrait(ModelTrait.class).get().setVertexPointList(pointList));
-        gameObjectModelList.add(gameObjectModel);
+        GameObjectModel gameObjectModel = gameObjectFactory
+                .loadFromDisk("ship",
+                              LocationTrait.builder()
+                                      .angle(0D)
+                                      .point2D(new Point2D(200, 200))
+                                      .build(),
+                              OwnerTrait.builder()
+                                      .ownerId(userModel.getUsername())
+                                      .build(),
+                              point2DToSimpleMatrixMapper.toScaleMatrix(2, 1)
+                );
+        gameObjectRepository.insert(gameObjectModel);
     }
 
     public void buildRender(final GameObjectModel gameObjectModel) {
-
-        if (!gameObjectModel.getTrait(RenderTrait.class).isPresent()) {
-            gameObjectModel.addTrait(RenderTrait.builder().build());
-        }
         if (!gameObjectModel.getTrait(LocationTrait.class).isPresent()) {
             throw new RuntimeException("buildRender requirements is null");
         }
@@ -135,9 +75,5 @@ public class GameObjectService {
                 .collect(Collectors.toList());
         renderTrait.setColor(modelTrait.getVertexColor());
         renderTrait.setModelPointList(renderVertices);
-    }
-
-    public void reset() {
-        this.gameObjectModelList.clear();
     }
 }

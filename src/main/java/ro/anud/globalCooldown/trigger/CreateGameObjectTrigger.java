@@ -15,7 +15,7 @@ public class CreateGameObjectTrigger implements Trigger {
 
     @Override
     public TriggerResponse execute(final TriggerScope triggerScope) {
-        triggerScope.getGameObjectService().create(traitList);
+        triggerScope.getGameObjectRepository().insert(triggerScope.getGameObjectFactory().createFromTraits(traitList));
         return TriggerResponse.builder()
                 .nextTrigger(null)
                 .build();
