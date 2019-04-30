@@ -1,5 +1,13 @@
 /* tslint:disable */
-// Generated using typescript-generator version 2.12.476 on 2019-04-30 14:24:27.
+// Generated using typescript-generator version 2.12.476 on 2019-04-30 20:01:00.
+
+export class GameObjectMacro {
+    definition: string;
+    overwriteTraitMap: { [index: string]: Trait };
+}
+
+export class GameObjectMacroBuilder {
+}
 
 export class GameObjectModel {
     traitMap: { [index: string]: Trait };
