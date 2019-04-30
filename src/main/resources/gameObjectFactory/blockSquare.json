@@ -22,9 +22,16 @@
       }
     ],
     "vertexColor": {
-      "red": 0.64705884,
-      "green": 0.16470589,
-      "blue": 0.16470589
+      "red": 0.0,
+      "green": 0.0,
+      "blue": 0.0,
+      "alpha": 0
+    },
+    "polygonColor": {
+      "red": 0.0,
+      "green": 0.0,
+      "blue": 0.11764705,
+      "alpha": 1
     }
   }
 }

@@ -23,13 +23,24 @@ export class GameObjectGLService {
     `
     }
 
-    public getColorArray(gameObjectModel: GameObjectModel) {
+
+    public getPolygonColorArray(gameObjectModel: GameObjectModel) {
         const renderTrait = gameObjectModel.traitMap.RenderTrait as RenderTrait;
         const array = [];
-        array.push(renderTrait.color.red);
-        array.push(renderTrait.color.green);
-        array.push(renderTrait.color.blue);
-        array.push(1);
+        array.push(renderTrait.polygonColor.red);
+        array.push(renderTrait.polygonColor.green);
+        array.push(renderTrait.polygonColor.blue);
+        array.push(renderTrait.polygonColor.alpha);
+        return array;
+    }
+
+    public getVertexColorArray(gameObjectModel: GameObjectModel) {
+        const renderTrait = gameObjectModel.traitMap.RenderTrait as RenderTrait;
+        const array = [];
+        array.push(renderTrait.vertexColor.red);
+        array.push(renderTrait.vertexColor.green);
+        array.push(renderTrait.vertexColor.blue);
+        array.push(renderTrait.vertexColor.alpha);
         return array;
     }
 

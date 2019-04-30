@@ -38,7 +38,7 @@ public class GameObjectService {
 
     public void initializeForUser(final UserModel userModel) {
         GameObjectModel gameObjectModel = gameObjectFactory
-                .loadFromDisk("ship",
+                .loadFromDisk("smallShip",
                               LocationTrait.builder()
                                       .angle(0D)
                                       .point2D(new Point2D(200, 200))
@@ -46,7 +46,7 @@ public class GameObjectService {
                               OwnerTrait.builder()
                                       .ownerId(userModel.getUsername())
                                       .build(),
-                              point2DToSimpleMatrixMapper.toScaleMatrix(5, 5)
+                              point2DToSimpleMatrixMapper.toScaleMatrix(20, 20)
                 );
         gameObjectRepository.insert(gameObjectModel);
     }
@@ -73,7 +73,8 @@ public class GameObjectService {
                         .mult(point2DToSimpleMatrixMapper.toMatrix(point2D)))
                 .map(point2DToSimpleMatrixMapper::fromMatrix)
                 .collect(Collectors.toList());
-        renderTrait.setColor(modelTrait.getVertexColor());
+        renderTrait.setVertexColor(modelTrait.getVertexColor());
+        renderTrait.setPolygonColor(modelTrait.getPolygonColor());
         renderTrait.setModelPointList(renderVertices);
     }
 }

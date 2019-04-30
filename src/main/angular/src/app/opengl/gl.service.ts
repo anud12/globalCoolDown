@@ -29,6 +29,8 @@ export class GlService {
                 FRAGMENT_SHADER_SOURCE)
         )
             .linkAndUseProgram();
+        this.gl.enable(this.gl.BLEND);
+        this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
         this.gl.clearColor(0, 0, 0, 1.0);
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.gl.createBuffer());
     }
@@ -47,8 +49,12 @@ export class GlService {
             this.gl.enableVertexAttribArray(a_Position);
 
             let u_FragColor = this.gl.getUniformLocation(this.program, "u_FragColor");
-            this.gl.uniform4fv(u_FragColor, new Float32Array(this.gameObjectGLService.getColorArray(gameObjectModel)));
+            this.gl.uniform4fv(u_FragColor, new Float32Array(this.gameObjectGLService.getPolygonColorArray(gameObjectModel)));
+            this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, n);
+            this.gl.drawArrays(this.gl.LINE_LOOP, 0, n);
 
+            u_FragColor = this.gl.getUniformLocation(this.program, "u_FragColor");
+            this.gl.uniform4fv(u_FragColor, new Float32Array(this.gameObjectGLService.getVertexColorArray(gameObjectModel)));
             this.gl.drawArrays(this.gl.LINE_LOOP, 0, n);
 
         })

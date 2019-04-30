@@ -1,9 +1,9 @@
 package ro.anud.globalCooldown.command;
 
 import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
 import lombok.*;
 import ro.anud.globalCooldown.model.GameObjectModel;
+import ro.anud.globalCooldown.model.RGBA;
 import ro.anud.globalCooldown.trait.*;
 
 import java.util.Arrays;
@@ -47,7 +47,13 @@ public class CreateCommand implements Command {
                                                                                    new Point2D(-10D, -10D)
                                                                            ))
                                                                            .angleOffset(0D)
-                                                                           .vertexColor(Color.CYAN)
+                                                                           .vertexColor(RGBA.builder()
+                                                                                                .red(0D)
+                                                                                                .green(0D)
+                                                                                                .blue(0D)
+                                                                                                .alpha(1D)
+                                                                                                .build()
+                                                                           )
                                                                            .build(),
                                                                    new CommandTrait(),
                                                                    OwnerTrait.builder()
@@ -61,7 +67,13 @@ public class CreateCommand implements Command {
                                                                                    new Point2D(10D, -10D),
                                                                                    new Point2D(10D, 10D)
                                                                            ))
-                                                                           .color(Color.CYAN)
+                                                                           .vertexColor(RGBA.builder()
+                                                                                                .red(0D)
+                                                                                                .green(0D)
+                                                                                                .blue(0D)
+                                                                                                .alpha(1D)
+                                                                                                .build()
+                                                                           )
                                                                            .build()
                                                            ))))
                 .nextCommand(null)

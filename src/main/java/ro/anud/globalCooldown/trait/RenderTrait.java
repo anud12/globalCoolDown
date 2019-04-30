@@ -1,8 +1,8 @@
 package ro.anud.globalCooldown.trait;
 
 import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
 import lombok.*;
+import ro.anud.globalCooldown.model.RGBA;
 
 import java.util.List;
 
@@ -15,5 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 public class RenderTrait implements Trait {
     private List<Point2D> modelPointList;
-    private Color color;
+    private RGBA vertexColor;
+    private RGBA polygonColor;
 }

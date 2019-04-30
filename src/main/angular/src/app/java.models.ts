@@ -1,5 +1,5 @@
 /* tslint:disable */
-// Generated using typescript-generator version 2.12.476 on 2019-04-10 16:48:44.
+// Generated using typescript-generator version 2.12.476 on 2019-04-30 14:24:27.
 
 export class GameObjectModel {
     traitMap: { [index: string]: Trait };
@@ -16,6 +16,16 @@ export class Point {
 export class PointBuilder {
 }
 
+export class RGBA {
+    red: number;
+    green: number;
+    blue: number;
+    alpha: number;
+}
+
+export class RGBABuilder {
+}
+
 export class UserModel {
     username: string;
 }
@@ -29,6 +39,7 @@ export class CommandTrait implements Trait {
 
 export class LocationTrait implements Trait {
     point2D: Point2D;
+    angle: number;
 }
 
 export class LocationTraitBuilder {
@@ -41,6 +52,17 @@ export class MetaTrait implements Trait {
 export class MetaTraitBuilder {
 }
 
+export class ModelTrait implements Trait {
+    vertexPointList: Point2D[];
+    angleOffset: number;
+    furtherPoint: number;
+    vertexColor: RGBA;
+    polygonColor: RGBA;
+}
+
+export class ModelTraitBuilder {
+}
+
 export class OwnerTrait implements Trait {
     ownerId: string;
 }
@@ -50,7 +72,8 @@ export class OwnerTraitBuilder {
 
 export class RenderTrait implements Trait {
     modelPointList: Point2D[];
-    color: Color;
+    vertexColor: RGBA;
+    polygonColor: RGBA;
 }
 
 export class RenderTraitBuilder {
@@ -65,21 +88,4 @@ export interface Command {
 export class Point2D {
     x: number;
     y: number;
-}
-
-export class Paint {
-    opaque: boolean;
-}
-
-export class Color extends Paint implements Interpolatable<Color> {
-    red: number;
-    green: number;
-    blue: number;
-    opacity: number;
-    hue: number;
-    saturation: number;
-    brightness: number;
-}
-
-export interface Interpolatable<T> {
 }
