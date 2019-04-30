@@ -26,7 +26,7 @@ public class TriggerService {
                 .gameObjectService(gameObjectService)
                 .gameObjectRepository(gameObjectRepository)
                 .worldService(worldService)
-                .deltaTime(12L)
+                .deltaTime(100L)
                 .build();
     }
 

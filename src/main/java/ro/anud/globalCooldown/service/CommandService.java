@@ -28,7 +28,7 @@ public class CommandService {
                 .triggerFactory(triggerFactory)
                 .optionalValidation(optionalValidation)
                 .worldService(worldService)
-                .deltaTime(12L)
+                .deltaTime(100L)
                 .build();
     }
 

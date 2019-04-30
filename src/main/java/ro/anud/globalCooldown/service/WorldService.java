@@ -10,11 +10,10 @@ import ro.anud.globalCooldown.factory.TraitMapFactory;
 import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.model.UserModel;
 import ro.anud.globalCooldown.repository.GameObjectRepository;
-import ro.anud.globalCooldown.trait.LocationTrait;
-import ro.anud.globalCooldown.trait.ModelTrait;
-import ro.anud.globalCooldown.trait.OwnerTrait;
-import ro.anud.globalCooldown.trait.Trait;
+import ro.anud.globalCooldown.trait.*;
+import ro.anud.globalCooldown.trigger.DeleteGameObjectTrigger;
 import ro.anud.globalCooldown.trigger.Trigger;
+import ro.anud.globalCooldown.trigger.TriggerDelay;
 import ro.anud.globalCooldown.trigger.VictoryTrigger;
 
 import java.util.*;
@@ -33,7 +32,6 @@ public class WorldService {
 
     private List<Trigger> triggerList;
     private GameObjectModel victoryGameObjectModel;
-    private List<GameObjectModel> blockGameObjectModelList;
 
     public WorldService(final GameObjectFactory gameObjectFactory,
                         final GameObjectRepository gameObjectRepository,
@@ -47,7 +45,6 @@ public class WorldService {
         this.worldEmitter = Objects.requireNonNull(worldEmitter, "worldEmitter must not be null");
         this.pointIsInsidePointList = Objects.requireNonNull(pointIsInsidePointList, "pointIsInsidePointList must not be null");
         this.traitMapFactory = Objects.requireNonNull(traitMapFactory, "traitMapFactory must not be null");
-        blockGameObjectModelList = new ArrayList<>();
         triggerList = new ArrayList<>();
         triggerList.add(new VictoryTrigger());
         create();
@@ -66,12 +63,8 @@ public class WorldService {
         return victoryGameObjectModel;
     }
 
-    public List<GameObjectModel> getBlockGameObjectModelList() {
-        return blockGameObjectModelList;
-    }
-
     public boolean isNotBlocked(Point2D gamePoint) {
-        return this.blockGameObjectModelList
+        return gameObjectRepository.getAllOuterBlocking()
                 .stream()
                 .noneMatch(blockGameObjectModel -> {
                     ModelTrait blockModelTrait = blockGameObjectModel.getTrait(ModelTrait.class).get();
@@ -105,8 +98,7 @@ public class WorldService {
                                    .angle(0D)
                                    .build());
         GameObjectModel triangleGameObject = this.gameObjectFactory.createFromTraits(new ArrayList<>(triangleSquare.values()));
-        blockGameObjectModelList.add(triangleGameObject);
-        gameObjectRepository.insert(triangleGameObject);
+        gameObjectRepository.insertOuterBlocking(triangleGameObject);
 
         Map<Class, Trait> blockSquare = traitMapFactory.getType("blockSquare");
         blockSquare.put(OwnerTrait.class,
@@ -114,13 +106,12 @@ public class WorldService {
                                 .ownerId("")
                                 .build());
         blockSquare.put(LocationTrait.class,
-                           LocationTrait.builder()
-                                   .point2D(new Point2D(0, 0))
-                                   .angle(0D)
-                                   .build());
+                        LocationTrait.builder()
+                                .point2D(new Point2D(0, 0))
+                                .angle(0D)
+                                .build());
         GameObjectModel blockGameObject = this.gameObjectFactory.createFromTraits(new ArrayList<>(blockSquare.values()));
-        blockGameObjectModelList.add(blockGameObject);
-        gameObjectRepository.insert(blockGameObject);
+        gameObjectRepository.insertOuterBlocking(blockGameObject);
 
         Map<Class, Trait> victoryTrait = traitMapFactory.getType("victory");
         victoryTrait.put(OwnerTrait.class,
@@ -134,8 +125,7 @@ public class WorldService {
                                  .build());
 
         this.victoryGameObjectModel = this.gameObjectFactory.createFromTraits(new ArrayList<>(victoryTrait.values()));
-        blockGameObjectModelList.add(this.victoryGameObjectModel);
-        gameObjectRepository.insert(this.victoryGameObjectModel);
-        //        this.triggerList.add(new TriggerDelay(5000L, new DeleteGameObjectTrigger(1L)));
+        gameObjectRepository.insertOuterBlocking(this.victoryGameObjectModel);
+        this.triggerList.add(new TriggerDelay(20000L, new DeleteGameObjectTrigger(triangleGameObject.getTrait(MetaTrait.class).get().getId())));
     }
 }
