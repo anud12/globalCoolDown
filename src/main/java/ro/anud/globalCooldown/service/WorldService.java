@@ -127,8 +127,11 @@ public class WorldService {
                 .ifPresent(locationTrait -> locationTrait.setPoint2D(new Point2D(500, 0)));
         createOuter(traitMapFactory.getType("blockSquare")).getTrait(LocationTrait.class)
                 .ifPresent(locationTrait -> locationTrait.setPoint2D(new Point2D(0, 0)));
+
+        createOuter(traitMapFactory.getType("blockSquare")).getTrait(LocationTrait.class)
+                .ifPresent(locationTrait -> locationTrait.setPoint2D(new Point2D(500, 500)));
         createInner(traitMapFactory.getType("rectangle")).getTrait(LocationTrait.class)
-                .ifPresent(locationTrait -> locationTrait.setPoint2D(new Point2D(0, 0)));
+                .ifPresent(locationTrait -> locationTrait.setPoint2D(new Point2D(500, 250)));
         Map<Class, Trait> victoryTrait = traitMapFactory.getType("victory");
         victoryTrait.put(OwnerTrait.class,
                          OwnerTrait.builder()
@@ -136,7 +139,7 @@ public class WorldService {
                                  .build());
         victoryTrait.put(LocationTrait.class,
                          LocationTrait.builder()
-                                 .point2D(new Point2D(400, 400))
+                                 .point2D(new Point2D(600, 600))
                                  .angle(0D)
                                  .build());
 
