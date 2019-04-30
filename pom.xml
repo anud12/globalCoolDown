@@ -91,8 +91,8 @@
                     <mapClasses>asClasses</mapClasses>
                     <jsonLibrary>jackson2</jsonLibrary>
                     <classPatterns>
-                        <pattern>ro.anud.globalCooldown.model.**</pattern>
-                        <pattern>ro.anud.globalCooldown.trait.**</pattern>
+                        <pattern>ro.anud.globalCooldown.data.model.**</pattern>
+                        <pattern>ro.anud.globalCooldown.data.trait.**</pattern>
                     </classPatterns>
                     <outputKind>module</outputKind>
                     <outputFileType>implementationFile</outputFileType>

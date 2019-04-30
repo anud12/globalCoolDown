@@ -1,0 +1,41 @@
+[
+  {
+    "definition": "triangle",
+    "overwriteTraitMap": {
+      "ro.anud.globalCooldown.data.trait.LocationTrait": {
+        "class": "ro.anud.globalCooldown.data.trait.LocationTrait",
+        "point2D": {
+          "x": 500,
+          "y": 0
+        },
+        "angle": 0
+      }
+    }
+  },
+  {
+    "definition": "blockSquare",
+    "overwriteTraitMap": {
+      "ro.anud.globalCooldown.data.trait.LocationTrait": {
+        "class": "ro.anud.globalCooldown.data.trait.LocationTrait",
+        "point2D": {
+          "x": 0,
+          "y": 0
+        },
+        "angle": 0
+      }
+    }
+  },
+  {
+    "definition": "blockSquare",
+    "overwriteTraitMap": {
+      "ro.anud.globalCooldown.data.trait.LocationTrait": {
+        "class": "ro.anud.globalCooldown.data.trait.LocationTrait",
+        "point2D": {
+          "x": 500,
+          "y": 500
+        },
+        "angle": 0
+      }
+    }
+  }
+]
