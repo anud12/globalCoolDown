@@ -49,6 +49,7 @@ public class GameObjectFactory {
                 .setVertexPointList(modelTrait.getVertexPointList()
                                             .stream()
                                             .map(point2D -> point2DToSimpleMatrixMapper.toRotationMatrix(modelTrait.getAngleOffset())
+                                                    .mult(point2DToSimpleMatrixMapper.toScaleMatrix(1 / modelTrait.getFurtherPoint(), 1 / modelTrait.getFurtherPoint()))
                                                     .mult(scaleMatrix)
                                                     .mult(point2DToSimpleMatrixMapper.toMatrix(point2D))
                                             )
@@ -56,6 +57,7 @@ public class GameObjectFactory {
                                             .collect(Collectors.toList())
                 )
         );
+        LOGGER.info(gameObjectModel.toString());
         return gameObjectModel;
     }
 }

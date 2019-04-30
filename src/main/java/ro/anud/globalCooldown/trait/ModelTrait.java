@@ -16,5 +16,6 @@ import java.util.List;
 public class ModelTrait implements Trait {
     private List<Point2D> vertexPointList;
     private Double angleOffset;
+    private Double furtherPoint;
     private Color vertexColor;
 }

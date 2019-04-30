@@ -46,7 +46,7 @@ public class GameObjectService {
                               OwnerTrait.builder()
                                       .ownerId(userModel.getUsername())
                                       .build(),
-                              point2DToSimpleMatrixMapper.toScaleMatrix(2, 1)
+                              point2DToSimpleMatrixMapper.toScaleMatrix(5, 5)
                 );
         gameObjectRepository.insert(gameObjectModel);
     }

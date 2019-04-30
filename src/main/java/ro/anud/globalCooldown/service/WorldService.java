@@ -10,13 +10,15 @@ import ro.anud.globalCooldown.factory.TraitMapFactory;
 import ro.anud.globalCooldown.model.GameObjectModel;
 import ro.anud.globalCooldown.model.UserModel;
 import ro.anud.globalCooldown.repository.GameObjectRepository;
-import ro.anud.globalCooldown.trait.*;
-import ro.anud.globalCooldown.trigger.DeleteGameObjectTrigger;
+import ro.anud.globalCooldown.trait.LocationTrait;
+import ro.anud.globalCooldown.trait.ModelTrait;
+import ro.anud.globalCooldown.trait.OwnerTrait;
+import ro.anud.globalCooldown.trait.Trait;
 import ro.anud.globalCooldown.trigger.Trigger;
-import ro.anud.globalCooldown.trigger.TriggerDelay;
 import ro.anud.globalCooldown.trigger.VictoryTrigger;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,17 +66,21 @@ public class WorldService {
     }
 
     public boolean isNotBlocked(Point2D gamePoint) {
+        Predicate<GameObjectModel> isInside = blockGameObjectModel -> {
+            ModelTrait blockModelTrait = blockGameObjectModel.getTrait(ModelTrait.class).get();
+            LocationTrait blockLocationTrait = blockGameObjectModel.getTrait(LocationTrait.class).get();
+            return pointIsInsidePointList.isInside(blockModelTrait.getVertexPointList()
+                                                           .stream()
+                                                           .map(point2D -> point2D.add(blockLocationTrait.getPoint2D()))
+                                                           .collect(Collectors.toList()),
+                                                   gamePoint);
+        };
         return gameObjectRepository.getAllOuterBlocking()
                 .stream()
-                .noneMatch(blockGameObjectModel -> {
-                    ModelTrait blockModelTrait = blockGameObjectModel.getTrait(ModelTrait.class).get();
-                    LocationTrait blockLocationTrait = blockGameObjectModel.getTrait(LocationTrait.class).get();
-                    return pointIsInsidePointList.isInside(blockModelTrait.getVertexPointList()
-                                                                   .stream()
-                                                                   .map(point2D -> point2D.add(blockLocationTrait.getPoint2D()))
-                                                                   .collect(Collectors.toList()),
-                                                           gamePoint);
-                });
+                .noneMatch(isInside)
+                || gameObjectRepository.getAllInnerBlocking()
+                .stream()
+                .anyMatch(isInside);
     }
 
     public void reset() {
@@ -86,33 +92,43 @@ public class WorldService {
         this.userService.reset();
     }
 
+    private GameObjectModel createOuter(Map<Class, Trait> traitMap) {
+        traitMap.put(OwnerTrait.class,
+                     OwnerTrait.builder()
+                             .ownerId("")
+                             .build());
+        traitMap.put(LocationTrait.class,
+                     LocationTrait.builder()
+                             .point2D(new Point2D(0, 0))
+                             .angle(0D)
+                             .build());
+        GameObjectModel gameObjectModel = this.gameObjectFactory.createFromTraits(new ArrayList<>(traitMap.values()));
+        gameObjectRepository.insertOuterBlocking(gameObjectModel);
+        return gameObjectModel;
+    }
+
+    private GameObjectModel createInner(Map<Class, Trait> traitMap) {
+        traitMap.put(OwnerTrait.class,
+                     OwnerTrait.builder()
+                             .ownerId("")
+                             .build());
+        traitMap.put(LocationTrait.class,
+                     LocationTrait.builder()
+                             .point2D(new Point2D(0, 0))
+                             .angle(0D)
+                             .build());
+        GameObjectModel gameObjectModel = this.gameObjectFactory.createFromTraits(new ArrayList<>(traitMap.values()));
+        gameObjectRepository.insertInnerBlocking(gameObjectModel);
+        return gameObjectModel;
+    }
+
     public void create() {
-        Map<Class, Trait> triangleSquare = traitMapFactory.getType("rectangleSquare");
-        triangleSquare.put(OwnerTrait.class,
-                           OwnerTrait.builder()
-                                   .ownerId("")
-                                   .build());
-        triangleSquare.put(LocationTrait.class,
-                           LocationTrait.builder()
-                                   .point2D(new Point2D(500, 0))
-                                   .angle(0D)
-                                   .build());
-        GameObjectModel triangleGameObject = this.gameObjectFactory.createFromTraits(new ArrayList<>(triangleSquare.values()));
-        gameObjectRepository.insertOuterBlocking(triangleGameObject);
-
-        Map<Class, Trait> blockSquare = traitMapFactory.getType("blockSquare");
-        blockSquare.put(OwnerTrait.class,
-                        OwnerTrait.builder()
-                                .ownerId("")
-                                .build());
-        blockSquare.put(LocationTrait.class,
-                        LocationTrait.builder()
-                                .point2D(new Point2D(0, 0))
-                                .angle(0D)
-                                .build());
-        GameObjectModel blockGameObject = this.gameObjectFactory.createFromTraits(new ArrayList<>(blockSquare.values()));
-        gameObjectRepository.insertOuterBlocking(blockGameObject);
-
+        createOuter(traitMapFactory.getType("triangle")).getTrait(LocationTrait.class)
+                .ifPresent(locationTrait -> locationTrait.setPoint2D(new Point2D(500, 0)));
+        createOuter(traitMapFactory.getType("blockSquare")).getTrait(LocationTrait.class)
+                .ifPresent(locationTrait -> locationTrait.setPoint2D(new Point2D(0, 0)));
+        createInner(traitMapFactory.getType("rectangle")).getTrait(LocationTrait.class)
+                .ifPresent(locationTrait -> locationTrait.setPoint2D(new Point2D(0, 0)));
         Map<Class, Trait> victoryTrait = traitMapFactory.getType("victory");
         victoryTrait.put(OwnerTrait.class,
                          OwnerTrait.builder()
@@ -126,6 +142,6 @@ public class WorldService {
 
         this.victoryGameObjectModel = this.gameObjectFactory.createFromTraits(new ArrayList<>(victoryTrait.values()));
         gameObjectRepository.insertOuterBlocking(this.victoryGameObjectModel);
-        this.triggerList.add(new TriggerDelay(20000L, new DeleteGameObjectTrigger(triangleGameObject.getTrait(MetaTrait.class).get().getId())));
+        //        this.triggerList.add(new TriggerDelay(20000L, new DeleteGameObjectTrigger(triangleGameObject.getTrait(MetaTrait.class).get().getId())));
     }
 }

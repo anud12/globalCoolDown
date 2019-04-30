@@ -2,6 +2,7 @@
   "ro.anud.globalCooldown.trait.ModelTrait": {
     "class": "ro.anud.globalCooldown.trait.ModelTrait",
     "angleOffset": 90,
+    "furtherPoint": 20,
     "vertexPointList": [
       {
         "x":0,
