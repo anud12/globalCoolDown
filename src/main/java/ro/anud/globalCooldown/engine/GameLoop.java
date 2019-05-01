@@ -5,14 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.messaging.core.MessageSendingOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import ro.anud.globalCooldown.engine.command.CommandResponse;
 import ro.anud.globalCooldown.api.emitter.WorldEmitter;
+import ro.anud.globalCooldown.api.service.UserService;
 import ro.anud.globalCooldown.data.model.GameObjectModel;
 import ro.anud.globalCooldown.data.repository.GameObjectRepository;
-import ro.anud.globalCooldown.engine.service.CommandService;
 import ro.anud.globalCooldown.data.service.GameObjectService;
+import ro.anud.globalCooldown.engine.command.CommandResponse;
+import ro.anud.globalCooldown.engine.service.CommandService;
 import ro.anud.globalCooldown.engine.service.TriggerService;
-import ro.anud.globalCooldown.api.service.UserService;
 import ro.anud.globalCooldown.engine.trigger.Trigger;
 
 import java.util.Arrays;
@@ -50,7 +50,7 @@ public class GameLoop {
         this.gameObjectService = Objects.requireNonNull(gameObjectService, "gameObjectService must not be null");
     }
 
-    @Scheduled(fixedRate = 10)
+    @Scheduled(fixedRateString = "${ro.anud.global-cooldown.properties.deltaTime}")
     private void gameLoop() {
         List<GameObjectModel> gameObjectModels = gameObjectRepository.getAll();
         List<Trigger> triggerList = gameObjectModels

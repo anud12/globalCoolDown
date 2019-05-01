@@ -1,6 +1,6 @@
 import {createProgramWithShadersAnd} from "./util/createProgramWithShadersAnd.function";
 import {compileShader} from "./util/compileShader.function";
-import {GameObjectModel, Point2D} from "../java.models";
+import {GameObjectModel, LocationTrait, Point2D} from "../java.models";
 import {GameObjectGLService} from "./GameObjectGL.service";
 
 type  glObject = {
@@ -56,7 +56,6 @@ export class GlService {
             u_FragColor = this.gl.getUniformLocation(this.program, "u_FragColor");
             this.gl.uniform4fv(u_FragColor, new Float32Array(this.gameObjectGLService.getVertexColorArray(gameObjectModel)));
             this.gl.drawArrays(this.gl.LINE_LOOP, 0, n);
-
         })
     }
 

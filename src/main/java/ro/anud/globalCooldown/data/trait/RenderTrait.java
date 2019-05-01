@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class RenderTrait implements Trait {
     private List<Point2D> modelPointList;
+    private Double modelRadius;
     private RGBA vertexColor;
     private RGBA polygonColor;
 }

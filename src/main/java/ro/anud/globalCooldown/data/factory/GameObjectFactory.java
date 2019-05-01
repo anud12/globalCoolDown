@@ -1,5 +1,6 @@
 package ro.anud.globalCooldown.data.factory;
 
+import javafx.geometry.Point2D;
 import org.ejml.simple.SimpleMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,12 +45,18 @@ public class GameObjectFactory {
     }
 
     public GameObjectModel loadFromDisk(final String fileName,
-                                        final LocationTrait locationTrait,
-                                        final OwnerTrait ownerTrait,
+                                        final int width,
+                                        final int height) {
+        return loadFromDisk(fileName, point2DToSimpleMatrixMapper.toScaleMatrix(width, height));
+    }
+
+    public GameObjectModel loadFromDisk(final String fileName,
                                         final SimpleMatrix scaleMatrix) {
         Map<Class, Trait> classTraitMap = traitMapFactory.getDefinition(fileName);
-        classTraitMap.put(OwnerTrait.class, ownerTrait);
-        classTraitMap.put(LocationTrait.class, locationTrait);
+        classTraitMap.put(LocationTrait.class, LocationTrait.builder()
+                .point2D(new Point2D(0, 0))
+                .angle(0D)
+                .build());
 
         GameObjectModel gameObjectModel = createFromTraits(new ArrayList<>(classTraitMap.values()));
         gameObjectModel.getTrait(ModelTrait.class).ifPresent(modelTrait -> modelTrait

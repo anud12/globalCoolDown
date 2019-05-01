@@ -1,4 +1,9 @@
 {
+  "ro.anud.globalCooldown.data.trait.AgilityTrait": {
+    "class": "ro.anud.globalCooldown.data.trait.AgilityTrait",
+    "rotationRate": 1,
+    "translationRate": 0.2
+  },
   "ro.anud.globalCooldown.data.trait.ModelTrait": {
     "class": "ro.anud.globalCooldown.data.trait.ModelTrait",
     "angleOffset": 0,
@@ -10,11 +15,11 @@
       },
       {
         "x": 10.0,
-        "y": 5.0
+        "y": 2.0
       },
       {
         "x": 10.0,
-        "y": -5.0
+        "y": -2.0
       },
       {
         "x": -10.0,

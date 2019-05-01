@@ -7,17 +7,17 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
-import ro.anud.globalCooldown.engine.command.type.CreateCommand;
-import ro.anud.globalCooldown.engine.command.type.MoveCommand;
-import ro.anud.globalCooldown.engine.command.type.TeleportCommand;
 import ro.anud.globalCooldown.api.exception.TopicMessageException;
+import ro.anud.globalCooldown.api.validation.validationChain.ValidationChain;
+import ro.anud.globalCooldown.api.validator.CommandValidator;
+import ro.anud.globalCooldown.data.factory.GameObjectFactory;
 import ro.anud.globalCooldown.data.model.GameObjectModel;
 import ro.anud.globalCooldown.data.model.Point;
 import ro.anud.globalCooldown.data.repository.GameObjectRepository;
-import ro.anud.globalCooldown.data.service.GameObjectService;
 import ro.anud.globalCooldown.data.trait.CommandTrait;
-import ro.anud.globalCooldown.api.validation.validationChain.ValidationChain;
-import ro.anud.globalCooldown.api.validator.CommandValidator;
+import ro.anud.globalCooldown.engine.command.type.CreateCommand;
+import ro.anud.globalCooldown.engine.command.type.MoveCommand;
+import ro.anud.globalCooldown.engine.command.type.TeleportCommand;
 
 import java.util.Objects;
 
@@ -27,15 +27,15 @@ public class GameObjectTopic {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameObjectTopic.class);
 
-    private final GameObjectService gameObjectService;
     private final GameObjectRepository gameObjectRepository;
+    private final GameObjectFactory gameObjectFactory;
     private final CommandValidator commandValidator;
 
-    public GameObjectTopic(final GameObjectService gameObjectService,
-                           final GameObjectRepository gameObjectRepository,
+    public GameObjectTopic(final GameObjectRepository gameObjectRepository,
+                           final GameObjectFactory gameObjectFactory,
                            final CommandValidator commandValidator) {
-        this.gameObjectService = Objects.requireNonNull(gameObjectService, "gameObjectService must not be null");
         this.gameObjectRepository = Objects.requireNonNull(gameObjectRepository, "gameObjectRepository must not be null");
+        this.gameObjectFactory = Objects.requireNonNull(gameObjectFactory, "gameObjectFactory must not be null");
         this.commandValidator = Objects.requireNonNull(commandValidator, "commandValidator must not be null");
     }
 
@@ -115,6 +115,7 @@ public class GameObjectTopic {
                                commandTrait.addCommand(
                                        CreateCommand
                                                .builder()
+                                               .newGameObjectModel(gameObjectFactory.loadFromDisk("ship", 5, 5))
                                                .build()
                                );
                            }

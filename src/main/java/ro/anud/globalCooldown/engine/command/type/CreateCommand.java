@@ -1,84 +1,55 @@
 package ro.anud.globalCooldown.engine.command.type;
 
-import javafx.geometry.Point2D;
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+import ro.anud.globalCooldown.data.model.GameObjectModel;
+import ro.anud.globalCooldown.data.trait.LocationTrait;
+import ro.anud.globalCooldown.data.trait.OwnerTrait;
 import ro.anud.globalCooldown.engine.command.Command;
 import ro.anud.globalCooldown.engine.command.CommandResponse;
 import ro.anud.globalCooldown.engine.command.CommandScope;
-import ro.anud.globalCooldown.data.model.GameObjectModel;
-import ro.anud.globalCooldown.data.model.RGBA;
-import ro.anud.globalCooldown.data.trait.*;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 @Builder
 @Getter
 @ToString
 @EqualsAndHashCode
-@NoArgsConstructor
 public class CreateCommand implements Command {
+
+    private final GameObjectModel newGameObjectModel;
+
+    public CreateCommand(final GameObjectModel newGameObjectModel) {
+        this.newGameObjectModel = Objects.requireNonNull(newGameObjectModel, "newGameObjectModel must not be null");
+    }
+
     @Override
     public CommandResponse execute(final CommandScope commandScope,
                                    final GameObjectModel gameObjectModel) {
         if (commandScope.getOptionalValidation().createChain()
                 .validate(gameObjectModel.getTrait(LocationTrait.class))
+                .validate(gameObjectModel.getTrait(OwnerTrait.class))
                 .isAnyNotPresent()) {
             return CommandResponse.builder()
                     .nextCommand(null)
                     .build();
         }
-        Point2D point = gameObjectModel
-                .getTrait(LocationTrait.class)
-                .get()
-                .getPoint2D();
-
+        LocationTrait locationTrait = gameObjectModel.getTrait(LocationTrait.class).get();
+        OwnerTrait ownerTrait = gameObjectModel.getTrait(OwnerTrait.class).get();
+        newGameObjectModel.addTrait(LocationTrait.builder()
+                                            .angle(locationTrait.getAngle())
+                                            .point2D(locationTrait.getPoint2D())
+                                            .build());
+        newGameObjectModel.addTrait(OwnerTrait.builder()
+                                            .ownerId(ownerTrait.getOwnerId())
+                                            .build());
         return CommandResponse.builder()
                 .triggerList(Arrays.asList(commandScope
                                                    .getTriggerFactory()
-                                                   .createGameObjectTrigger(
-                                                           Arrays.asList(
-                                                                   LocationTrait
-                                                                           .builder()
-                                                                           .point2D(new Point2D(point.getX(), point.getY()))
-                                                                           .angle(0D)
-                                                                           .build(),
-                                                                   ModelTrait.builder()
-                                                                           .vertexPointList(Arrays.asList(
-                                                                                   new Point2D(-10D, 10D),
-                                                                                   new Point2D(10D, 5D),
-                                                                                   new Point2D(10D, -5D),
-                                                                                   new Point2D(-10D, -10D)
-                                                                           ))
-                                                                           .angleOffset(0D)
-                                                                           .vertexColor(RGBA.builder()
-                                                                                                .red(0D)
-                                                                                                .green(0D)
-                                                                                                .blue(0D)
-                                                                                                .alpha(1D)
-                                                                                                .build()
-                                                                           )
-                                                                           .build(),
-                                                                   new CommandTrait(),
-                                                                   OwnerTrait.builder()
-                                                                           .ownerId(gameObjectModel.getTrait(OwnerTrait.class)
-                                                                                            .map(OwnerTrait::getOwnerId)
-                                                                                            .orElse(""))
-                                                                           .build(),
-                                                                   RenderTrait.builder()
-                                                                           .modelPointList(Arrays.asList(
-                                                                                   new Point2D(-10D, -10D),
-                                                                                   new Point2D(10D, -10D),
-                                                                                   new Point2D(10D, 10D)
-                                                                           ))
-                                                                           .vertexColor(RGBA.builder()
-                                                                                                .red(0D)
-                                                                                                .green(0D)
-                                                                                                .blue(0D)
-                                                                                                .alpha(1D)
-                                                                                                .build()
-                                                                           )
-                                                                           .build()
-                                                           ))))
+                                                   .createGameObjectTrigger(newGameObjectModel)))
                 .nextCommand(null)
                 .build();
     }

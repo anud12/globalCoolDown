@@ -5,17 +5,19 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import ro.anud.globalCooldown.api.validation.optionalValidation.OptionalValidation;
+import ro.anud.globalCooldown.data.model.GameObjectModel;
+import ro.anud.globalCooldown.data.trait.AgilityTrait;
+import ro.anud.globalCooldown.data.trait.LocationTrait;
 import ro.anud.globalCooldown.engine.command.Command;
 import ro.anud.globalCooldown.engine.command.CommandResponse;
 import ro.anud.globalCooldown.engine.command.CommandScope;
-import ro.anud.globalCooldown.data.model.GameObjectModel;
-import ro.anud.globalCooldown.data.trait.LocationTrait;
-import ro.anud.globalCooldown.api.validation.optionalValidation.OptionalValidation;
 
 import java.util.Objects;
 
 import static java.lang.Math.abs;
 
+@SuppressWarnings("Duplicates")
 @Builder
 @Getter
 @ToString
@@ -41,14 +43,15 @@ public class RotateCommand implements Command {
         OptionalValidation optionalValidation = commandScope.getOptionalValidation();
         if (optionalValidation.createChain()
                 .validate(gameObjectModel.getTrait(LocationTrait.class))
+                .validate(gameObjectModel.getTrait(AgilityTrait.class))
                 .isAnyNotPresent()) {
             return CommandResponse.builder()
                     .nextCommand(null)
                     .build();
         }
         LocationTrait trait = gameObjectModel.getTrait(LocationTrait.class).get();
-        double speed = 0.2;
-        double rate = speed * commandScope.getDeltaTime();
+        AgilityTrait agilityTrait = gameObjectModel.getTrait(AgilityTrait.class).get();
+        double rate = agilityTrait.getRotationRate() * commandScope.getDeltaTime();
         double angle = trait.getAngle();
 
         double newAngle;

@@ -1,6 +1,7 @@
 package ro.anud.globalCooldown.engine.service;
 
 import org.springframework.stereotype.Service;
+import ro.anud.globalCooldown.Properties;
 import ro.anud.globalCooldown.data.service.GameObjectService;
 import ro.anud.globalCooldown.data.repository.GameObjectRepository;
 import ro.anud.globalCooldown.data.service.WorldService;
@@ -21,14 +22,15 @@ public class TriggerService {
 
     public TriggerService(final WorldService worldService,
                           final GameObjectService gameObjectService,
-                          final GameObjectRepository gameObjectRepository) {
+                          final GameObjectRepository gameObjectRepository,
+                          final Properties properties) {
         this.worldService = Objects.requireNonNull(worldService, "worldService must not be null");
 
         this.triggerScope = TriggerScope.builder()
                 .gameObjectService(gameObjectService)
                 .gameObjectRepository(gameObjectRepository)
                 .worldService(worldService)
-                .deltaTime(10L)
+                .deltaTime(properties.getDeltaTime())
                 .build();
     }
 

@@ -1,36 +1,41 @@
 {
+  "ro.anud.globalCooldown.data.trait.AgilityTrait": {
+    "class": "ro.anud.globalCooldown.data.trait.AgilityTrait",
+    "rotationRate": 0.1,
+    "translationRate": 0.05
+  },
   "ro.anud.globalCooldown.data.trait.ModelTrait": {
     "class": "ro.anud.globalCooldown.data.trait.ModelTrait",
     "angleOffset": 90,
     "furtherPoint": 20,
     "vertexPointList": [
       {
-        "x":0,
-        "y":0
+        "x": 0,
+        "y": 0
       },
       {
-        "x":10,
-        "y":0
+        "x": 10,
+        "y": 0
       },
       {
-        "x":10,
-        "y":10
+        "x": 10,
+        "y": 10
       },
       {
-        "x":0,
-        "y":20
+        "x": 0,
+        "y": 20
       },
       {
-        "x":-10,
-        "y":10
+        "x": -10,
+        "y": 10
       },
       {
-        "x":-10,
-        "y":-10
+        "x": -10,
+        "y": -10
       },
       {
-        "x":0,
-        "y":-10
+        "x": 0,
+        "y": -10
       }
     ],
     "vertexColor": {

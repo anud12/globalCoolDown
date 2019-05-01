@@ -38,16 +38,14 @@ public class GameObjectService {
 
     public void initializeForUser(final UserModel userModel) {
         GameObjectModel gameObjectModel = gameObjectFactory
-                .loadFromDisk("smallShip",
-                              LocationTrait.builder()
-                                      .angle(0D)
-                                      .point2D(new Point2D(200, 200))
-                                      .build(),
-                              OwnerTrait.builder()
-                                      .ownerId(userModel.getUsername())
-                                      .build(),
-                              point2DToSimpleMatrixMapper.toScaleMatrix(20, 20)
-                );
+                .loadFromDisk("pointer", point2DToSimpleMatrixMapper.toScaleMatrix(20, 20));
+        gameObjectModel.addTrait(OwnerTrait.builder()
+                                         .ownerId(userModel.getUsername())
+                                         .build());
+        gameObjectModel.addTrait(LocationTrait.builder()
+                                         .angle(0D)
+                                         .point2D(new Point2D(200, 200))
+                                         .build());
         gameObjectRepository.insert(gameObjectModel);
     }
 
@@ -75,6 +73,7 @@ public class GameObjectService {
                 .collect(Collectors.toList());
         renderTrait.setVertexColor(modelTrait.getVertexColor());
         renderTrait.setPolygonColor(modelTrait.getPolygonColor());
+        renderTrait.setModelRadius(modelTrait.getFurtherPoint());
         renderTrait.setModelPointList(renderVertices);
     }
 }

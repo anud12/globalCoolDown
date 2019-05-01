@@ -7,12 +7,13 @@ import lombok.Getter;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.anud.globalCooldown.api.validation.optionalValidation.OptionalValidation;
+import ro.anud.globalCooldown.data.model.GameObjectModel;
+import ro.anud.globalCooldown.data.trait.AgilityTrait;
+import ro.anud.globalCooldown.data.trait.LocationTrait;
 import ro.anud.globalCooldown.engine.command.Command;
 import ro.anud.globalCooldown.engine.command.CommandResponse;
 import ro.anud.globalCooldown.engine.command.CommandScope;
-import ro.anud.globalCooldown.data.model.GameObjectModel;
-import ro.anud.globalCooldown.data.trait.LocationTrait;
-import ro.anud.globalCooldown.api.validation.optionalValidation.OptionalValidation;
 
 import static java.util.Optional.of;
 import static ro.anud.globalCooldown.engine.command.type.RotateCommand.calculateAngle;
@@ -37,13 +38,14 @@ public class MoveCommand implements Command {
         OptionalValidation optionalValidation = commandScope.getOptionalValidation();
         if (optionalValidation.createChain()
                 .validate(gameObjectModel.getTrait(LocationTrait.class))
+                .validate(gameObjectModel.getTrait(AgilityTrait.class))
                 .isAnyNotPresent()) {
             return CommandResponse.builder()
                     .nextCommand(null)
                     .build();
         }
-        double speed = 0.1;
-        double length = speed * commandScope.getDeltaTime().floatValue();
+        AgilityTrait agilityTrait = gameObjectModel.getTrait(AgilityTrait.class).get();
+        double length = agilityTrait.getTranslationRate() * commandScope.getDeltaTime().floatValue();
         LocationTrait trait = gameObjectModel.getTrait(LocationTrait.class).get();
 
         if (isMissaligned(gameObjectModel, commandScope.getDeltaTime())) {
@@ -84,8 +86,9 @@ public class MoveCommand implements Command {
     }
 
     private boolean isMissaligned(GameObjectModel gameObjectModel, Long deltaTime) {
-        double rate = 0.1 * deltaTime;
         LocationTrait locationTrait = gameObjectModel.getTrait(LocationTrait.class).get();
+        AgilityTrait agilityTrait = gameObjectModel.getTrait(AgilityTrait.class).get();
+        double rate = agilityTrait.getRotationRate() * deltaTime;
         Boolean result = !(Math.abs(locationTrait.getAngle() - getDestinationAlignment(locationTrait)) < rate);
         return result;
     }

@@ -1,6 +1,7 @@
 package ro.anud.globalCooldown.engine.service;
 
 import org.springframework.stereotype.Service;
+import ro.anud.globalCooldown.Properties;
 import ro.anud.globalCooldown.engine.factory.CommandFactory;
 import ro.anud.globalCooldown.engine.command.CommandResponse;
 import ro.anud.globalCooldown.engine.command.CommandScope;
@@ -22,14 +23,15 @@ public class CommandService {
     public CommandService(final OptionalValidation optionalValidation,
                           final CommandFactory commandFactory,
                           final TriggerFactory triggerFactory,
-                          final WorldService worldService) {
+                          final WorldService worldService,
+                          final Properties properties) {
         this.commandScope = CommandScope
                 .builder()
                 .commandFactory(commandFactory)
                 .triggerFactory(triggerFactory)
                 .optionalValidation(optionalValidation)
                 .worldService(worldService)
-                .deltaTime(10L)
+                .deltaTime(properties.getDeltaTime())
                 .build();
     }
 

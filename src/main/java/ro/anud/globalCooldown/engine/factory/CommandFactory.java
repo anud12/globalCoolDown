@@ -2,6 +2,7 @@ package ro.anud.globalCooldown.engine.factory;
 
 import javafx.geometry.Point2D;
 import org.springframework.stereotype.Service;
+import ro.anud.globalCooldown.data.model.GameObjectModel;
 import ro.anud.globalCooldown.engine.command.type.CreateCommand;
 import ro.anud.globalCooldown.engine.command.type.MoveCommand;
 import ro.anud.globalCooldown.engine.command.type.RotateCommand;
@@ -16,7 +17,7 @@ public class CommandFactory {
         return new RotateCommand(targetAngle);
     }
 
-    public CreateCommand createCommand() {
-        return new CreateCommand();
+    public CreateCommand createCommand(final GameObjectModel gameObjectModel) {
+        return new CreateCommand(gameObjectModel);
     }
 }
