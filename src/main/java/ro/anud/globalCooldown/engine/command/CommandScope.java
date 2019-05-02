@@ -18,6 +18,4 @@ public class CommandScope {
     private GameObjectFactory gameObjectFactory;
     private WorldService worldService;
     private Properties properties;
-
-
 }

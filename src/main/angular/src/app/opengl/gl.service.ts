@@ -1,7 +1,8 @@
 import {createProgramWithShadersAnd} from "./util/createProgramWithShadersAnd.function";
 import {compileShader} from "./util/compileShader.function";
-import {GameObjectModel, LocationTrait, Point2D} from "../java.models";
+import {GameObjectModel, LocationTrait, ModelTrait, Point2D} from "../java.models";
 import {GameObjectGLService} from "./GameObjectGL.service";
+import {drawSelection} from "./util/drawSelection";
 
 type  glObject = {
     position: Point2D,
@@ -56,6 +57,19 @@ export class GlService {
             u_FragColor = this.gl.getUniformLocation(this.program, "u_FragColor");
             this.gl.uniform4fv(u_FragColor, new Float32Array(this.gameObjectGLService.getVertexColorArray(gameObjectModel)));
             this.gl.drawArrays(this.gl.LINE_LOOP, 0, n);
+
+            u_FragColor = this.gl.getUniformLocation(this.program, "u_FragColor");
+            this.gl.uniform4fv(u_FragColor, new Float32Array(this.gameObjectGLService.getVertexColorArray(gameObjectModel)));
+
+            const locationTrait = gameObjectModel.traitMap.LocationTrait as LocationTrait;
+            const modelTrait = gameObjectModel.traitMap.ModelTrait as ModelTrait;
+            this.gl.bufferData(this.gl.ARRAY_BUFFER,
+                new Float32Array(drawSelection(modelTrait.furtherPoint,
+                    locationTrait.point2D,
+                    camera,
+                    this.clientRect)),
+                this.gl.STATIC_DRAW);
+            this.gl.drawArrays(this.gl.LINE_LOOP, 0, 4);
         })
     }
 
