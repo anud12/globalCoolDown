@@ -11,4 +11,5 @@ import org.springframework.stereotype.Component;
 @Setter
 public class Properties {
     private Long deltaTime;
+    private Double epsilon;
 }

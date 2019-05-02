@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.anud.globalCooldown.api.validation.optionalValidation.OptionalValidation;
 import ro.anud.globalCooldown.data.model.GameObjectModel;
 import ro.anud.globalCooldown.data.trait.AgilityTrait;
@@ -25,6 +27,7 @@ import static java.lang.Math.abs;
 public class RotateCommand implements Command {
 
     private final Double targetAngle;
+    private static final Logger LOGGER = LoggerFactory.getLogger(RotateCommand.class);
 
     static Double calculateAngle(Point2D p1, Point2D p2) {
         final double deltaY = (p1.getY() - p2.getY());
@@ -51,7 +54,7 @@ public class RotateCommand implements Command {
         }
         LocationTrait trait = gameObjectModel.getTrait(LocationTrait.class).get();
         AgilityTrait agilityTrait = gameObjectModel.getTrait(AgilityTrait.class).get();
-        double rate = agilityTrait.getRotationRate() * commandScope.getDeltaTime();
+        double rate = agilityTrait.getRotationRate() * commandScope.getProperties().getDeltaTime();
         double angle = trait.getAngle();
 
         double newAngle;
@@ -74,9 +77,8 @@ public class RotateCommand implements Command {
         if (newAngle > 360) {
             newAngle -= 360;
         }
-
         trait.setAngle(newAngle);
-        if (abs(targetAngle - trait.getAngle()) < rate) {
+        if (abs(targetAngle - trait.getAngle()) <= rate) {
             trait.setAngle(targetAngle);
             return CommandResponse.builder()
                     .build();

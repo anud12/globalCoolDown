@@ -2,6 +2,7 @@ package ro.anud.globalCooldown.engine.command;
 
 import lombok.Builder;
 import lombok.Getter;
+import ro.anud.globalCooldown.Properties;
 import ro.anud.globalCooldown.api.validation.optionalValidation.OptionalValidation;
 import ro.anud.globalCooldown.data.factory.GameObjectFactory;
 import ro.anud.globalCooldown.data.service.WorldService;
@@ -16,7 +17,7 @@ public class CommandScope {
     private TriggerFactory triggerFactory;
     private GameObjectFactory gameObjectFactory;
     private WorldService worldService;
-    private Long deltaTime;
+    private Properties properties;
 
 
 }

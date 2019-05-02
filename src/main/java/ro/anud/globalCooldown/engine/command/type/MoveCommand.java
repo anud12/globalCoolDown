@@ -44,11 +44,12 @@ public class MoveCommand implements Command {
                     .nextCommand(null)
                     .build();
         }
+        double deltaTime = commandScope.getProperties().getDeltaTime();
         AgilityTrait agilityTrait = gameObjectModel.getTrait(AgilityTrait.class).get();
-        double length = agilityTrait.getTranslationRate() * commandScope.getDeltaTime().floatValue();
+        double length = agilityTrait.getTranslationRate() * deltaTime;
         LocationTrait trait = gameObjectModel.getTrait(LocationTrait.class).get();
 
-        if (isMissaligned(gameObjectModel, commandScope.getDeltaTime())) {
+        if (isMissaligned(gameObjectModel, commandScope.getProperties().getEpsilon())) {
             return commandScope
                     .getCommandFactory()
                     .rotateCommand(getDestinationAlignment(trait))
@@ -85,11 +86,10 @@ public class MoveCommand implements Command {
         return calculateAngle(trait.getPoint2D(), destinationLocation);
     }
 
-    private boolean isMissaligned(GameObjectModel gameObjectModel, Long deltaTime) {
+    private boolean isMissaligned(GameObjectModel gameObjectModel, Double epsilon) {
         LocationTrait locationTrait = gameObjectModel.getTrait(LocationTrait.class).get();
         AgilityTrait agilityTrait = gameObjectModel.getTrait(AgilityTrait.class).get();
-        double rate = agilityTrait.getRotationRate() * deltaTime;
-        Boolean result = !(Math.abs(locationTrait.getAngle() - getDestinationAlignment(locationTrait)) < rate);
+        Boolean result = !(Math.abs(locationTrait.getAngle() - getDestinationAlignment(locationTrait)) <= epsilon);
         return result;
     }
 }
