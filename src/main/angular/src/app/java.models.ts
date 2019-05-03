@@ -1,5 +1,5 @@
 /* tslint:disable */
-// Generated using typescript-generator version 2.12.476 on 2019-04-30 20:01:00.
+// Generated using typescript-generator version 2.12.476 on 2019-05-03 21:14:34.
 
 export class GameObjectMacro {
     definition: string;
@@ -41,6 +41,11 @@ export class UserModel {
 export class UserModelBuilder {
 }
 
+export class AgilityTrait implements Trait {
+    rotationRate: number;
+    translationRate: number;
+}
+
 export class CommandTrait implements Trait {
     commandList: Command[];
 }
@@ -80,6 +85,7 @@ export class OwnerTraitBuilder {
 
 export class RenderTrait implements Trait {
     modelPointList: Point2D[];
+    modelRadius: number;
     vertexColor: RGBA;
     polygonColor: RGBA;
 }
