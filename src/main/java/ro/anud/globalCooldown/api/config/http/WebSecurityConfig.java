@@ -14,12 +14,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
-                .authorizeRequests()
-                .mvcMatchers("/my-endpoint/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated();
+        http.addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
+        .antMatcher("/**")
+        .anonymous();
     }
 }

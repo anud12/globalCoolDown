@@ -19,7 +19,8 @@ export class GameInputService {
     private stompService: StompService; // required
     constructor(private gameObjectService: GameObjectService,
                 private gameCommandService: GameCommandService,
-                private stompService: StompService) {
+                stompService: StompService) {
+        this.stompService = stompService;
     }
 
     mouseRightClick(point: Point, modifierKeys: ModifierKeys) {
