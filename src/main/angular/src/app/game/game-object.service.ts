@@ -81,6 +81,7 @@ export class GameObjectService {
             const distance = calculateDistance(point, locationTrait.point2D);
             const radius = Math.max(renderTrait.modelRadius, this.gameSettingsService.minSelectRadius);
             if (radius > distance) {
+                console.log(value);
                 value.client.selected = true;
             }
         })

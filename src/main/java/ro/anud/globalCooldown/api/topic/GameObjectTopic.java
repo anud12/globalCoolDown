@@ -16,6 +16,7 @@ import ro.anud.globalCooldown.data.model.Point;
 import ro.anud.globalCooldown.data.repository.GameObjectRepository;
 import ro.anud.globalCooldown.data.trait.CommandTrait;
 import ro.anud.globalCooldown.engine.command.type.CreateCommand;
+import ro.anud.globalCooldown.engine.command.type.DelayCommand;
 import ro.anud.globalCooldown.engine.command.type.MoveCommand;
 import ro.anud.globalCooldown.engine.command.type.TeleportCommand;
 
@@ -113,9 +114,12 @@ public class GameObjectTopic {
                 .ifPresent(commandTrait -> {
                                commandTrait.clear();
                                commandTrait.addCommand(
-                                       CreateCommand
-                                               .builder()
-                                               .newGameObjectModel(gameObjectFactory.loadFromDisk("ship", 2D))
+                                       DelayCommand.builder()
+                                               .time(5000D)
+                                               .next(CreateCommand
+                                                             .builder()
+                                                             .newGameObjectModel(gameObjectFactory.loadFromDisk("ship", 2D))
+                                                             .build())
                                                .build()
                                );
                            }

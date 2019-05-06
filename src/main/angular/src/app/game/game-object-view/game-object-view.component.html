@@ -2,10 +2,13 @@
     <div class="card" [className]="gameObject.client.selected ? 'text-white bg-primary card mb-0' : 'card mb-0'">
         <div class="card-body p-1 text-center">
             <div>
-                id: {{gameObject.traitMap.MetaTrait.id}}
+                id: {{metaTrait().id}}
             </div>
-            <div>x: {{gameObject.traitMap.LocationTrait.point2D.x | number : '1.2-2'}}</div>
-            <div>y: {{gameObject.traitMap.LocationTrait.point2D.y |number : '1.2-2'}}</div>
+            <div>x: {{locationTrait().point2D.x | number : '1.2-2'}}</div>
+            <div>y: {{locationTrait().point2D.y | number : '1.2-2'}}</div>
+            <div *ngIf="hasCompletePercetage()">
+                Commands : {{commandTrait().commandList[0].completePercentage | number : '1.2-2'}}
+            </div>
             <!--<div>-->
             <!--Angle: {{gameObject.traitMap.LocationTrait.angle | number : '1.2-2'}}-->
             <!--</div>-->
