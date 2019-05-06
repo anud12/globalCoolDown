@@ -4,6 +4,7 @@ import {GameObjectModel} from "../../java.models";
 import {GlService} from "../../opengl/gl.service";
 import {GameObjectService} from "../game-object.service";
 import {GameInputService} from "../game-input.service";
+import {GameSettingsService} from "../game-settings.service";
 
 @Component({
     selector: 'app-game-canvas',
@@ -23,12 +24,13 @@ export class GameCanvasComponent implements AfterViewInit {
 
     constructor(private stompService: StompService,
                 private gameObjectService: GameObjectService,
-                private gameInputService: GameInputService) {
+                private gameInputService: GameInputService,
+                private gameSettingsService: GameSettingsService) {
 
     }
 
     ngAfterViewInit(): void {
-        this.glService = new GlService(this.glcanvas.nativeElement);
+        this.glService = new GlService(this.glcanvas.nativeElement, this.gameSettingsService);
 
         this.stompService.subscribeGlobal<Array<GameObjectModel>>("/ws/world/all", gameObjectList => {
             this.gameObjectList = gameObjectList;
@@ -51,7 +53,23 @@ export class GameCanvasComponent implements AfterViewInit {
                 x: (event.offsetX / this.camera.scale) - this.camera.x,
                 y: (event.offsetY / this.camera.scale) - this.camera.y
             }
-            this.gameInputService.mouseRightClick(point);
+            this.gameInputService.mouseRightClick(point, {
+                shiftKey: event.shiftKey,
+                ctrlKey: event.ctrlKey,
+                altKey: event.altKey
+            });
+        });
+        this.glcanvas.nativeElement.addEventListener("click", (event: MouseEvent) => {
+            event.preventDefault()
+            const point = {
+                x: (event.offsetX / this.camera.scale) - this.camera.x,
+                y: (event.offsetY / this.camera.scale) - this.camera.y
+            }
+            this.gameInputService.mouseLeftClick(point, {
+                shiftKey: event.shiftKey,
+                ctrlKey: event.ctrlKey,
+                altKey: event.altKey
+            });
         })
         this.glcanvas.nativeElement.addEventListener("mousemove", (event: MouseEvent) => {
             if (event.buttons === 1) {
@@ -65,9 +83,12 @@ export class GameCanvasComponent implements AfterViewInit {
 
     draw() {
         this.glService.clear();
-        if (this.gameObjectList.length != 0) {
-            this.glService.draw(this.gameObjectList, this.camera);
-        }
+        this.gameObjectService.allGameObjectList.forEach(value => {
+            this.glService.drawModel(value, this.camera);
+        });
+        this.gameObjectService.doForSelected(gameObject => {
+            this.glService.drawSelection(gameObject, this.camera)
+        })
     }
 
     onRightClickDrag(event: MouseEvent) {

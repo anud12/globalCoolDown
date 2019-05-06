@@ -2,7 +2,7 @@ import {Point2D} from "../../java.models";
 import {applyCameraOffset} from "./applyCameraOffset";
 import {convertCoordinatesToGL} from "./convertCoordinatesToGL.function";
 
-function circle(radius: number): Array<Point2D> {
+function circle(radius: number): { vertices: Array<Point2D>, size: number } {
     const circleRadius = radius;
     const number: Array<Point2D> = [];
     var vertexCount = 100;
@@ -12,10 +12,13 @@ function circle(radius: number): Array<Point2D> {
             y: circleRadius * Math.sin((i / vertexCount) * 2.0 * Math.PI)
         });
     }
-    return number;
+    return {
+        vertices: number,
+        size: number.length
+    };
 }
 
-function rectangle(radius: number): Array<Point2D> {
+function rectangle(radius: number): { vertices: Array<Point2D>, size: number } {
     const number: Array<Point2D> = [];
     number.push({
         x: -radius,
@@ -33,7 +36,10 @@ function rectangle(radius: number): Array<Point2D> {
         x: -radius,
         y: -radius
     });
-    return number;
+    return {
+        vertices: number,
+        size: number.length
+    };
 }
 
 export const drawSelection = (radius: number,
@@ -41,9 +47,9 @@ export const drawSelection = (radius: number,
                               camera: { x: number, y: number, scale: number },
                               clientRect: ClientRect): { points, size } => {
 
-    const number = circle(radius);
+    const {vertices, size} = circle(radius);
     const array = [];
-    applyCameraOffset(number.map(value => {
+    applyCameraOffset(vertices.map(value => {
         return {
             x: value.x + position.x,
             y: value.y + position.y
@@ -58,6 +64,6 @@ export const drawSelection = (radius: number,
         });
     return {
         points: array,
-        size: 100
+        size: size
     };
 }

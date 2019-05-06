@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
 import {StompService} from "../stomp.service";
 import {GameObject} from "../models/GameObject";
-import {GameObjectModel, MetaTrait} from "../java.models";
+import {GameObjectModel, LocationTrait, MetaTrait, Point2D, RenderTrait} from "../java.models";
 import {WorldWsEnpoints} from "../endpoints/world.ws.endpoints";
 import {SecurityService} from "../security/security.service";
 import {Subject} from "rxjs";
+import {GameSettingsService} from "./game-settings.service";
 
 @Injectable({
     providedIn: 'root'
@@ -19,7 +20,8 @@ export class GameObjectService {
     allGameObjectList: Array<GameObject> = [];
 
     constructor(private stompService: StompService,
-                private securityService: SecurityService) {
+                private securityService: SecurityService,
+                private gameSettingsService: GameSettingsService) {
         this.securityService.onTokenChange().subscribe(token => {
             this.stompService.subscribePersonal<Array<GameObjectModel>>(WorldWsEnpoints.personal, token, gameObjectList => {
                 const tempMap = new Map();
@@ -56,5 +58,31 @@ export class GameObjectService {
             }
         })
 
+    }
+
+    clearSelection() {
+        this.personalGameObjectById.forEach(value => {
+            value.client.selected = false;
+        })
+    }
+
+    selectAllAt(point: Point2D) {
+        function calculateDistance(a: Point2D, b: Point2D) {
+            return Math.sqrt(
+                Math.pow(a.x - b.x, 2)
+                +
+                Math.pow(a.y - b.y, 2)
+            );
+        }
+
+        this.personalGameObjectById.forEach(value => {
+            const locationTrait = value.traitMap.LocationTrait as LocationTrait;
+            const renderTrait = value.traitMap.RenderTrait as RenderTrait;
+            const distance = calculateDistance(point, locationTrait.point2D);
+            const radius = Math.max(renderTrait.modelRadius, this.gameSettingsService.minSelectRadius);
+            if (radius > distance) {
+                value.client.selected = true;
+            }
+        })
     }
 }

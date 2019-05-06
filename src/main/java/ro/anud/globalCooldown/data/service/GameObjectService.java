@@ -38,7 +38,7 @@ public class GameObjectService {
 
     public void initializeForUser(final UserModel userModel) {
         GameObjectModel gameObjectModel = gameObjectFactory
-                .loadFromDisk("smallShip", 20D);
+                .loadFromDisk("pointer", 20D);
         gameObjectModel.addTrait(OwnerTrait.builder()
                 .ownerId(userModel.getUsername())
                 .build());

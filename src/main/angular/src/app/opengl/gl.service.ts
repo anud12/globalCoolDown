@@ -3,6 +3,7 @@ import {compileShader} from "./util/compileShader.function";
 import {GameObjectModel, LocationTrait, Point2D, RenderTrait} from "../java.models";
 import {GameObjectGLService} from "./GameObjectGL.service";
 import {drawSelection} from "./util/drawSelection";
+import {GameSettingsService} from "../game/game-settings.service";
 
 type  glObject = {
     position: Point2D,
@@ -15,7 +16,8 @@ export class GlService {
     private program: WebGLProgram;
     private gameObjectGLService = new GameObjectGLService();
 
-    constructor(canvas: HTMLCanvasElement) {
+    constructor(canvas: HTMLCanvasElement,
+                private gameSettingsService: GameSettingsService) {
 
         this.clientRect = canvas.getBoundingClientRect();
         let VERTEX_SHADER_SOURCE = this.gameObjectGLService.getVertexShaderSource();
@@ -36,43 +38,47 @@ export class GlService {
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.gl.createBuffer());
     }
 
-    draw(array: Array<GameObjectModel>, camera: { x: number, y: number, scale: number }): void {
-        array.forEach(gameObjectModel => {
-            const position = this.gameObjectGLService.transformGameObject(gameObjectModel, this.clientRect, camera);
-            const n = position.length / 2;
+    drawSelection(gameObjectModel, camera: { x: number, y: number, scale: number }) {
 
-            this.gl.bufferData(this.gl.ARRAY_BUFFER,
-                new Float32Array(position),
-                this.gl.STATIC_DRAW);
+        const u_FragColor = this.gl.getUniformLocation(this.program, "u_FragColor");
+        this.gl.uniform4fv(u_FragColor, new Float32Array(this.gameObjectGLService.getVertexColorArray(gameObjectModel)));
+        const locationTrait = gameObjectModel.traitMap.LocationTrait as LocationTrait;
+        const renderTrait = gameObjectModel.traitMap.RenderTrait as RenderTrait;
+        const radius = Math.max(renderTrait.modelRadius, this.gameSettingsService.minSelectRadius);
 
-            const a_Position = this.gl.getAttribLocation(this.program, 'a_Position');
-            this.gl.vertexAttribPointer(a_Position, 2, this.gl.FLOAT, false, 0, 0);
-            this.gl.enableVertexAttribArray(a_Position);
 
-            let u_FragColor = this.gl.getUniformLocation(this.program, "u_FragColor");
-            this.gl.uniform4fv(u_FragColor, new Float32Array(this.gameObjectGLService.getPolygonColorArray(gameObjectModel)));
-            this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, n);
-            this.gl.drawArrays(this.gl.LINE_LOOP, 0, n);
-
-            u_FragColor = this.gl.getUniformLocation(this.program, "u_FragColor");
-            this.gl.uniform4fv(u_FragColor, new Float32Array(this.gameObjectGLService.getVertexColorArray(gameObjectModel)));
-            this.gl.drawArrays(this.gl.LINE_LOOP, 0, n);
-
-            u_FragColor = this.gl.getUniformLocation(this.program, "u_FragColor");
-            this.gl.uniform4fv(u_FragColor, new Float32Array(this.gameObjectGLService.getVertexColorArray(gameObjectModel)));
-
-            const locationTrait = gameObjectModel.traitMap.LocationTrait as LocationTrait;
-            const renderTrait = gameObjectModel.traitMap.RenderTrait as RenderTrait;
-            const selection = drawSelection(renderTrait.modelRadius,
-                locationTrait.point2D,
-                camera,
-                this.clientRect);
-            this.gl.bufferData(this.gl.ARRAY_BUFFER,
-                new Float32Array(selection.points),
-                this.gl.STATIC_DRAW);
-            this.gl.drawArrays(this.gl.LINE_LOOP, 0, selection.size);
-        })
+        const selection = drawSelection(radius,
+            locationTrait.point2D,
+            camera,
+            this.clientRect);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER,
+            new Float32Array(selection.points),
+            this.gl.STATIC_DRAW);
+        this.gl.drawArrays(this.gl.LINE_LOOP, 0, selection.size);
     }
+
+    drawModel(gameObjectModel: GameObjectModel, camera: { x: number, y: number, scale: number }) {
+        const position = this.gameObjectGLService.transformGameObject(gameObjectModel, this.clientRect, camera);
+        const n = position.length / 2;
+
+        this.gl.bufferData(this.gl.ARRAY_BUFFER,
+            new Float32Array(position),
+            this.gl.STATIC_DRAW);
+
+        const a_Position = this.gl.getAttribLocation(this.program, 'a_Position');
+        this.gl.vertexAttribPointer(a_Position, 2, this.gl.FLOAT, false, 0, 0);
+        this.gl.enableVertexAttribArray(a_Position);
+
+        let u_FragColor = this.gl.getUniformLocation(this.program, "u_FragColor");
+        this.gl.uniform4fv(u_FragColor, new Float32Array(this.gameObjectGLService.getPolygonColorArray(gameObjectModel)));
+        this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, n);
+        this.gl.drawArrays(this.gl.LINE_LOOP, 0, n);
+
+        u_FragColor = this.gl.getUniformLocation(this.program, "u_FragColor");
+        this.gl.uniform4fv(u_FragColor, new Float32Array(this.gameObjectGLService.getVertexColorArray(gameObjectModel)));
+        this.gl.drawArrays(this.gl.LINE_LOOP, 0, n);
+    }
+
 
     clear(): void {
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);

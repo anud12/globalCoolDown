@@ -25,17 +25,6 @@ export class GameObjectListComponent implements OnInit {
         this.gameObjectService.personalGameObjectByIdSubject.subscribe(value => {
             this.gameObjectMap = value;
         })
-        // this.worldService.getPersonal(gameObjectList => {
-        //     const tempMap = new Map();
-        //     this.gameObjectId = [];
-        //     gameObjectList.forEach((value: GameObject) => {
-        //         value.client = {};
-        //         this.replaceInMap(value, tempMap);
-        //         this.gameObjectId.push((value.traitMap.MetaTrait as MetaTrait).id);
-        //     });
-        //     this.gameObjectMap = tempMap;
-        //     console.log(this.gameObjectMap);
-        // })
     }
 
     replaceInMap(gameObjectModel: GameObject, tempMap: Map<number, GameObject>) {

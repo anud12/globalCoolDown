@@ -115,7 +115,7 @@ public class GameObjectTopic {
                                commandTrait.addCommand(
                                        CreateCommand
                                                .builder()
-                                               .newGameObjectModel(gameObjectFactory.loadFromDisk("ship", 10D))
+                                               .newGameObjectModel(gameObjectFactory.loadFromDisk("ship", 2D))
                                                .build()
                                );
                            }
