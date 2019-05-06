@@ -9,15 +9,18 @@ import ro.anud.globalCooldown.engine.command.type.RotateCommand;
 
 @Service
 public class CommandFactory {
-    public MoveCommand moveCommand(Point2D destinationLocation) {
-        return new MoveCommand(destinationLocation);
+    public MoveCommand moveCommand(final GameObjectModel targetGameObjectModel,
+                                   final Point2D destinationLocation) {
+        return new MoveCommand(targetGameObjectModel, destinationLocation);
     }
 
-    public RotateCommand rotateCommand(Double targetAngle) {
-        return new RotateCommand(targetAngle);
+    public RotateCommand rotateCommand(final GameObjectModel targetGameObjectModel,
+                                       final Double targetAngle) {
+        return new RotateCommand(targetGameObjectModel, targetAngle);
     }
 
-    public CreateCommand createCommand(final GameObjectModel gameObjectModel) {
-        return new CreateCommand(gameObjectModel);
+    public CreateCommand createCommand(final GameObjectModel targetGameObjectModel,
+                                       final GameObjectModel gameObjectModel) {
+        return new CreateCommand(targetGameObjectModel, gameObjectModel);
     }
 }

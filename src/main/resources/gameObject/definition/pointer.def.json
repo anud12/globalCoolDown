@@ -4,6 +4,10 @@
     "rotationRate": 0.1,
     "translationRate": 0.05
   },
+  "ro.anud.globalCooldown.data.trait.ManufacturingTrait": {
+    "class": "ro.anud.globalCooldown.data.trait.ManufacturingTrait",
+    "canCreate": true
+  },
   "ro.anud.globalCooldown.data.trait.ModelTrait": {
     "class": "ro.anud.globalCooldown.data.trait.ModelTrait",
     "angleOffset": 90,

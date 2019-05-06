@@ -12,6 +12,7 @@ import ro.anud.globalCooldown.data.model.GameObjectModel;
 import ro.anud.globalCooldown.data.trait.AgilityTrait;
 import ro.anud.globalCooldown.data.trait.LocationTrait;
 import ro.anud.globalCooldown.engine.command.Command;
+import ro.anud.globalCooldown.engine.command.CommandPreCheckException;
 import ro.anud.globalCooldown.engine.command.CommandResponse;
 import ro.anud.globalCooldown.engine.command.CommandScope;
 
@@ -20,7 +21,6 @@ import java.util.Objects;
 import static java.lang.Math.abs;
 
 @SuppressWarnings("Duplicates")
-@Builder
 @Getter
 @ToString
 @EqualsAndHashCode
@@ -36,8 +36,14 @@ public class RotateCommand implements Command {
         return (result < 0) ? (360d + result) : result;
     }
 
-    public RotateCommand(final Double targetAngle) {
+    @Builder
+    public RotateCommand(final GameObjectModel targetGameObjectModel,
+                         final Double targetAngle) {
         this.targetAngle = Objects.requireNonNull(targetAngle, "targetAngle must not be null");
+        if (!targetGameObjectModel.getTrait(LocationTrait.class).isPresent()
+                || !targetGameObjectModel.getTrait(AgilityTrait.class).isPresent()) {
+            throw new CommandPreCheckException(targetGameObjectModel, "Can't rotate!");
+        }
     }
 
     @Override

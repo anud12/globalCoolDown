@@ -7,18 +7,17 @@ import lombok.Getter;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.anud.globalCooldown.api.validation.optionalValidation.OptionalValidation;
 import ro.anud.globalCooldown.data.model.GameObjectModel;
 import ro.anud.globalCooldown.data.trait.AgilityTrait;
 import ro.anud.globalCooldown.data.trait.LocationTrait;
 import ro.anud.globalCooldown.engine.command.Command;
+import ro.anud.globalCooldown.engine.command.CommandPreCheckException;
 import ro.anud.globalCooldown.engine.command.CommandResponse;
 import ro.anud.globalCooldown.engine.command.CommandScope;
 
 import static java.util.Optional.of;
 import static ro.anud.globalCooldown.engine.command.type.RotateCommand.calculateAngle;
 
-@Builder
 @Getter
 @ToString
 @EqualsAndHashCode
@@ -27,23 +26,21 @@ public class MoveCommand implements Command {
     private static final Logger LOGGER = LoggerFactory.getLogger(MoveCommand.class);
     private final Point2D destinationLocation;
 
-    public MoveCommand(final Point2D destinationLocation) {
+    @Builder
+    public MoveCommand(final GameObjectModel targetGameObjectModel,
+                       final Point2D destinationLocation) {
         this.destinationLocation = destinationLocation;
+
+        if (!targetGameObjectModel.getTrait(LocationTrait.class).isPresent()
+                || !targetGameObjectModel.getTrait(AgilityTrait.class).isPresent()) {
+            throw new CommandPreCheckException(targetGameObjectModel, "Can't move!");
+        }
     }
 
 
     @Override
     public CommandResponse execute(final CommandScope commandScope,
                                    final GameObjectModel gameObjectModel) {
-        OptionalValidation optionalValidation = commandScope.getOptionalValidation();
-        if (optionalValidation.createChain()
-                .validate(gameObjectModel.getTrait(LocationTrait.class))
-                .validate(gameObjectModel.getTrait(AgilityTrait.class))
-                .isAnyNotPresent()) {
-            return CommandResponse.builder()
-                    .nextCommand(null)
-                    .build();
-        }
         double deltaTime = commandScope.getProperties().getDeltaTime();
         AgilityTrait agilityTrait = gameObjectModel.getTrait(AgilityTrait.class).get();
         double length = agilityTrait.getTranslationRate() * deltaTime;
@@ -52,7 +49,7 @@ public class MoveCommand implements Command {
         if (isMissaligned(gameObjectModel, commandScope.getProperties().getEpsilon())) {
             return commandScope
                     .getCommandFactory()
-                    .rotateCommand(getDestinationAlignment(trait))
+                    .rotateCommand(gameObjectModel, getDestinationAlignment(trait))
                     .execute(commandScope, gameObjectModel)
                     .setNextCommand(of(this));
         }
