@@ -1,6 +1,8 @@
 <div style="" (click)="onClick()">
-    <div class="card" [className]="gameObject.client.selected ? 'text-white bg-primary card mb-0' : 'card mb-0'">
-        <div class="card-body p-1 text-center">
+    <div class="" [className]="gameObject.client.selected
+                                ? 'text-white bg-primary card'
+                                : 'card '">
+        <div class="card-body text-center">
             <div>
                 id: {{metaTrait().id}}
             </div>

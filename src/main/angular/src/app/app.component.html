@@ -1,8 +1,7 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <app-game-canvas></app-game-canvas>
-<div class="container-fluid"
+<div class="container-fluid bg-dark card-body"
      style="position: fixed;
-     background-color: #00000005;
     max-width: 70%;
     overflow-y: auto;
     bottom:0;
@@ -23,14 +22,12 @@
     <div class="col-4" style="max-height: 0">
 
         <div style="text-align:center">
-            <div>{{message}}</div>
-
+            <app-error></app-error>
+            <div class="text-white">{{message}}</div>
         </div>
     </div>
     <div class="col-4" style="max-height: 0">
         <app-login>
         </app-login>
-        <app-error>
-        </app-error>
     </div>
 </div>

@@ -1,0 +1,52 @@
+
+
+// Color system
+
+$white:    #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #6c757d !default;
+$gray-700: #495057 !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+$black:    #000 !default;
+
+
+$blue:    #007bff !default;
+$indigo:  #6610f2 !default;
+$purple:  #6f42c1 !default;
+$pink:    #e83e8c !default;
+$red:     #dc3545 !default;
+$orange:  #fd7e14 !default;
+$yellow:  #ffc107 !default;
+$green:   #28a745 !default;
+$teal:    #20c997 !default;
+$cyan:    #17a2b8 !default;
+
+
+$primary:       #00838F !default;
+$secondary:     $gray-600 !default;
+$success:       #1B5E20 !default;
+$info:          #006064 !default;
+$warning:       #E65100 !default;
+$danger:        #BF360C !default;
+$light:         $gray-100 !default;
+$dark:          #212121 !default;
+
+
+// custom
+
+$background-color :           $dark !default;
+$background-color-disabled:   #495057 !default;
+$text-color:                  #f8f9fa !default;
+
+
+$body-bg:                   $background-color !default;
+$body-color:                $text-color !default;
+
+$border-color:                #495057 !default;
+$component-active-color:      $white !default;
+$component-active-bg:         rgba($primary, 0.325) !default;
