@@ -31,7 +31,8 @@ public class DelayCommand implements Command {
 
 
     @Override
-    public CommandResponse execute(final CommandScope commandScope, final GameObjectModel gameObjectModel) {
+    public CommandResponse execute(final CommandScope commandScope,
+                                   final GameObjectModel gameObjectModel) {
         passedTime += commandScope.getProperties().getDeltaTime();
         completePercentage = passedTime / time;
         if (passedTime > time) {
