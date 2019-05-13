@@ -1,6 +1,5 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {GlService} from "./opengl/gl.service";
-import {applyCameraOffset} from "./opengl/util/applyCameraOffset";
 
 interface Point {
   x: number,
@@ -28,13 +27,24 @@ export class AppComponent {
   }
 
   pointList: Array<Point> = [];
+  gridPoints: Array<Point> = [];
+  gridSize = 50;
 
   constructor() {
 
   }
 
+  generateGrid() {
+    const dotNumber = 100;
+    for (let x = -dotNumber; x < dotNumber; x++) {
+      for (let y = -dotNumber; y < dotNumber; y++) {
+        this.gridPoints.push({x: x * this.gridSize, y: y * this.gridSize})
+      }
+    }
+  }
+
   grid(number: number) {
-    return Math.round(number / 100) * 100;
+    return Math.round(number / this.gridSize) * this.gridSize;
   }
 
   ngAfterViewInit(): void {
@@ -44,6 +54,7 @@ export class AppComponent {
       requestAnimationFrame(drawCallback)
     };
     requestAnimationFrame(drawCallback);
+    this.generateGrid();
     this.glcanvas.nativeElement.addEventListener("mousemove", (event: MouseEvent) => {
       this.mousePointerGrid = {
         x: this.grid((event.offsetX / this.camera.scale) - this.camera.x),
@@ -56,7 +67,7 @@ export class AppComponent {
     })
     this.glcanvas.nativeElement.addEventListener("contextmenu", (event: MouseEvent) => {
       event.preventDefault();
-      const point =  {
+      const point = {
         x: this.grid((event.offsetX / this.camera.scale) - this.camera.x),
         y: this.grid((event.offsetY / this.camera.scale) - this.camera.y)
       }
@@ -94,12 +105,13 @@ export class AppComponent {
 
   draw() {
     this.glService.clear();
+    this.glService.drawPoints(this.gridPoints, [0.2, 0.2, 0.2, 1]);
     if (this.pointList.length > 0) {
-      this.glService.drawPointList(this.pointList, [0.5, 0.5, 0.5, 1]);
+      this.glService.drawPointList(this.pointList, [0, 0.5, 0.51, 1]);
     }
     if (this.pointList.length > 1) {
-      this.glService.drawPointList([this.pointList[this.pointList.length - 1]], [0, 1, 1, 1]);
+      this.glService.drawPointList([this.pointList[this.pointList.length - 1]], [1, 1, 0, 1]);
     }
-    this.glService.drawPointList([this.mousePointer, this.mousePointerGrid], [0, 1, 0, 1])
+    this.glService.drawPointList([ this.mousePointerGrid], [0, 1, 0, 1])
   }
 }

@@ -62,8 +62,34 @@ export class GlService {
 
     let u_FragColor = this.gl.getUniformLocation(this.program, "u_FragColor");
     this.gl.uniform4fv(u_FragColor, new Float32Array(color));
-    this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, n);
+    this.gl.drawArrays(this.gl.TRIANGLES, 0, n);
     this.gl.drawArrays(this.gl.LINE_LOOP, 0, n);
+    this.gl.drawArrays(this.gl.POINTS, 0, n);
+  }
+
+
+  drawPoints(pointList: Array<{ x: number, y: number }>, color: any) {
+    const position = [];
+    applyCameraOffset(pointList, this.camera)
+      .map(value => convertCoordinatesToGL(value, this.clientRect))
+      .map(value => {
+        position.push(value.x);
+        position.push(value.y);
+      });
+    const n = position.length / 2;
+
+    this.gl.bufferData(this.gl.ARRAY_BUFFER,
+      new Float32Array(position),
+      this.gl.STATIC_DRAW);
+
+    const a_Position = this.gl.getAttribLocation(this.program, 'a_Position');
+    this.gl.vertexAttribPointer(a_Position, 2, this.gl.FLOAT, false, 0, 0);
+    this.gl.enableVertexAttribArray(a_Position);
+
+    let u_FragColor = this.gl.getUniformLocation(this.program, "u_FragColor");
+    this.gl.uniform4fv(u_FragColor, new Float32Array(color));
+    // this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, n);
+    // this.gl.drawArrays(this.gl.LINE_LOOP, 0, n);
     this.gl.drawArrays(this.gl.POINTS, 0, n);
   }
 
@@ -87,7 +113,7 @@ export class GlService {
 
     let u_FragColor = this.gl.getUniformLocation(this.program, "u_FragColor");
     this.gl.uniform4fv(u_FragColor, new Float32Array(color));
-    this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, n);
+    this.gl.drawArrays(this.gl.TRIANGLES, 0, n);
     this.gl.drawArrays(this.gl.LINE_LOOP, 0, n);
     this.gl.drawArrays(this.gl.POINTS, 0, n);
   }
