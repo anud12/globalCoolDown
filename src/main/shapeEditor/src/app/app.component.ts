@@ -1,5 +1,6 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {GlService} from "./opengl/gl.service";
+import {applyCameraOffset} from "./opengl/util/applyCameraOffset";
 
 interface Point {
   x: number,
@@ -18,6 +19,14 @@ export class AppComponent {
   private glService;
 
   mousePointer: Point = {x: 0, y: 0};
+  mousePointerGrid: Point = {x: 0, y: 0};
+
+  private camera = {
+    x: 0,
+    y: 0,
+    scale: 1
+  }
+
   pointList: Array<Point> = [];
 
   constructor() {
@@ -29,23 +38,27 @@ export class AppComponent {
   }
 
   ngAfterViewInit(): void {
-    this.glService = new GlService(this.glcanvas.nativeElement);
+    this.glService = new GlService(this.glcanvas.nativeElement, this.camera);
     const drawCallback = () => {
       this.draw()
       requestAnimationFrame(drawCallback)
     };
     requestAnimationFrame(drawCallback);
     this.glcanvas.nativeElement.addEventListener("mousemove", (event: MouseEvent) => {
+      this.mousePointerGrid = {
+        x: this.grid((event.offsetX / this.camera.scale) - this.camera.x),
+        y: this.grid((event.offsetY / this.camera.scale) - this.camera.y)
+      }
       this.mousePointer = {
-        x: this.grid(event.offsetX),
-        y: this.grid(event.offsetY)
+        x: (event.offsetX / this.camera.scale) - this.camera.x,
+        y: (event.offsetY / this.camera.scale) - this.camera.y
       }
     })
     this.glcanvas.nativeElement.addEventListener("contextmenu", (event: MouseEvent) => {
       event.preventDefault();
-      const point = {
-        x: this.grid(event.offsetX),
-        y: this.grid(event.offsetY)
+      const point =  {
+        x: this.grid((event.offsetX / this.camera.scale) - this.camera.x),
+        y: this.grid((event.offsetY / this.camera.scale) - this.camera.y)
       }
       this.pointList = this.pointList.filter(value => {
         return !(
@@ -58,12 +71,25 @@ export class AppComponent {
     this.glcanvas.nativeElement.addEventListener("click", (event: MouseEvent) => {
       event.preventDefault();
       const point = {
-        x: this.grid(event.offsetX),
-        y: this.grid(event.offsetY)
+        x: this.grid((event.offsetX / this.camera.scale) - this.camera.x),
+        y: this.grid((event.offsetY / this.camera.scale) - this.camera.y)
       }
       console.log(point);
       this.pointList.push(point)
     })
+    this.glcanvas.nativeElement.addEventListener("mousemove", (event: MouseEvent) => {
+      if (event.buttons === 1) {
+        // this.onLeftClickDrag(event)
+      }
+      if (event.buttons === 4) {
+        this.onRightClickDrag(event)
+      }
+    })
+  }
+
+  onRightClickDrag(event: MouseEvent) {
+    this.camera.x += event.movementX / this.camera.scale;
+    this.camera.y += event.movementY / this.camera.scale;
   }
 
   draw() {
@@ -74,6 +100,6 @@ export class AppComponent {
     if (this.pointList.length > 1) {
       this.glService.drawPointList([this.pointList[this.pointList.length - 1]], [0, 1, 1, 1]);
     }
-    this.glService.drawPointList([this.mousePointer], [0, 1, 0, 1])
+    this.glService.drawPointList([this.mousePointer, this.mousePointerGrid], [0, 1, 0, 1])
   }
 }

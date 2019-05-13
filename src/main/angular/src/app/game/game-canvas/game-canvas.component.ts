@@ -6,6 +6,8 @@ import {GameObjectService} from "../game-object.service";
 import {GameInputService} from "../game-input.service";
 import {GameSettingsService} from "../game-settings.service";
 
+
+
 @Component({
     selector: 'app-game-canvas',
     templateUrl: './game-canvas.component.html',
