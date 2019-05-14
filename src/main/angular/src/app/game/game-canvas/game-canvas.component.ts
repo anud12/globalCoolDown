@@ -43,7 +43,7 @@ export class GameCanvasComponent implements AfterViewInit {
         };
         requestAnimationFrame(drawCallback);
         this.glcanvas.nativeElement.addEventListener("wheel", (event: WheelEvent) => {
-            this.camera.scale += event.deltaY / 1000;
+            this.camera.scale += event.deltaY / 100;
             if (this.camera.scale < 0.10) {
                 this.camera.scale = 0.10;
             }

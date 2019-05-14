@@ -71,12 +71,12 @@ export class GlService {
 
         let u_FragColor = this.gl.getUniformLocation(this.program, "u_FragColor");
         this.gl.uniform4fv(u_FragColor, new Float32Array(this.gameObjectGLService.getPolygonColorArray(gameObjectModel)));
-        this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, n);
-        this.gl.drawArrays(this.gl.LINE_LOOP, 0, n);
+        this.gl.drawArrays(this.gl.TRIANGLES, 0, n);
+        // this.gl.drawArrays(this.gl.LINE_LOOP, 0, n);
 
         u_FragColor = this.gl.getUniformLocation(this.program, "u_FragColor");
         this.gl.uniform4fv(u_FragColor, new Float32Array(this.gameObjectGLService.getVertexColorArray(gameObjectModel)));
-        this.gl.drawArrays(this.gl.LINE_LOOP, 0, n);
+        // this.gl.drawArrays(this.gl.LINE_LOOP, 0, n);
     }
 
 

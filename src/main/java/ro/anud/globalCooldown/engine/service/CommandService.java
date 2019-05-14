@@ -1,16 +1,20 @@
 package ro.anud.globalCooldown.engine.service;
 
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfoList;
 import org.springframework.stereotype.Service;
 import ro.anud.globalCooldown.Properties;
 import ro.anud.globalCooldown.api.validation.optionalValidation.OptionalValidation;
 import ro.anud.globalCooldown.data.model.GameObjectModel;
 import ro.anud.globalCooldown.data.service.WorldService;
 import ro.anud.globalCooldown.data.trait.CommandTrait;
+import ro.anud.globalCooldown.engine.command.Command;
 import ro.anud.globalCooldown.engine.command.CommandResponse;
 import ro.anud.globalCooldown.engine.command.CommandScope;
 import ro.anud.globalCooldown.engine.factory.CommandFactory;
 import ro.anud.globalCooldown.engine.factory.TriggerFactory;
 
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;

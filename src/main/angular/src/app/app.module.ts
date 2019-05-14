@@ -9,11 +9,13 @@ import {FormsModule} from "@angular/forms";
 import {SecurityModule} from "./security/security.module";
 import {AppErrorComponent} from './app-error.component';
 import {GameModule} from "./game/game.module";
+import { ResultComponent } from './result/result.component';
 
 @NgModule({
     declarations: [
         AppComponent,
-        AppErrorComponent
+        AppErrorComponent,
+        ResultComponent
     ],
     imports: [
         BrowserModule,

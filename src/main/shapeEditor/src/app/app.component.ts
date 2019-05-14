@@ -1,10 +1,7 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {GlService} from "./opengl/gl.service";
+import {ModelService, Point} from "./model.service";
 
-interface Point {
-  x: number,
-  y: number
-}
 
 @Component({
   selector: 'app-root',
@@ -26,11 +23,10 @@ export class AppComponent {
     scale: 1
   }
 
-  pointList: Array<Point> = [];
   gridPoints: Array<Point> = [];
   gridSize = 50;
 
-  constructor() {
+  constructor(private modelService: ModelService) {
 
   }
 
@@ -64,29 +60,26 @@ export class AppComponent {
         x: (event.offsetX / this.camera.scale) - this.camera.x,
         y: (event.offsetY / this.camera.scale) - this.camera.y
       }
+    });
+    this.glcanvas.nativeElement.addEventListener("wheel", (event: WheelEvent) => {
+      this.camera.scale += event.deltaY / 100;
+      if (this.camera.scale < 0.10) {
+        this.camera.scale = 0.10;
+      }
     })
     this.glcanvas.nativeElement.addEventListener("contextmenu", (event: MouseEvent) => {
       event.preventDefault();
-      const point = {
+      this.modelService.removePoint({
         x: this.grid((event.offsetX / this.camera.scale) - this.camera.x),
         y: this.grid((event.offsetY / this.camera.scale) - this.camera.y)
-      }
-      this.pointList = this.pointList.filter(value => {
-        return !(
-          (value.x === point.x)
-          && (value.y === point.y)
-        )
       })
-      console.log(this.pointList);
     })
     this.glcanvas.nativeElement.addEventListener("click", (event: MouseEvent) => {
       event.preventDefault();
-      const point = {
+      this.modelService.addPoint({
         x: this.grid((event.offsetX / this.camera.scale) - this.camera.x),
         y: this.grid((event.offsetY / this.camera.scale) - this.camera.y)
-      }
-      console.log(point);
-      this.pointList.push(point)
+      })
     })
     this.glcanvas.nativeElement.addEventListener("mousemove", (event: MouseEvent) => {
       if (event.buttons === 1) {
@@ -104,14 +97,16 @@ export class AppComponent {
   }
 
   draw() {
+    const pointList = this.modelService.getAllPoints();
     this.glService.clear();
     this.glService.drawPoints(this.gridPoints, [0.2, 0.2, 0.2, 1]);
-    if (this.pointList.length > 0) {
-      this.glService.drawPointList(this.pointList, [0, 0.5, 0.51, 1]);
+    if (pointList.length > 0) {
+      this.glService.drawPointList(pointList, [0, 0.5, 0.51, 1]);
     }
-    if (this.pointList.length > 1) {
-      this.glService.drawPointList([this.pointList[this.pointList.length - 1]], [1, 1, 0, 1]);
+    if (pointList.length > 1) {
+      this.glService.drawPointList([pointList[pointList.length - 1]], [1, 1, 0, 1]);
     }
-    this.glService.drawPointList([ this.mousePointerGrid], [0, 1, 0, 1])
+    this.glService.drawPointList([this.mousePointerGrid], [0, 1, 0, 1])
+    this.glService.drawPointList([{x: 0, y: 0}], [1, 0, 1, 1])
   }
 }

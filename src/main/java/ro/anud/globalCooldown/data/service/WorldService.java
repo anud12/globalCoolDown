@@ -106,6 +106,14 @@ public class WorldService {
                                                                           .ownerId("")
                                                                           .build()))
                 .forEach(gameObjectRepository::insertInnerBlocking);
+        GameObjectModel victoryGameObject = gameObjectFactory.loadFromDisk("victory", 5D);
+        victoryGameObject.addTrait(OwnerTrait.builder()
+                                           .ownerId("")
+                                           .build());
+        victoryGameObject.addTrait(LocationTrait.builder()
+                                           .point2D(new Point2D(600, 600))
+                                           .angle(0D)
+                                           .build());
         Map<Class, Trait> victoryTrait = traitMapFactory.getDefinition("victory");
         victoryTrait.put(OwnerTrait.class,
                          OwnerTrait.builder()
@@ -117,7 +125,7 @@ public class WorldService {
                                  .angle(0D)
                                  .build());
 
-        this.victoryGameObjectModel = this.gameObjectFactory.createFromTraits(new ArrayList<>(victoryTrait.values()));
+        this.victoryGameObjectModel = victoryGameObject;
         gameObjectRepository.insertOuterBlocking(this.victoryGameObjectModel);
         //        this.triggerList.add(new TriggerDelay(20000L, new DeleteGameObjectTrigger(triangleGameObject.getTrait(MetaTrait.class).get().getId())));
     }

@@ -1,24 +1,32 @@
 {
   "ro.anud.globalCooldown.data.trait.ModelTrait": {
     "class": "ro.anud.globalCooldown.data.trait.ModelTrait",
-    "angleOffset": 0,
-    "furtherPoint": 10,
+    "angleOffset": 90,
+    "furtherPoint": 50,
     "vertexPointList": [
       {
         "x": 0,
-        "y": -10.0
+        "y": -50
       },
       {
-        "x": 10.0,
-        "y": 0.0
+        "x": -50,
+        "y": 0
       },
       {
-        "x": 0.0,
-        "y": 10.0
+        "x": 0,
+        "y": 50
       },
       {
-        "x": -10.0,
-        "y": 0.0
+        "x": 50,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": -50
+      },
+      {
+        "x": 0,
+        "y": 50
       }
     ],
     "vertexColor": {
@@ -33,5 +41,5 @@
       "blue": 0.5,
       "alpha": 1
     }
-  }
+}
 }
