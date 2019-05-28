@@ -10,7 +10,6 @@ import ro.anud.globalCooldown.data.model.GameObjectModel;
 import ro.anud.globalCooldown.data.trait.AgilityTrait;
 import ro.anud.globalCooldown.data.trait.LocationTrait;
 import ro.anud.globalCooldown.engine.command.CommandScope;
-import ro.anud.globalCooldown.engine.command.type.RotateCommand;
 
 import java.util.Objects;
 
@@ -22,9 +21,9 @@ import static ro.anud.globalCooldown.engine.command.planner.CommandPlan.singleIn
 @Getter
 @EqualsAndHashCode
 @ToString
-public class RotationCommandPlanner implements CommandPlanner {
+public class RotationCommand implements Command {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RotateCommand.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RotationCommand.class);
     public static CommandValidator commandValidator = (gameObjectModel, commandScope) ->
             !commandScope.getOptionalValidation()
                     .createChain()
@@ -41,7 +40,7 @@ public class RotationCommandPlanner implements CommandPlanner {
         return (result < 0) ? (360d + result) : result;
     }
 
-    public RotationCommandPlanner(final double targetAngle) {
+    public RotationCommand(final double targetAngle) {
         this.targetAngle = Objects.requireNonNull(targetAngle, "targetAngle must not be null");
     }
 

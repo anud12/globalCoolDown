@@ -14,7 +14,7 @@ import static ro.anud.globalCooldown.engine.command.planner.CommandPlan.singleIn
 @EqualsAndHashCode
 @ToString
 @AllArgsConstructor
-public class TeleportCommandPlanner implements CommandPlanner {
+public class TeleportCommand implements Command {
 
     public static CommandValidator commandValidator = (gameObjectModel, commandScope) ->
             commandScope.getOptionalValidation()

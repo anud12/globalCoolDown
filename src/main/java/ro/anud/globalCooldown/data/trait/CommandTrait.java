@@ -5,8 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import ro.anud.globalCooldown.engine.command.Command;
-import ro.anud.globalCooldown.engine.command.planner.CommandPlanner;
+import ro.anud.globalCooldown.engine.command.planner.Command;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,23 +16,16 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode
 public class CommandTrait implements Trait {
-    private List<Command> commandList;
-    private List<CommandPlanner> plannerList;
+    private List<Command> plannerList;
 
     public CommandTrait() {
-        commandList = new ArrayList<>();
         plannerList = new ArrayList<>();
     }
 
     public void clear() {
-        commandList.clear();
         plannerList.clear();
     }
-
-    public void addCommand(final Command command) {
-        commandList.add(command);
-    }
-    public void addPlan(final CommandPlanner commandPlan){
+    public void addPlan(final Command commandPlan){
         plannerList.add(commandPlan);
     }
 }

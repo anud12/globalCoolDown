@@ -26,15 +26,15 @@ public class CommandPlan {
         return new CommandPlan(empty(), singletonMap(target, singletonList(instruction)));
     }
 
-    private Optional<CommandPlanner> nextPlanner;
+    private Optional<Command> nextPlanner;
     private Map<GameObjectModel, List<Runnable>> commandExecutorMap;
 
     public CommandPlan clearNextPlanner(){
         nextPlanner = empty();
         return this ;
     }
-    public CommandPlan setNextPlanner(CommandPlanner commandPlanner){
-        nextPlanner = Optional.of(commandPlanner);
+    public CommandPlan setNextPlanner(Command command){
+        nextPlanner = Optional.of(command);
         return this;
     }
 }

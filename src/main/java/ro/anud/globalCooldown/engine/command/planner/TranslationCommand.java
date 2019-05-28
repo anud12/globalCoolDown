@@ -17,7 +17,7 @@ import static ro.anud.globalCooldown.engine.command.planner.CommandPlan.end;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class TranslationCommandPlanner implements CommandPlanner {
+public class TranslationCommand implements Command {
     public static CommandValidator commandValidator = (gameObjectModel, commandScope) ->
             !commandScope.getOptionalValidation()
                     .createChain()
@@ -27,7 +27,7 @@ public class TranslationCommandPlanner implements CommandPlanner {
 
     private final Point2D destinationLocation;
 
-    public TranslationCommandPlanner(final Point2D destinationLocation) {
+    public TranslationCommand(final Point2D destinationLocation) {
         this.destinationLocation = Objects.requireNonNull(destinationLocation, "destinationLocation must not be null");
     }
 

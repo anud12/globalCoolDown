@@ -8,9 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.anud.globalCooldown.data.model.GameObjectModel;
 import ro.anud.globalCooldown.data.trait.LocationTrait;
-import ro.anud.globalCooldown.data.trait.ManufacturingTrait;
 import ro.anud.globalCooldown.data.trait.OwnerTrait;
-import ro.anud.globalCooldown.engine.command.CommandPreCheckException;
 import ro.anud.globalCooldown.engine.command.CommandScope;
 
 import java.util.Objects;
@@ -21,20 +19,19 @@ import static ro.anud.globalCooldown.engine.command.planner.CommandPlan.untarget
 @Getter
 @EqualsAndHashCode
 @ToString
-public class CreateCommandPlanner implements CommandPlanner {
+public class CreateCommand implements Command {
     public static CommandValidator commandValidator = (gameObjectModel, commandScope) ->
-            commandScope.getOptionalValidation()
+            !commandScope.getOptionalValidation()
                     .createChain()
-                    .validate(gameObjectModel.getTrait(ManufacturingTrait.class))
                     .validate(gameObjectModel.getTrait(LocationTrait.class))
                     .validate(gameObjectModel.getTrait(OwnerTrait.class))
                     .isAnyNotPresent();
 
     private final GameObjectModel newGameObjectModel;
-    private static final Logger LOGGER = LoggerFactory.getLogger(CreateCommandPlanner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CreateCommand.class);
 
     @Builder
-    public CreateCommandPlanner(final GameObjectModel newGameObjectModel) throws CommandPreCheckException {
+    public CreateCommand(final GameObjectModel newGameObjectModel) {
         this.newGameObjectModel = Objects.requireNonNull(newGameObjectModel, "newGameObjectModel must not be null");
     }
 
@@ -52,7 +49,6 @@ public class CreateCommandPlanner implements CommandPlanner {
         newGameObjectModel.addTrait(OwnerTrait.builder()
                 .ownerId(ownerTrait.getOwnerId())
                 .build());
-        return untargetedInstruction(() -> {
-        });
+        return untargetedInstruction(() -> commandScope.getGameObjectRepository().insert(newGameObjectModel));
     }
 }
