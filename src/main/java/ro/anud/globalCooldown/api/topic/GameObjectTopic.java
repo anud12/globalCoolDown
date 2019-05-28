@@ -16,9 +16,9 @@ import ro.anud.globalCooldown.data.model.Point;
 import ro.anud.globalCooldown.data.repository.GameObjectRepository;
 import ro.anud.globalCooldown.data.trait.CommandTrait;
 import ro.anud.globalCooldown.engine.command.Command;
-import ro.anud.globalCooldown.engine.command.CommandPreCheckException;
+import ro.anud.globalCooldown.engine.command.planner.MovementCommandPlanner;
+import ro.anud.globalCooldown.engine.command.planner.TeleportCommandPlanner;
 import ro.anud.globalCooldown.engine.command.type.DelayCommand;
-import ro.anud.globalCooldown.engine.command.type.TeleportCommand;
 import ro.anud.globalCooldown.engine.factory.CommandFactory;
 
 import java.util.Objects;
@@ -65,15 +65,9 @@ public class GameObjectTopic {
         gameObjectModel
                 .getTrait(CommandTrait.class)
                 .ifPresent(commandTrait -> {
-                               commandTrait.clear();
-                               commandTrait.addCommand(
-                                       TeleportCommand
-                                               .builder()
-                                               .x(point.getX())
-                                               .y(point.getY())
-                                               .build()
-                               );
-                           }
+                            commandTrait.clear();
+                            commandTrait.addPlan(new TeleportCommandPlanner(point.getX(), point.getY()));
+                        }
                 );
     }
 
@@ -92,9 +86,9 @@ public class GameObjectTopic {
         gameObjectModel
                 .getTrait(CommandTrait.class)
                 .ifPresent(commandTrait -> {
-                               commandTrait.clear();
-                               commandTrait.addCommand(commandFactory.moveCommand(gameObjectModel, point.toPoint2D()));
-                           }
+                            commandTrait.clear();
+                            commandTrait.addPlan(new MovementCommandPlanner(point.toPoint2D()));
+                        }
                 );
     }
 
@@ -110,15 +104,15 @@ public class GameObjectTopic {
         Command command = DelayCommand.builder()
                 .time(5000D)
                 .next(commandFactory.createCommand(gameObjectModel,
-                                                   gameObjectFactory.loadFromDisk("ship", 2D)
+                        gameObjectFactory.loadFromDisk("ship", 2D)
                 ))
                 .build();
         gameObjectRepository.getById(id)
                 .getTrait(CommandTrait.class)
                 .ifPresent(commandTrait -> {
-                               commandTrait.clear();
-                               commandTrait.addCommand(command);
-                           }
+                            commandTrait.clear();
+                            commandTrait.addCommand(command);
+                        }
                 );
     }
 }

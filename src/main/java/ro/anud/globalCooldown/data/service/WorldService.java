@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ro.anud.globalCooldown.api.emitter.WorldEmitter;
+import ro.anud.globalCooldown.api.service.UserService;
 import ro.anud.globalCooldown.data.factory.GameObjectFactory;
 import ro.anud.globalCooldown.data.factory.TraitMapFactory;
 import ro.anud.globalCooldown.data.model.GameObjectModel;
@@ -14,9 +15,9 @@ import ro.anud.globalCooldown.data.trait.LocationTrait;
 import ro.anud.globalCooldown.data.trait.ModelTrait;
 import ro.anud.globalCooldown.data.trait.OwnerTrait;
 import ro.anud.globalCooldown.data.trait.Trait;
+import ro.anud.globalCooldown.engine.command.planner.CommandPlan;
 import ro.anud.globalCooldown.engine.trigger.Trigger;
 import ro.anud.globalCooldown.engine.trigger.type.VictoryTrigger;
-import ro.anud.globalCooldown.api.service.UserService;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -64,6 +65,10 @@ public class WorldService {
 
     public GameObjectModel getVictoryGameObjectModel() {
         return victoryGameObjectModel;
+    }
+
+    public List<CommandPlan> processPlan(){
+        return Collections.emptyList();
     }
 
     public boolean isNotBlocked(Point2D gamePoint) {

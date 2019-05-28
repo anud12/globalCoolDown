@@ -44,17 +44,18 @@ public class CreateCommand implements Command {
         LocationTrait locationTrait = gameObjectModel.getTrait(LocationTrait.class).get();
         OwnerTrait ownerTrait = gameObjectModel.getTrait(OwnerTrait.class).get();
         newGameObjectModel.addTrait(LocationTrait.builder()
-                                            .angle(locationTrait.getAngle())
-                                            .point2D(locationTrait.getPoint2D())
-                                            .build());
+                .angle(locationTrait.getAngle())
+                .point2D(locationTrait.getPoint2D())
+                .build());
         newGameObjectModel.addTrait(OwnerTrait.builder()
-                                            .ownerId(ownerTrait.getOwnerId())
-                                            .build());
+                .ownerId(ownerTrait.getOwnerId())
+                .build());
         return CommandResponse.builder()
                 .triggerList(Arrays.asList(commandScope
-                                                   .getTriggerFactory()
-                                                   .createGameObjectTrigger(newGameObjectModel)))
+                        .getTriggerFactory()
+                        .createGameObjectTrigger(newGameObjectModel)))
                 .nextCommand(null)
                 .build();
     }
+
 }

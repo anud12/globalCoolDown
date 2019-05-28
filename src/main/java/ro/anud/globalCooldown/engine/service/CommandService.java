@@ -1,23 +1,18 @@
 package ro.anud.globalCooldown.engine.service;
 
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ClassInfoList;
 import org.springframework.stereotype.Service;
 import ro.anud.globalCooldown.Properties;
 import ro.anud.globalCooldown.api.validation.optionalValidation.OptionalValidation;
 import ro.anud.globalCooldown.data.model.GameObjectModel;
 import ro.anud.globalCooldown.data.service.WorldService;
 import ro.anud.globalCooldown.data.trait.CommandTrait;
-import ro.anud.globalCooldown.engine.command.Command;
 import ro.anud.globalCooldown.engine.command.CommandResponse;
 import ro.anud.globalCooldown.engine.command.CommandScope;
+import ro.anud.globalCooldown.engine.command.planner.CommandPlan;
 import ro.anud.globalCooldown.engine.factory.CommandFactory;
 import ro.anud.globalCooldown.engine.factory.TriggerFactory;
 
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +34,27 @@ public class CommandService {
                 .build();
     }
 
+    public List<CommandPlan> processPlan(final GameObjectModel gameObjectModel) {
+        return gameObjectModel
+                .getTrait(CommandTrait.class)
+                .map(commandTrait -> {
+                    List<CommandPlan> commandResponseList = commandTrait
+                            .getPlannerList()
+                            .stream()
+                            .sequential()
+                            .map(command -> command.plan(gameObjectModel, commandScope))
+                            .collect(Collectors.toList());
+                    commandTrait.setPlannerList(commandResponseList.stream()
+                            .map(CommandPlan::getNextPlanner)
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .collect(Collectors.toList())
+                    );
+                    return commandResponseList;
+                })
+        .orElse(Collections.emptyList());
+    }
+
     public List<CommandResponse> processCommand(final GameObjectModel gameObjectModel) {
         return gameObjectModel
                 .getTrait(CommandTrait.class)
@@ -50,10 +66,10 @@ public class CommandService {
                             .map(command -> command.execute(commandScope, gameObjectModel))
                             .collect(Collectors.toList());
                     commandTrait.setCommandList(commandResponseList.stream()
-                                                        .map(CommandResponse::getNextCommand)
-                                                        .filter(Optional::isPresent)
-                                                        .map(Optional::get)
-                                                        .collect(Collectors.toList())
+                            .map(CommandResponse::getNextCommand)
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .collect(Collectors.toList())
                     );
                     return commandResponseList;
                 })
