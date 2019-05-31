@@ -7,12 +7,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ro.anud.globalCooldown.api.emitter.WorldEmitter;
 import ro.anud.globalCooldown.api.service.UserService;
+import ro.anud.globalCooldown.data.command.CommandPlan;
 import ro.anud.globalCooldown.data.model.GameObjectModel;
 import ro.anud.globalCooldown.data.repository.GameObjectRepository;
+import ro.anud.globalCooldown.data.service.CommandService;
 import ro.anud.globalCooldown.data.service.GameObjectService;
 import ro.anud.globalCooldown.data.service.WorldService;
-import ro.anud.globalCooldown.data.command.CommandPlan;
-import ro.anud.globalCooldown.data.service.CommandService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -63,8 +63,10 @@ public class GameLoop {
                                 gameObjectModel,
                                 gameObjectModelListMap.get(gameObjectModel))
                         ))
-                .collect(Collectors.groupingBy(AbstractMap.SimpleEntry::getKey))
-                .forEach((gameObjectModel, simpleEntries) -> {
+                .collect(Collectors.groupingBy(gameObjectModelListSimpleEntry ->
+                        Optional.ofNullable((Object) gameObjectModelListSimpleEntry.getKey())
+                                .orElse(this)))
+                .forEach((o, simpleEntries) -> {
                     new Thread(() -> simpleEntries.stream()
                             .map(AbstractMap.SimpleEntry::getValue)
                             .flatMap(Collection::stream)
