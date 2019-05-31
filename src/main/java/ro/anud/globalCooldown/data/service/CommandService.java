@@ -38,7 +38,7 @@ public class CommandService {
                     List<CommandPlan> commandResponseList = commandTrait
                             .getPlannerList()
                             .stream()
-                            .sequential()
+                            .parallel()
                             .map(command -> command.plan(gameObjectModel, commandScope))
                             .collect(Collectors.toList());
                     commandTrait.setPlannerList(commandResponseList.stream()
