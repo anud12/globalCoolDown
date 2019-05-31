@@ -45,7 +45,7 @@ public class GameLoop {
         this.worldService = Objects.requireNonNull(worldService, "worldService must not be null");
     }
 
-    @Scheduled(fixedRateString = "${ro.anud.global-cooldown.properties.deltaTime}")
+    @Scheduled(fixedDelayString = "${ro.anud.global-cooldown.properties.deltaTime}")
     private void gameLoop() {
         List<GameObjectModel> gameObjectModels = gameObjectRepository.getAll();
         List<CommandPlan> commandPlanList = gameObjectModels
