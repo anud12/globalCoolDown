@@ -15,6 +15,9 @@ import ro.anud.globalCooldown.data.service.GameObjectService;
 import ro.anud.globalCooldown.data.service.WorldService;
 
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +32,7 @@ public class GameLoop {
     private final GameObjectRepository gameObjectRepository;
     private final GameObjectService gameObjectService;
     private WorldService worldService;
+    private Executor executor = Executors.newCachedThreadPool();
 
     public GameLoop(MessageSendingOperations messagingTemplate,
                     final CommandService commandService,
@@ -66,13 +70,11 @@ public class GameLoop {
                 .collect(Collectors.groupingBy(gameObjectModelListSimpleEntry ->
                         Optional.ofNullable((Object) gameObjectModelListSimpleEntry.getKey())
                                 .orElse(this)))
-                .forEach((o, simpleEntries) -> {
-                    new Thread(() -> simpleEntries.stream()
-                            .map(AbstractMap.SimpleEntry::getValue)
-                            .flatMap(Collection::stream)
-                            .forEach(Runnable::run)
-                    ).start();
-                });
+                .forEach((o, simpleEntries) -> executor.execute(() -> simpleEntries.stream()
+                        .map(AbstractMap.SimpleEntry::getValue)
+                        .flatMap(Collection::stream)
+                        .forEach(Runnable::run)
+                ));
         commandPlanList.forEach(commandPlan -> commandPlan
                 .getCommandExecutorMap().values()
                 .stream()
