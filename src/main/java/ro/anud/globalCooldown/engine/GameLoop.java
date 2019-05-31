@@ -53,34 +53,25 @@ public class GameLoop {
     @Scheduled(fixedDelayString = "${ro.anud.global-cooldown.properties.deltaTime}")
     private void gameLoop() {
         List<GameObjectModel> gameObjectModels = gameObjectRepository.getAll();
-        List<CommandPlan> commandPlanList = gameObjectModels
+        HashMap<Object, List<Runnable>> commandPlanList = gameObjectModels
                 .stream()
                 .map(commandService::processPlan)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-        commandPlanList.add(worldService.processPlan());
-
-        commandPlanList.stream()
-                .map(CommandPlan::getCommandExecutorMap)
-                .flatMap(gameObjectModelListMap -> gameObjectModelListMap.keySet().stream()
-                        .map(gameObjectModel -> new AbstractMap.SimpleEntry<>(
-                                gameObjectModel,
-                                gameObjectModelListMap.get(gameObjectModel))
-                        ))
-                .collect(Collectors.groupingBy(gameObjectModelListSimpleEntry ->
-                        Optional.ofNullable((Object) gameObjectModelListSimpleEntry.getKey())
-                                .orElse(this)))
-                .forEach((o, simpleEntries) -> executor.execute(() -> simpleEntries.stream()
-                        .map(AbstractMap.SimpleEntry::getValue)
-                        .flatMap(Collection::stream)
-                        .forEach(Runnable::run)
-                ));
-        commandPlanList.forEach(commandPlan -> commandPlan
-                .getCommandExecutorMap().values()
-                .stream()
-                .flatMap(Collection::stream)
-                .forEach(Runnable::run));
-
+                .collect(HashMap::new,
+                        (hashMap, commandPlan) -> commandPlan
+                                .getCommandExecutorMap()
+                                .forEach((gameObjectModel, runnables) -> {
+                                    hashMap.merge(gameObjectModel, runnables, (list, list2) -> {
+                                        list.addAll(list2);
+                                        return list;
+                                    });
+                                }),
+                        HashMap::putAll);
+        commandPlanList.values()
+                .parallelStream()
+                .forEach(runnables -> {
+                    runnables.forEach(Runnable::run);
+                });
         messagingTemplate.convertAndSend("/ws/hello", new Date());
         worldEmitter.all(gameObjectRepository.getAll()
                 .stream()
