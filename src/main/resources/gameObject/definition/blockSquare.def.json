@@ -1,0 +1,45 @@
+{
+  "ro.anud.globalCooldown.data.trait.ModelTrait": {
+    "class": "ro.anud.globalCooldown.data.trait.ModelTrait",
+    "angleOffset": 0,
+    "furtherPoint": 250,
+    "vertexPointList": [
+      {
+        "x": -250,
+        "y": 250
+      },
+      {
+        "x": 250,
+        "y": 250
+      },
+      {
+        "x": 250,
+        "y": -250
+      },
+      {
+        "x": -250,
+        "y": -250
+      },
+      {
+        "x": -250,
+        "y": 250
+      },
+      {
+        "x": 250,
+        "y": -250
+      }
+    ],
+    "vertexColor": {
+      "red": 0.0,
+      "green": 0.21764705,
+      "blue": 0.0,
+      "alpha": 1
+    },
+    "polygonColor": {
+      "red": 0.0,
+      "green": 0.11764705,
+      "blue": 0.0,
+      "alpha": 1
+    }
+  }
+}

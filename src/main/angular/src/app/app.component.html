@@ -1,0 +1,33 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<app-game-canvas></app-game-canvas>
+<div class="container-fluid bg-dark card-body"
+     style="position: fixed;
+    max-width: 70%;
+    overflow-y: auto;
+    bottom:0;
+    left:0">
+    <app-game-object-list></app-game-object-list>
+</div>
+<div class="container-fluid"
+     style="position: fixed;
+    max-width: 30%;
+    overflow-y: auto;
+    bottom:0;
+    left:70vw">
+    <app-game-object-action></app-game-object-action>
+</div>
+<div class="row">
+    <div class="col-4" style="max-height: 0">
+    </div>
+    <div class="col-4" style="max-height: 0">
+
+        <div style="text-align:center">
+            <app-error></app-error>
+            <div class="text-white">{{message}}</div>
+        </div>
+    </div>
+    <div class="col-4" style="max-height: 0">
+        <app-login>
+        </app-login>
+    </div>
+</div>

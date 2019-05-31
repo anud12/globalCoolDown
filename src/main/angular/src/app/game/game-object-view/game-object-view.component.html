@@ -1,0 +1,16 @@
+<div style="" (click)="onClick()">
+    <div class="" [className]="gameObject.client.selected
+                                ? 'text-white bg-primary card'
+                                : 'card '">
+        <div class="card-body text-center">
+            <div>
+                id: {{metaTrait().id}}
+            </div>
+            <div>x: {{locationTrait().point2D.x | number : '1.2-2'}}</div>
+            <div>y: {{locationTrait().point2D.y | number : '1.2-2'}}</div>
+            <!--<div>-->
+            <!--Angle: {{gameObject.traitMap.LocationTrait.angle | number : '1.2-2'}}-->
+            <!--</div>-->
+        </div>
+    </div>
+</div>

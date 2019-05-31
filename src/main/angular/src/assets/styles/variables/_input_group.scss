@@ -1,0 +1,16 @@
+$input-bg:                              $component-active-bg !default;
+$input-disabled-bg:                     $background-color-disabled !default;
+
+$input-color:                           $text-color !default;
+$input-border-color:                    $border-color !default;
+
+$input-focus-bg:                        $input-bg !default;
+$input-focus-border-color:              lighten($border-color, 15%) !default;
+$input-focus-color:                     $input-color !default;
+
+$input-placeholder-color:               lighten($input-bg, 35%) !default;
+$input-plaintext-color:                 $text-color !default;
+
+$input-group-addon-color:               $input-color !default;
+$input-group-addon-bg:                  $gray-200 !default;
+$input-group-addon-border-color:        $input-border-color !default;

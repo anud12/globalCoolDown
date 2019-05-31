@@ -1,0 +1,28 @@
+[
+  {
+    "definition": "rectangle",
+    "overwriteTraitMap": {
+      "ro.anud.globalCooldown.data.trait.LocationTrait": {
+        "class": "ro.anud.globalCooldown.data.trait.LocationTrait",
+        "point2D": {
+          "x": 500,
+          "y": 250
+        },
+        "angle": 0
+      }
+    }
+  },
+  {
+    "definition": "rectangle",
+    "overwriteTraitMap": {
+      "ro.anud.globalCooldown.data.trait.LocationTrait": {
+        "class": "ro.anud.globalCooldown.data.trait.LocationTrait",
+        "point2D": {
+          "x": 300,
+          "y": 700
+        },
+        "angle": 0
+      }
+    }
+  }
+]
