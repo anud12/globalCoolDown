@@ -29,6 +29,7 @@ public class GameLoop {
     private final GameObjectRepository gameObjectRepository;
     private final GameObjectService gameObjectService;
     private WorldService worldService;
+
     public GameLoop(MessageSendingOperations messagingTemplate,
                     final CommandService commandService,
                     final WorldEmitter worldEmitter,
@@ -55,11 +56,26 @@ public class GameLoop {
                 .collect(Collectors.toList());
         commandPlanList.add(worldService.processPlan());
 
+        commandPlanList.stream()
+                .map(CommandPlan::getCommandExecutorMap)
+                .flatMap(gameObjectModelListMap -> gameObjectModelListMap.keySet().stream()
+                        .map(gameObjectModel -> new AbstractMap.SimpleEntry<>(
+                                gameObjectModel,
+                                gameObjectModelListMap.get(gameObjectModel))
+                        ))
+                .collect(Collectors.groupingBy(AbstractMap.SimpleEntry::getKey))
+                .forEach((gameObjectModel, simpleEntries) -> {
+                    new Thread(() -> simpleEntries.stream()
+                            .map(AbstractMap.SimpleEntry::getValue)
+                            .flatMap(Collection::stream)
+                            .forEach(Runnable::run)
+                    ).start();
+                });
         commandPlanList.forEach(commandPlan -> commandPlan
-                        .getCommandExecutorMap().values()
-                        .stream()
-                        .flatMap(Collection::stream)
-                        .forEach(Runnable::run));
+                .getCommandExecutorMap().values()
+                .stream()
+                .flatMap(Collection::stream)
+                .forEach(Runnable::run));
 
         messagingTemplate.convertAndSend("/ws/hello", new Date());
         worldEmitter.all(gameObjectRepository.getAll()
