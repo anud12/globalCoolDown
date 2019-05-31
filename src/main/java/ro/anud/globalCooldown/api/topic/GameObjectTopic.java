@@ -76,7 +76,6 @@ public class GameObjectTopic {
                 .validate(validationChainResults -> {
                     throw new TopicMessageException(validationChainResults);
                 });
-        LOGGER.info(gameObjectModel.toString());
         gameObjectModel
                 .getTrait(CommandTrait.class)
                 .ifPresent(commandTrait -> {

@@ -44,7 +44,6 @@ public class GameObjectRepository {
     }
 
     public GameObjectModel getById(final long id) {
-        LOGGER.info("getById " + id);
         GameObjectModel gameObjectModel = allGameObjectModelList.stream()
                 .filter(gameObjectModel1 -> gameObjectModel1
                         .getTrait(MetaTrait.class)
@@ -54,7 +53,6 @@ public class GameObjectRepository {
                 )
                 .findAny()
                 .get();
-        LOGGER.info(gameObjectModel.toString());
         return gameObjectModel;
     }
 

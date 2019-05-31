@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-@EnableWebMvc
+//@EnableWebMvc
 @Configuration
 @ComponentScan
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
