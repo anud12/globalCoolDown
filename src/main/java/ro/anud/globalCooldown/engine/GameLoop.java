@@ -67,11 +67,14 @@ public class GameLoop {
                                     });
                                 }),
                         HashMap::putAll);
+        worldService.processPlan().getCommandExecutorMap()
+                .values()
+                .stream()
+                .flatMap(Collection::stream)
+                .forEach(Runnable::run);
         commandPlanList.values()
                 .parallelStream()
-                .forEach(runnables -> {
-                    runnables.forEach(Runnable::run);
-                });
+                .forEach(runnables -> runnables.forEach(Runnable::run));
         messagingTemplate.convertAndSend("/ws/hello", new Date());
         worldEmitter.all(gameObjectRepository.getAll()
                 .stream()
