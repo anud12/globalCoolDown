@@ -1,5 +1,5 @@
 /* tslint:disable */
-// Generated using typescript-generator version 2.12.476 on 2019-05-03 21:14:34.
+// Generated using typescript-generator version 2.12.476 on 2019-05-31 17:03:18.
 
 export class GameObjectMacro {
     definition: string;
@@ -47,7 +47,7 @@ export class AgilityTrait implements Trait {
 }
 
 export class CommandTrait implements Trait {
-    commandList: Command[];
+    plannerList: Command[];
 }
 
 export class LocationTrait implements Trait {
@@ -56,6 +56,13 @@ export class LocationTrait implements Trait {
 }
 
 export class LocationTraitBuilder {
+}
+
+export class ManufacturingTrait implements Trait {
+    canCreate: boolean;
+}
+
+export class ManufacturingTraitBuilder {
 }
 
 export class MetaTrait implements Trait {
