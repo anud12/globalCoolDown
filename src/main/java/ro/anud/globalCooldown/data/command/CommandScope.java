@@ -1,4 +1,4 @@
-package ro.anud.globalCooldown.engine.command;
+package ro.anud.globalCooldown.data.command;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -15,7 +15,8 @@ import ro.anud.globalCooldown.data.model.GameObjectModel;
 import ro.anud.globalCooldown.data.model.Point;
 import ro.anud.globalCooldown.data.repository.GameObjectRepository;
 import ro.anud.globalCooldown.data.trait.CommandTrait;
-import ro.anud.globalCooldown.engine.command.planner.*;
+import ro.anud.globalCooldown.data.command.Command;
+import ro.anud.globalCooldown.data.command.impl.*;
 
 import java.util.Objects;
 

@@ -11,9 +11,8 @@ import ro.anud.globalCooldown.data.model.GameObjectModel;
 import ro.anud.globalCooldown.data.repository.GameObjectRepository;
 import ro.anud.globalCooldown.data.service.GameObjectService;
 import ro.anud.globalCooldown.data.service.WorldService;
-import ro.anud.globalCooldown.engine.command.planner.CommandPlan;
-import ro.anud.globalCooldown.engine.service.CommandService;
-import ro.anud.globalCooldown.engine.service.TriggerService;
+import ro.anud.globalCooldown.data.command.CommandPlan;
+import ro.anud.globalCooldown.data.service.CommandService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,7 +24,6 @@ public class GameLoop {
 
     private final MessageSendingOperations<String> messagingTemplate;
     private final CommandService commandService;
-    private final TriggerService triggerService;
     private final WorldEmitter worldEmitter;
     private final UserService userService;
     private final GameObjectRepository gameObjectRepository;
@@ -33,7 +31,6 @@ public class GameLoop {
     private WorldService worldService;
     public GameLoop(MessageSendingOperations messagingTemplate,
                     final CommandService commandService,
-                    final TriggerService triggerService,
                     final WorldEmitter worldEmitter,
                     final UserService userService,
                     final GameObjectRepository gameObjectRepository,
@@ -41,7 +38,6 @@ public class GameLoop {
                     final WorldService worldService) {
         this.messagingTemplate = Objects.requireNonNull(messagingTemplate, "messagingTemplate must not be null");
         this.commandService = Objects.requireNonNull(commandService, "commandService must not be null");
-        this.triggerService = Objects.requireNonNull(triggerService, "triggerService must not be null");
         this.worldEmitter = Objects.requireNonNull(worldEmitter, "worldEmitter must not be null");
         this.userService = Objects.requireNonNull(userService, "userService must not be null");
         this.gameObjectRepository = Objects.requireNonNull(gameObjectRepository, "gameObjectRepository must not be null");
@@ -57,14 +53,14 @@ public class GameLoop {
                 .map(commandService::processPlan)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
-        commandPlanList.addAll(worldService.processPlan());
+        commandPlanList.add(worldService.processPlan());
 
         commandPlanList.forEach(commandPlan -> commandPlan
                         .getCommandExecutorMap().values()
                         .stream()
                         .flatMap(Collection::stream)
                         .forEach(Runnable::run));
-        
+
         messagingTemplate.convertAndSend("/ws/hello", new Date());
         worldEmitter.all(gameObjectRepository.getAll()
                 .stream()

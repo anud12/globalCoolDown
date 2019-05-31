@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import ro.anud.globalCooldown.engine.command.planner.Command;
+import ro.anud.globalCooldown.data.command.Command;
 
 import java.util.ArrayList;
 import java.util.List;
