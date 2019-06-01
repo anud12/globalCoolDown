@@ -56,7 +56,6 @@ public class GameLoop {
                 .stream()
                 .map(commandService::processPlan)
                 .flatMap(Collection::stream)
-                .c
                 .reduce(CommandPlan::merge)
                 .map(commandPlan -> commandPlan.merge(worldService.processPlan()))
                 .map(CommandPlan::getCommandExecutorMap)
