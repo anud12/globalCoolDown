@@ -4,11 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import ro.anud.globalCooldown.data.model.GameObjectModel;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Optional.empty;
 
@@ -22,12 +20,16 @@ public class CommandPlan {
     }
 
     public static CommandPlan untargetedInstruction(final Runnable instruction) {
-        return new CommandPlan(empty(), singletonMap(empty, singletonList(instruction)));
+        Map<Object, List<Runnable>> map = new HashMap<>();
+        map.put(empty, asList(instruction));
+        return new CommandPlan(empty(), map);
     }
 
     public static CommandPlan singleInstruction(final GameObjectModel target,
                                                 final Runnable instruction) {
-        return new CommandPlan(empty(), singletonMap(target, singletonList(instruction)));
+        Map<Object, List<Runnable>> map = new HashMap<>();
+        map.put(target, asList(instruction));
+        return new CommandPlan(empty(), map);
     }
 
     private Optional<Command> nextPlanner;
