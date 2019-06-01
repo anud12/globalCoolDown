@@ -65,6 +65,7 @@ public class GameObjectService {
 
         List<Point2D> renderVertices = modelTrait.getVertexPointList()
                 .stream()
+                .parallel()
                 .map(point2D -> point2DToSimpleMatrixMapper
                         .toTranslationMatrix(locationTrait.getPoint2D())
                         .mult(point2DToSimpleMatrixMapper.toRotationMatrix(locationTrait.getAngle()))

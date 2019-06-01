@@ -51,6 +51,7 @@ public class GameLoop {
 
     @Scheduled(fixedDelayString = "${ro.anud.global-cooldown.properties.deltaTime}")
     private void gameLoop() {
+
         List<GameObjectModel> gameObjectModels = gameObjectRepository.getAll();
         Map<Object, List<Runnable>> commandPlanList = gameObjectModels
                 .stream()
@@ -59,7 +60,7 @@ public class GameLoop {
                 .reduce(CommandPlan::merge)
                 .map(commandPlan -> commandPlan.merge(worldService.processPlan()))
                 .map(CommandPlan::getCommandExecutorMap)
-                .orElseGet(HashMap::new);
+                .orElseGet(() -> (Map<Object, List<Runnable>>) Collections.EMPTY_MAP);
 
         commandPlanList.values()
                 .parallelStream()
