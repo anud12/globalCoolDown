@@ -16,7 +16,6 @@ import ro.anud.globalCooldown.data.service.WorldService;
 
 import java.util.*;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
@@ -53,25 +52,15 @@ public class GameLoop {
     @Scheduled(fixedDelayString = "${ro.anud.global-cooldown.properties.deltaTime}")
     private void gameLoop() {
         List<GameObjectModel> gameObjectModels = gameObjectRepository.getAll();
-        HashMap<Object, List<Runnable>> commandPlanList = gameObjectModels
+        Map<Object, List<Runnable>> commandPlanList = gameObjectModels
                 .stream()
                 .map(commandService::processPlan)
                 .flatMap(Collection::stream)
-                .collect(HashMap::new,
-                        (hashMap, commandPlan) -> commandPlan
-                                .getCommandExecutorMap()
-                                .forEach((gameObjectModel, runnables) -> {
-                                    hashMap.merge(gameObjectModel, runnables, (list, list2) -> {
-                                        list.addAll(list2);
-                                        return list;
-                                    });
-                                }),
-                        HashMap::putAll);
-        worldService.processPlan().getCommandExecutorMap()
-                .values()
-                .stream()
-                .flatMap(Collection::stream)
-                .forEach(Runnable::run);
+                .reduce(CommandPlan::merge)
+                .map(commandPlan -> commandPlan.merge(worldService.processPlan()))
+                .map(CommandPlan::getCommandExecutorMap)
+                .orElseGet(HashMap::new);
+
         commandPlanList.values()
                 .parallelStream()
                 .forEach(runnables -> runnables.forEach(Runnable::run));
