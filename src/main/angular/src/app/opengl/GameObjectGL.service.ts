@@ -1,27 +1,22 @@
 import {GameObjectModel, RenderTrait} from "../java.models";
 import {convertCoordinatesToGL} from "./util/convertCoordinatesToGL.function";
 import {applyCameraOffset} from "./util/applyCameraOffset";
+import {HttpClient} from "@angular/common/http";
+import {Observable} from "rxjs";
+import {ShaderHttpEndpoint} from "../endpoints/shader.http.endpoints";
 
 export class GameObjectGLService {
 
-    public getVertexShaderSource() {
-        return `
-            attribute vec4 a_Position;
-            void main() {
-                gl_Position = a_Position;
-                gl_PointSize = 2.0;
-            }
-            `
+    constructor(private httpClient: HttpClient) {
+
     }
 
-    public getFragmentShaderSource() {
-        return `
-            precision mediump float;
-            uniform vec4 u_FragColor;
-            void main() {
-                gl_FragColor = u_FragColor;
-            }
-    `
+    public getVertexShaderSource(): Observable<string> {
+        return this.httpClient.get(ShaderHttpEndpoint + "/simple.vert", {responseType: 'text'});
+    }
+
+    public getFragmentShaderSource(): Observable<string> {
+        return this.httpClient.get (ShaderHttpEndpoint + "/simple.frag", {responseType: 'text'});
     }
 
 

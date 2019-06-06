@@ -5,7 +5,7 @@ import {GlService} from "../../opengl/gl.service";
 import {GameObjectService} from "../game-object.service";
 import {GameInputService} from "../game-input.service";
 import {GameSettingsService} from "../game-settings.service";
-
+import {HttpClient} from "@angular/common/http";
 
 
 @Component({
@@ -27,12 +27,13 @@ export class GameCanvasComponent implements AfterViewInit {
     constructor(private stompService: StompService,
                 private gameObjectService: GameObjectService,
                 private gameInputService: GameInputService,
-                private gameSettingsService: GameSettingsService) {
+                private gameSettingsService: GameSettingsService,
+                private httpClient: HttpClient) {
 
     }
 
     ngAfterViewInit(): void {
-        this.glService = new GlService(this.glcanvas.nativeElement, this.gameSettingsService);
+        this.glService = new GlService(this.glcanvas.nativeElement, this.httpClient, this.gameSettingsService, );
 
         this.stompService.subscribeGlobal<Array<GameObjectModel>>("/ws/world/all", gameObjectList => {
             this.gameObjectList = gameObjectList;
